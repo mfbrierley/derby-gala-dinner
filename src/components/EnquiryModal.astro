@@ -1,5 +1,14 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { WEB3FORMS_ACCESS_KEY, WEB3FORMS_ENDPOINT, HCAPTCHA_SITEKEY } from '../config';
+import tableEvening from '../assets/images/form-table-evening.jpg';
+import tableVip from '../assets/images/form-table-vip.jpg';
+import sponsorHeadline from '../assets/images/sponsor-headline.jpg';
+import sponsorSupporting from '../assets/images/sponsor-supporting.jpg';
+import sponsorDrinks from '../assets/images/sponsor-drinks.jpg';
+import sponsorLounge from '../assets/images/sponsor-lounge.jpg';
+import sponsorOther from '../assets/images/sponsor-other.jpg';
 
 interface Props {
   /**
@@ -38,8 +47,25 @@ const copy = {
   },
 }[variant];
 
-const tableTypes = ['Evening Table', 'VIP Table'];
-const sponsorshipTypes = ['Headline', 'Supporting', 'Welcome drinks', 'VIP lounge', 'Other'];
+/**
+ * Picture buttons for the table type (pick one) and sponsorship type (pick any), from the form
+ * mockups in the "dgd - matt" Figma. `value` is what's emailed and what the opening button
+ * pre-selects (data-open-booking / data-open-sponsorship). `position` is the photo crop from the Figma.
+ */
+type Pick = { value: string; label: string; image: ImageMetadata; position?: string; wide?: boolean };
+
+const tableTypes: Pick[] = [
+  { value: 'Evening Table', label: 'Evening table', image: tableEvening },
+  { value: 'VIP Table', label: 'VIP table', image: tableVip },
+];
+const sponsorshipTypes: Pick[] = [
+  { value: 'Headline', label: 'Headline sponsor', image: sponsorHeadline, position: '50% 22%' },
+  { value: 'Supporting', label: 'Supporting sponsor', image: sponsorSupporting },
+  { value: 'Welcome drinks', label: 'Welcome drink sponsor', image: sponsorDrinks, position: '56% 50%' },
+  { value: 'VIP lounge', label: 'VIP lounge sponsor', image: sponsorLounge, position: '74% 56%' },
+  // Not in the form mockup, but on the Book a table page and in Matt's list of options.
+  { value: 'Other', label: 'Other sponsorship', image: sponsorOther, wide: true },
+];
 const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 ---
 
@@ -81,18 +107,32 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
                   <span class="field__label">VAT number (if applicable)</span>
                 </label>
               </div>
-              <div class="enquiry__row enquiry__row--2">
-                <label class="field">
-                  <input name="Company Address" type="text" placeholder=" " autocomplete="street-address" />
-                  <span class="field__label">Company Address</span>
-                </label>
-                <label class="field field--select">
-                  <select name="Table type" required aria-label="Table type">
-                    <option value="" selected>Table type</option>
-                    {tableTypes.map((t) => <option value={t}>{t}</option>)}
-                  </select>
-                </label>
-              </div>
+              <label class="field">
+                <input name="Company Address" type="text" placeholder=" " autocomplete="street-address" />
+                <span class="field__label">Company Address</span>
+              </label>
+              <fieldset class="picks picks--tables" data-required-group data-required-message="Please choose a table type.">
+                <legend class="picks__legend">Table type</legend>
+                <div class="picks__grid">
+                  {
+                    tableTypes.map((t) => (
+                      <label class="pick">
+                        <input type="radio" name="Table type" value={t.value} />
+                        <Image
+                          src={t.image}
+                          alt=""
+                          widths={[480, 960]}
+                          sizes="(max-width: 899px) 45vw, 440px"
+                          loading="lazy"
+                          style={t.position ? `object-position: ${t.position}` : undefined}
+                        />
+                        <span class="pick__label display">{t.label}</span>
+                        <span class="pick__tick" aria-hidden="true" />
+                      </label>
+                    ))
+                  }
+                </div>
+              </fieldset>
               <p class="enquiry__terms">
                 Thank you for your interest in purchasing a table, all bookings are managed via an invoice system with full payment required to secure a booking, a booking is only confirmed upon successful receipt of payment.
                 <br />
@@ -125,15 +165,23 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
                   <span class="field__label">Your Company name</span>
                 </label>
               </div>
-              <fieldset class="checks" data-required-group>
-                <legend class="checks__legend">Type of sponsorship enquiry:</legend>
-                <div class="checks__options">
+              <fieldset class="picks picks--sponsorship" data-required-group data-required-message="Please choose at least one type of sponsorship.">
+                <legend class="picks__legend">Type of sponsorship enquiry:</legend>
+                <div class="picks__grid">
                   {
                     sponsorshipTypes.map((t) => (
-                      <label class="checks__option">
-                        <input type="checkbox" name="sponsorship_type" value={t} />
-                        <span class="checks__box" aria-hidden="true" />
-                        <span>{t}</span>
+                      <label class:list={['pick', { 'pick--wide': t.wide }]}>
+                        <input type="checkbox" name="sponsorship_type" value={t.value} />
+                        <Image
+                          src={t.image}
+                          alt=""
+                          widths={t.wide ? [960, 1920] : [480, 960]}
+                          sizes={t.wide ? '(max-width: 899px) 90vw, 880px' : '(max-width: 899px) 45vw, 440px'}
+                          loading="lazy"
+                          style={t.position ? `object-position: ${t.position}` : undefined}
+                        />
+                        <span class="pick__label display">{t.label}</span>
+                        <span class="pick__tick" aria-hidden="true" />
                       </label>
                     ))
                   }
@@ -206,12 +254,12 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 <style>
   /*
    * On laptops and desktops the pop-up scales down to fit the screen height: the script sets
-   * --fit (0.6 to 1) after measuring, and every size inside is based on this --u. The shared
+   * --fit (0.5 to 1) after measuring, and every size inside is based on this --u. The shared
    * size variables are re-declared here so they use the scaled --u too.
    */
   .modal {
     --u: calc(min(var(--max-vw) / 1728, 100vw / 1728) * var(--fit, 1));
-    --text-body: max(15px, calc(24 * var(--u)));
+    --text-body: max(15px, calc(24 * var(--u) * var(--type-scale)));
     --btn-height: max(40px, calc(58 * var(--u)));
     --field-height: max(48px, calc(66 * var(--u)));
     color-scheme: dark;
@@ -221,7 +269,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     height: 100%;
     max-height: none;
     margin: 0;
-    padding: clamp(8px, 2vh, 16px);
+    padding: clamp(8px, 1.2vh, 16px);
     border: 0;
     background: transparent;
     color: var(--white);
@@ -272,7 +320,6 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
   }
 
   .modal__intro {
-    max-width: calc(985 * var(--u));
     margin-top: max(12px, calc(28 * var(--u)));
   }
 
@@ -424,7 +471,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     transform: translateY(0) scale(0.62);
   }
 
-  /* Dropdowns: the first option ("Table type", "Title") is the label; a gold caret on the right. */
+  /* Dropdowns: the first option ("Title") is the label; a gold caret on the right. */
   .field--select select {
     padding-top: 0;
     padding-bottom: 0;
@@ -475,95 +522,182 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     color: #ff8a80;
   }
 
-  /* ---------- Sponsorship type checkboxes ---------- */
+  /*
+   * ---------- Picture buttons (table type, sponsorship type) ----------
+   * From the "dgd - matt" form mockups: a photo with a dark fade at the bottom and the name in
+   * the display font. Chosen: gold outline, gold name and a tick in the corner. Table tiles also
+   * have a white outline when not chosen, as in the mockup.
+   */
 
-  .checks {
+  .picks {
     min-width: 0;
     margin: 0;
     padding: 0;
     border: 0;
   }
 
-  .checks__legend {
+  .picks__legend {
     padding: 0;
-    color: var(--label-rest, rgba(255, 255, 255, 0.72));
     margin-bottom: max(10px, calc(14 * var(--u)));
+    color: rgba(255, 255, 255, 0.72);
   }
 
-  .checks__options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: max(10px, calc(14 * var(--u)));
+  .picks__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: max(12px, calc(22 * var(--u)));
   }
 
-  .checks__option {
+  /* Heights (rather than aspect ratios) so the tiles shrink with the rest of the pop-up when it scales to fit. */
+  .pick {
+    --pick-line: transparent;
     position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    height: var(--btn-height);
-    padding: 0 max(16px, calc(22 * var(--u)));
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: var(--radius);
+    display: block;
+    height: max(72px, calc(236 * var(--u)));
+    overflow: hidden;
+    isolation: isolate;
+    background: #111;
     cursor: pointer;
-    transition:
-      color 0.2s ease,
-      border-color 0.2s ease;
   }
 
-  .checks__option:hover {
-    border-color: rgba(255, 255, 255, 0.85);
+  .picks--tables .pick {
+    --pick-line: var(--white);
+    height: max(90px, calc(302 * var(--u)));
   }
 
-  .checks__option input {
+  .pick--wide {
+    grid-column: 1 / -1;
+    height: max(48px, calc(104 * var(--u)));
+  }
+
+  /* The radio / checkbox itself is hidden; the whole tile is its label. */
+  .pick input {
     position: absolute;
     opacity: 0;
     pointer-events: none;
   }
 
-  .checks__box {
-    position: relative;
-    flex: none;
-    width: 18px;
-    height: 18px;
-    border: 1px solid currentColor;
-    border-radius: 3px;
+  .pick :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
   }
 
-  .checks__option:has(input:checked) {
-    border-color: var(--gold);
+  .pick:hover :global(img) {
+    transform: scale(1.04);
+  }
+
+  /* Dark fade behind the name, then the outline on top. */
+  .pick::before,
+  .pick::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .pick::before {
+    z-index: 1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, #000 100%);
+  }
+
+  .picks--tables .pick::before {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 44.5%, #000 81.4%);
+  }
+
+  .pick--wide::before {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 70%);
+  }
+
+  .pick::after {
+    z-index: 3;
+    border: max(2px, calc(3 * var(--u))) solid var(--pick-line);
+    transition: border-color 0.2s ease;
+  }
+
+  .pick__label {
+    position: absolute;
+    z-index: 2;
+    left: calc(35 * var(--u));
+    right: calc(20 * var(--u));
+    bottom: calc(24 * var(--u));
+    font-size: calc(max(24px, calc(62 * var(--u))) * var(--type-scale));
+    color: var(--white);
+    transition: color 0.2s ease;
+  }
+
+  .picks--tables .pick__label {
+    bottom: calc(36 * var(--u));
+    font-size: calc(max(26px, calc(67 * var(--u))) * var(--type-scale));
+  }
+
+  .pick--wide .pick__label {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+
+  .pick__tick {
+    position: absolute;
+    z-index: 4;
+    top: max(8px, calc(14 * var(--u)));
+    right: max(8px, calc(14 * var(--u)));
+    width: max(22px, calc(30 * var(--u)));
+    height: max(22px, calc(30 * var(--u)));
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .pick__tick::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: 28%;
+    height: 50%;
+    border: solid var(--black);
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .picks .pick:has(input:checked) {
+    --pick-line: var(--gold);
+  }
+
+  .pick:has(input:checked) .pick__label {
     color: var(--gold);
   }
 
-  .checks__option:has(input:checked) .checks__box {
-    border-color: var(--gold);
-    background: var(--gold);
+  .pick:has(input:checked) .pick__tick {
+    opacity: 1;
+    transform: none;
   }
 
-  /* tick */
-  .checks__option:has(input:checked) .checks__box::after {
-    content: '';
-    position: absolute;
-    left: 5px;
-    top: 1px;
-    width: 5px;
-    height: 10px;
-    border: solid var(--black);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-
-  .checks__option:has(input:focus-visible) {
+  .pick:has(input:focus-visible) {
     outline: 3px solid var(--gold);
     outline-offset: 3px;
   }
 
-  .checks[aria-invalid='true'] .checks__option {
-    border-color: #ff8a80;
+  .picks[aria-invalid='true'] .pick {
+    --pick-line: #ff8a80;
   }
 
-  .enquiry__terms {
-    max-width: calc(985 * var(--u));
+  .picks[aria-invalid='true'] .picks__legend {
+    color: #ff8a80;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pick:hover :global(img) {
+      transform: none;
+    }
   }
 
   .enquiry__captcha:empty {
@@ -585,7 +719,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 
   .enquiry__privacy {
     margin-top: calc(-6 * var(--u));
-    font-size: max(13px, calc(16 * var(--u)));
+    font-size: max(13px, calc(16 * var(--u) * var(--type-scale)));
     color: rgba(255, 255, 255, 0.72);
     text-align: center;
   }
@@ -614,12 +748,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     }
 
     .modal__title {
-      font-size: 44px;
-    }
-
-    .modal__intro,
-    .enquiry__terms {
-      max-width: none;
+      font-size: calc(44px * var(--type-scale));
     }
 
     .enquiry__row--3,
@@ -627,9 +756,32 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
       grid-template-columns: 1fr;
     }
 
-    .checks__option {
-      padding: 0 14px;
+    .picks__grid {
       gap: 10px;
+    }
+
+    .pick {
+      height: 88px;
+    }
+
+    .picks--tables .pick {
+      height: 112px;
+    }
+
+    .pick--wide {
+      height: 60px;
+    }
+
+    .pick__label,
+    .picks--tables .pick__label {
+      left: 12px;
+      right: 10px;
+      bottom: 10px;
+      font-size: calc(26px * var(--type-scale));
+    }
+
+    .pick--wide .pick__label {
+      bottom: auto;
     }
   }
 </style>
@@ -706,11 +858,11 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
   };
 
   /**
-   * Scale an open pop-up down (to no less than 60%) so it fits the screen height on laptops and
+   * Scale an open pop-up down (to no less than 50%) so it fits the screen height on laptops and
    * desktops. Sizes have minimums, so it measures, adjusts and re-measures until it settles.
    * Phones (under 900px) keep the full-size layout and scroll instead.
    */
-  const MIN_FIT = 0.6;
+  const MIN_FIT = 0.5;
   const fitToScreen = (dialog: HTMLDialogElement) => {
     const panel = dialog.querySelector<HTMLElement>('.modal__panel');
     if (!panel || !dialog.open) return;
@@ -758,8 +910,11 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     clearErrors(form);
 
     // Pre-select from the button that opened the form.
-    const table = form.querySelector<HTMLSelectElement>('select[name="Table type"]');
-    if (table && preset.table !== undefined) table.value = preset.table;
+    if (preset.table !== undefined) {
+      form.querySelectorAll<HTMLInputElement>('input[name="Table type"]').forEach((radio) => {
+        radio.checked = radio.value === preset.table;
+      });
+    }
     if (preset.sponsorship) {
       form.querySelectorAll<HTMLInputElement>('input[name="sponsorship_type"]').forEach((box) => {
         box.checked = preset.sponsorship!.includes(box.value);
@@ -826,7 +981,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
       event.preventDefault();
       clearErrors(form);
 
-      // Validate required fields (inputs and the table type dropdown), plus the sponsorship checkboxes.
+      // Validate required fields, plus the table type or sponsorship type picture buttons.
       const invalid = Array.from(form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input[required], select[required]')).filter(
         (field) => !field.checkValidity(),
       );
@@ -838,7 +993,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
       if (invalid.length || groupMissing) {
         const messages: string[] = [];
         if (invalid.length) messages.push('Please fill in the highlighted fields.');
-        if (groupMissing) messages.push('Please choose at least one type of sponsorship.');
+        if (groupMissing) messages.push(group!.dataset.requiredMessage ?? 'Please make a choice.');
         showError(form, messages.join(' '));
         (invalid[0] ?? group?.querySelector('input'))?.focus();
         return;

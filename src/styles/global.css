@@ -36,9 +36,15 @@
   /* Height of the header (it sits over the top of the first section): top padding + logo. */
   --header-h: calc(59 * var(--u) + max(96px, calc(163 * var(--u))) * 99 / 163);
 
-  --text-body: max(16px, calc(24 * var(--u)));
-  --text-label: max(20px, calc(35 * var(--u)));
-  --text-nav: max(13px, calc(16 * var(--u)));
+  /*
+   * Type scale: every font size on the site is multiplied by this (1 = the Figma sizes).
+   * Minimum sizes of 16px and under are left alone so small text stays readable.
+   */
+  --type-scale: 0.9;
+
+  --text-body: max(16px, calc(24 * var(--u) * var(--type-scale)));
+  --text-label: calc(max(20px, calc(35 * var(--u))) * var(--type-scale));
+  --text-nav: max(13px, calc(16 * var(--u) * var(--type-scale)));
   --btn-height: max(46px, calc(58 * var(--u)));
 
   /* --stripes (the gold stripes background) is set in Base.astro, so phones get a smaller file. */
@@ -201,15 +207,15 @@ textarea {
 }
 
 .display--xl {
-  font-size: max(56px, calc(200 * var(--u)));
+  font-size: calc(max(56px, calc(200 * var(--u))) * var(--type-scale));
 }
 
 .display--lg {
-  font-size: max(40px, calc(100 * var(--u)));
+  font-size: calc(max(40px, calc(100 * var(--u))) * var(--type-scale));
 }
 
 .display--md {
-  font-size: max(36px, calc(80 * var(--u)));
+  font-size: calc(max(36px, calc(80 * var(--u))) * var(--type-scale));
 }
 
 .serif {

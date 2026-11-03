@@ -44,8 +44,13 @@ the Figma, and open questions. Update it as items are resolved.
 
 - [x] **Reserve a table and Sponsorship enquiry forms:** two separate forms, with heading, intro, fields and terms supplied by Matt. Required: name and email on both, plus a table type (booking) or at least one sponsorship type (sponsorship). Everything else is optional.
 - [ ] **Contact form (general enquiries):** intro "Please complete the form below and a member of our team will contact you within 24hrs." The message box label is "Message:". It uses the same "Enquiry Form / GET IN TOUCH. GET INVOLVED." heading as the Figma.
-- [ ] **Form messages:** "Please fill in the highlighted fields.", "Please choose at least one type of sponsorship.", "Please complete the captcha check.", "Sorry, your enquiry couldn't be sent. Please try again in a moment.", "Sending…", plus the line under Submit: "We'll only use your details to respond to your enquiry. See our privacy policy."
-- [ ] **Form options:** Table type dropdown (Evening Table, VIP Table). Sponsorship checkboxes (Headline, Supporting, Welcome drinks, VIP lounge, Other). Title list on the general contact form (Mr, Mrs, Ms, Miss, Mx, Dr).
+- [ ] **Form messages:** "Please fill in the highlighted fields.", "Please choose a table type.", "Please choose at least one type of sponsorship.", "Please complete the captcha check.", "Sorry, your enquiry couldn't be sent. Please try again in a moment.", "Sending…", plus the line under Submit: "We'll only use your details to respond to your enquiry. See our privacy policy."
+- [ ] **Form options:** table type and sponsorship type are picture buttons, from the form mockups in the "dgd - matt" Figma (only those parts of the mockups were used). Differences from the mockups:
+  - A small "Table type" / "Type of sponsorship enquiry:" heading above the pictures (the mockups have none).
+  - "Welcome drink sponsor" rather than the mockup's "Drinks sponsor", to match the rest of the site.
+  - An extra, shorter "Other sponsorship" picture under the four in the mockup, because Other is in Matt's list and on the Book a table page.
+  - Chosen: gold outline, gold name and a tick. The mockups show the gold outline for tables only.
+  - Title list on the general contact form (Mr, Mrs, Ms, Miss, Mx, Dr).
 - [ ] **Cookie banner:** all copy.
 - [ ] **Map (before cookies are accepted):** "The live map is provided by Google, which sets cookies." with the buttons "Accept cookies and show map" and "Open in Google Maps".
 - [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
@@ -69,6 +74,8 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] Mobile and tablet layouts are adapted from the desktop design (there are no mobile frames).
 - [ ] Home hero fills the screen with its content centred below the header (matches the Figma at 1728 × 996). On short screens the hero's text and sponsor logos scale down so it all stays above the fold. A phone held sideways is the one case where it scrolls.
 - [ ] The thank-you pop-up is shorter than the Figma panel (1050px tall).
+- [ ] Pop-ups scale down (to as little as half size) to fit the screen height. Both forms fit on screens 800px tall or more (e.g. MacBooks); on shorter screens they scroll inside the pop-up.
+- [ ] All text is 10% smaller than the Figma sizes (Matt), set by `--type-scale` in `src/styles/global.css`. Body text stays at least 16px.
 - [ ] Gallery: clicking a photo opens it full-size in a viewer (arrows, swipe, Esc to close). Not in the Figma.
 - [ ] Gallery rows are evenly spaced; the Figma has one row gap that's smaller than the rest.
 - [ ] Favicon: the DGD logo on a black square. Will may want to supply a proper one.

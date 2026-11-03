@@ -274,7 +274,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
     max-width: calc(1337 * var(--u));
     margin-left: calc(-7 * var(--u));
     font-family: var(--font-serif);
-    font-size: max(24px, calc(48 * var(--u)));
+    font-size: calc(max(24px, calc(48 * var(--u))) * var(--type-scale));
     line-height: 1.31;
     color: var(--gold);
   }
@@ -477,7 +477,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
   .sponsor-row__heading,
   .sponsor-row__availability {
-    font-size: max(18px, calc(28 * var(--u)));
+    font-size: calc(max(18px, calc(28 * var(--u))) * var(--type-scale));
   }
 
   .sponsor-row__availability {
@@ -570,7 +570,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
     }
 
     .package-card__body h2 {
-      font-size: 56px;
+      font-size: calc(56px * var(--type-scale));
     }
 
     .package-card__text,
@@ -618,7 +618,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
     .sponsor-row__title {
       max-width: none;
-      font-size: 52px;
+      font-size: calc(52px * var(--type-scale));
     }
 
     .sponsor-row__text,

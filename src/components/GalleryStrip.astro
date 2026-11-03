@@ -64,7 +64,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .strip__label {
     margin-top: calc(33 * var(--u));
-    font-size: max(20px, calc(36 * var(--u)));
+    font-size: calc(max(20px, calc(36 * var(--u))) * var(--type-scale));
     color: var(--white);
   }
 
@@ -137,7 +137,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     .strip__title {
       margin-top: 28px;
-      font-size: 44px;
+      font-size: calc(44px * var(--type-scale));
     }
 
     .strip__label {

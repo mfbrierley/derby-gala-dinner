@@ -37,7 +37,7 @@ If the site ever has to live in a sub-folder (e.g. `derbygaladinner.co.uk/new/`)
 | `src/layouts/Base.astro` | Page shell: `<head>`, fonts, header, footer, pop-ups, cookie banner |
 | `src/components/` | Header, footer, enquiry/contact pop-up, cookie banner and shared sections |
 | `src/data/sponsors.ts` | Sponsor names, labels and logos (shown in the home hero and the footer) |
-| `src/styles/global.css` | Colours, fonts, buttons and the sizing system (see the comment at the top) |
+| `src/styles/global.css` | Colours, fonts, buttons and the sizing system (see the comment at the top). `--type-scale` makes all text bigger or smaller (1 = Figma sizes) |
 | `src/assets/` | Images and SVGs from the Figma. Astro resizes the photos and converts them to WebP at build time |
 | `src/config.ts` | Adobe Fonts project, Web3Forms key, hCaptcha key, Bridge the Gap link |
 | `public/` | Copied as-is: `.htaccess`, `favicon.svg`, `robots.txt` |

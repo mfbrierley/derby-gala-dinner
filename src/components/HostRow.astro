@@ -166,7 +166,7 @@ const mediaStyle = [
   .host__subtitle {
     font-family: var(--font-serif);
     font-weight: 700;
-    font-size: max(20px, calc(36 * var(--u)));
+    font-size: calc(max(20px, calc(36 * var(--u))) * var(--type-scale));
     line-height: 1.31;
     color: var(--gold);
   }
@@ -200,7 +200,7 @@ const mediaStyle = [
 
     .host__name {
       margin-top: 4px;
-      font-size: 64px;
+      font-size: calc(64px * var(--type-scale));
     }
 
     .host__subtitle {

@@ -277,7 +277,7 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
     .mobile-menu__list a {
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 44px;
+      font-size: calc(44px * var(--type-scale));
       line-height: 0.95;
       text-decoration: none;
       color: var(--white);
@@ -285,7 +285,7 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
 
     .mobile-menu__sub a {
       padding-left: 20px;
-      font-size: 32px;
+      font-size: calc(32px * var(--type-scale));
       color: var(--gold);
     }
 

@@ -237,7 +237,7 @@ const sponsors = [
   }
 
   .hero__date {
-    font-size: max(26px, calc(48 * var(--u)));
+    font-size: calc(max(26px, calc(48 * var(--u))) * var(--type-scale));
   }
 
   .hero__title {
@@ -246,7 +246,7 @@ const sponsors = [
 
   .hero__venue {
     margin-top: calc(7 * var(--u));
-    font-size: max(22px, calc(40 * var(--u)));
+    font-size: calc(max(22px, calc(40 * var(--u))) * var(--type-scale));
   }
 
   .hero__actions {
@@ -273,7 +273,7 @@ const sponsors = [
     gap: calc(21 * var(--u));
     width: 100%;
     font-family: var(--font-sans);
-    font-size: max(10px, calc(15 * var(--u)));
+    font-size: max(10px, calc(15 * var(--u) * var(--type-scale)));
     line-height: 1;
     letter-spacing: 0.4em;
     text-transform: uppercase;
@@ -317,7 +317,7 @@ const sponsors = [
 
   .hero__production {
     font-family: var(--font-sans);
-    font-size: max(12px, calc(20 * var(--u)));
+    font-size: max(12px, calc(20 * var(--u) * var(--type-scale)));
     line-height: 1;
     letter-spacing: 0.4em;
     text-transform: uppercase;
@@ -346,7 +346,7 @@ const sponsors = [
   .difference__aside {
     font-family: var(--font-serif);
     font-weight: 700;
-    font-size: max(20px, calc(36 * var(--u)));
+    font-size: calc(max(20px, calc(36 * var(--u))) * var(--type-scale));
     line-height: 1.31;
     color: var(--black);
   }
@@ -393,7 +393,7 @@ const sponsors = [
   .intro__lede {
     margin-top: calc(43 * var(--u));
     font-family: var(--font-serif);
-    font-size: max(24px, calc(48 * var(--u)));
+    font-size: calc(max(24px, calc(48 * var(--u))) * var(--type-scale));
     line-height: 1.31;
     color: var(--gold);
   }
@@ -531,7 +531,7 @@ const sponsors = [
     .hero__title {
       margin-top: 8px;
       /* smaller on short phones so the hero still fits the screen */
-      font-size: clamp(56px, 10svh, 72px);
+      font-size: calc(clamp(56px, 10svh, 72px) * var(--type-scale));
     }
 
     .hero__venue {
@@ -596,7 +596,7 @@ const sponsors = [
     }
 
     .difference__title {
-      font-size: 72px;
+      font-size: calc(72px * var(--type-scale));
     }
 
     .evening {
@@ -615,7 +615,7 @@ const sponsors = [
     }
 
     .intro__title {
-      font-size: 60px;
+      font-size: calc(60px * var(--type-scale));
     }
 
     .intro__lede {
@@ -644,7 +644,7 @@ const sponsors = [
     }
 
     .table-card h3 {
-      font-size: 56px;
+      font-size: calc(56px * var(--type-scale));
     }
 
     .table-card__desc,
@@ -663,7 +663,7 @@ const sponsors = [
     }
 
     .sponsor-tile__title {
-      font-size: 56px;
+      font-size: calc(56px * var(--type-scale));
     }
 
     .sponsors__cta {
