@@ -83,17 +83,19 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
                   <input name="VAT Number" type="text" placeholder="VAT number (if applicable)" />
                 </label>
               </div>
-              <label class="field field--textarea">
-                <span class="field__label">Company Address</span>
-                <textarea name="Company Address" rows="2" autocomplete="street-address"></textarea>
-              </label>
-              <label class="field field--select" style={chevronStyle}>
-                <span class="sr-only">Table type (required)</span>
-                <select name="Table type" required>
-                  <option value="" selected>Table type</option>
-                  {tableTypes.map((t) => <option value={t}>{t}</option>)}
-                </select>
-              </label>
+              <div class="enquiry__row enquiry__row--2">
+                <label class="field">
+                  <span class="sr-only">Company Address</span>
+                  <input name="Company Address" type="text" placeholder="Company Address" autocomplete="street-address" />
+                </label>
+                <label class="field field--select" style={chevronStyle}>
+                  <span class="sr-only">Table type (required)</span>
+                  <select name="Table type" required>
+                    <option value="" selected>Table type</option>
+                    {tableTypes.map((t) => <option value={t}>{t}</option>)}
+                  </select>
+                </label>
+              </div>
               <p class="enquiry__terms">
                 Thank you for your interest in purchasing a table, all bookings are managed via an invoice system with full payment required to secure a booking, a booking is only confirmed upon successful receipt of payment.
                 <br />
@@ -206,13 +208,22 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
 </dialog>
 
 <style>
+  /*
+   * On laptops and desktops the pop-up scales down to fit the screen height: the script sets
+   * --fit (0.6 to 1) after measuring, and every size inside is based on this --u. The shared
+   * size variables are re-declared here so they use the scaled --u too.
+   */
   .modal {
+    --u: calc(min(1px, 100vw / 1728) * var(--fit, 1));
+    --text-body: max(15px, calc(24 * var(--u)));
+    --btn-height: max(40px, calc(58 * var(--u)));
+    font-size: var(--text-body);
     width: 100%;
     max-width: none;
     height: 100%;
     max-height: none;
     margin: 0;
-    padding: 16px;
+    padding: clamp(8px, 2vh, 16px);
     border: 0;
     background: transparent;
     color: var(--white);
@@ -235,7 +246,7 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
     width: min(100%, calc(1084 * var(--u)));
     min-width: min(100%, 720px);
     margin: auto 0;
-    padding: max(32px, calc(47 * var(--u))) max(24px, calc(50 * var(--u))) max(32px, calc(62 * var(--u)));
+    padding: max(20px, calc(44 * var(--u))) max(24px, calc(50 * var(--u))) max(20px, calc(44 * var(--u)));
     border-radius: max(20px, calc(34 * var(--u)));
     background: var(--black);
   }
@@ -264,11 +275,11 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
 
   .modal__intro {
     max-width: calc(985 * var(--u));
-    margin-top: max(16px, calc(42 * var(--u)));
+    margin-top: max(12px, calc(28 * var(--u)));
   }
 
   .modal__intro + .modal__intro {
-    margin-top: 1em;
+    margin-top: 0.75em;
   }
 
   .modal__view--thanks {
@@ -276,7 +287,7 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: max(360px, calc(700 * var(--u)));
+    min-height: max(320px, calc(560 * var(--u)));
     text-align: center;
   }
 
@@ -307,13 +318,13 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
 
   .enquiry {
     display: grid;
-    gap: max(14px, calc(34 * var(--u)));
-    margin-top: max(24px, calc(50 * var(--u)));
+    gap: max(12px, calc(22 * var(--u)));
+    margin-top: max(18px, calc(36 * var(--u)));
   }
 
   .enquiry__row {
     display: grid;
-    gap: max(12px, calc(24 * var(--u)));
+    gap: max(12px, calc(22 * var(--u)));
   }
 
   .enquiry__row--3 {
@@ -381,7 +392,7 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
   }
 
   .field--textarea {
-    min-height: max(100px, calc(110 * var(--u)));
+    min-height: max(90px, calc(110 * var(--u)));
     padding: max(12px, calc(20 * var(--u))) max(16px, calc(44 * var(--u)));
     border: 3px solid transparent;
     border-radius: var(--radius);
@@ -431,13 +442,13 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
 
   .checks__legend {
     padding: 0;
-    margin-bottom: max(12px, calc(18 * var(--u)));
+    margin-bottom: max(10px, calc(14 * var(--u)));
   }
 
   .checks__options {
     display: flex;
     flex-wrap: wrap;
-    gap: max(10px, calc(16 * var(--u)));
+    gap: max(10px, calc(14 * var(--u)));
   }
 
   .checks__option {
@@ -528,6 +539,7 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
   }
 
   .enquiry__privacy {
+    margin-top: calc(-6 * var(--u));
     font-size: max(13px, calc(16 * var(--u)));
     color: rgba(255, 255, 255, 0.72);
     text-align: center;
@@ -535,6 +547,7 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
 
   @media (max-width: 899px) {
     .modal {
+      --fit: 1;
       padding: 0;
     }
 
@@ -645,6 +658,48 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
     }
   };
 
+  /**
+   * Scale an open pop-up down (to no less than 60%) so it fits the screen height on laptops and
+   * desktops. Sizes have minimums, so it measures, adjusts and re-measures until it settles.
+   * Phones (under 900px) keep the full-size layout and scroll instead.
+   */
+  const MIN_FIT = 0.6;
+  const fitToScreen = (dialog: HTMLDialogElement) => {
+    const panel = dialog.querySelector<HTMLElement>('.modal__panel');
+    if (!panel || !dialog.open) return;
+    if (window.innerWidth < 900) {
+      dialog.style.removeProperty('--fit');
+      return;
+    }
+    const padding = parseFloat(getComputedStyle(dialog).paddingTop) * 2;
+    const available = window.innerHeight - padding;
+    let fit = parseFloat(dialog.style.getPropertyValue('--fit')) || 1;
+    for (let i = 0; i < 6; i++) {
+      const next = Math.min(1, Math.max(MIN_FIT, (fit * available) / panel.offsetHeight));
+      if (Math.abs(next - fit) < 0.004) break;
+      fit = next;
+      dialog.style.setProperty('--fit', fit.toFixed(4));
+    }
+    // Sizes have minimums, so the last step can still be a few pixels over: nudge until it fits.
+    while (panel.offsetHeight > available && fit > MIN_FIT) {
+      fit = Math.max(MIN_FIT, fit - 0.01);
+      dialog.style.setProperty('--fit', fit.toFixed(4));
+    }
+  };
+
+  const fitObserver = new ResizeObserver((entries) => {
+    entries.forEach((entry) => {
+      const dialog = (entry.target as HTMLElement).closest('dialog');
+      if (dialog) requestAnimationFrame(() => fitToScreen(dialog));
+    });
+  });
+  window.addEventListener('resize', () => {
+    document.querySelectorAll<HTMLDialogElement>('dialog.modal[open]').forEach((d) => {
+      d.style.removeProperty('--fit');
+      fitToScreen(d);
+    });
+  });
+
   type Preset = { table?: string; sponsorship?: string[] };
 
   const openModal = (id: string, preset: Preset = {}) => {
@@ -665,6 +720,8 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
     }
 
     dialog.showModal();
+    dialog.style.removeProperty('--fit');
+    fitToScreen(dialog);
     lockScroll(true);
     renderCaptcha(form);
   };
@@ -696,6 +753,9 @@ const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
   document.querySelectorAll<HTMLDialogElement>('dialog.modal').forEach((dialog) => {
     const form = dialog.querySelector('form');
     if (!form) return;
+
+    // Re-fit when the content changes height (hCaptcha box appearing, error messages, thank-you view).
+    dialog.querySelectorAll('[data-view]').forEach((view) => fitObserver.observe(view));
 
     dialog.addEventListener('close', () => lockScroll(false));
 
