@@ -46,8 +46,8 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] **Map (before cookies are accepted):** "The live map is provided by Google, which sets cookies." with the buttons "Accept cookies and show map" and "Open in Google Maps".
 - [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
   - [x] Organiser name: VOLT7
-  - [ ] [Organiser address]
-  - [ ] [Privacy contact email]
+  - [x] Organiser address: 8 Mallard Way, Pride Park, Derby DE24 8GX
+  - [x] Privacy contact email: hello@volt7.agency
   - [ ] Retention periods: [12 months] for enquiries, [6 years] for invoices
   - [ ] Confirm whether enquiry details are shared with Bridge the Gap (the draft says they aren't mentioned)
 - [ ] **Footer:** added "Privacy policy" and "Cookie settings" links (needed for the policy and the cookie banner).
