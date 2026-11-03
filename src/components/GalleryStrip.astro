@@ -14,12 +14,21 @@ const photos = [
   { src: strip2, alt: 'Guests taking a selfie at the 2026 Derby Gala Dinner' },
   { src: strip3, alt: 'Guests signing a board at the 2026 Derby Gala Dinner' },
 ];
+interface Props {
+  /** Small serif line above the heading (the Your hosts frame has "Snap, snap, snap"). */
+  label?: string;
+  /** Top / bottom padding in Figma px (home 96/81, Your hosts 70/72). */
+  padTop?: number;
+  padBottom?: number;
+}
+const { label, padTop = 96, padBottom = 81 } = Astro.props;
+
 // Three copies so the row can loop seamlessly in both directions.
 const copies = [0, 1, 2];
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
-<section class="strip bg-gold" aria-label="2026 gallery preview">
+<section class="strip bg-gold" aria-label="2026 gallery preview" style={`--pad-top: ${padTop}; --pad-bottom: ${padBottom}`}>
   <div class="strip__viewport" data-strip tabindex="0" aria-label="Photos from 2026, scrollable">
     <ul class="strip__track">
       {
@@ -42,6 +51,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </div>
 
   <div class="strip__footer container-wide">
+    {label && <p class="label strip__label">{label}</p>}
     <h2 class="display display--md strip__title">See how the Derby Gala Dinner 2026 unfolded.</h2>
     <a class="btn btn--white btn--wide strip__btn" href={`${base}/gallery/`}>View Gallery</a>
   </div>
@@ -49,7 +59,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <style>
   .strip {
-    padding: calc(96 * var(--u)) 0 calc(81 * var(--u));
+    padding: calc(var(--pad-top) * var(--u)) 0 calc(var(--pad-bottom) * var(--u));
+  }
+
+  .strip__label {
+    margin-top: calc(33 * var(--u));
+    font-size: max(20px, calc(36 * var(--u)));
+    color: var(--brown);
+  }
+
+  .strip__label + .strip__title {
+    margin-top: calc(16 * var(--u));
   }
 
   .strip__viewport {
@@ -118,6 +138,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     .strip__title {
       margin-top: 28px;
       font-size: 44px;
+    }
+
+    .strip__label {
+      margin-top: 28px;
+    }
+
+    .strip__label + .strip__title {
+      margin-top: 8px;
     }
 
     .strip__btn {

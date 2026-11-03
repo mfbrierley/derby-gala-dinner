@@ -26,6 +26,13 @@ interface Props {
   /** Mirror the photo horizontally (the band photo is flipped in the Figma). */
   flip?: boolean;
   objectPosition?: string;
+  /**
+   * `summary` (home page): text centred against the photo.
+   * `detail` (Your hosts page): text starts `textOffset` px below the top of the photo, sits
+   * closer to it, and the bio (slot) follows underneath.
+   */
+  variant?: 'summary' | 'detail';
+  textOffset?: number;
 }
 
 const {
@@ -40,7 +47,11 @@ const {
   backdrop = true,
   flip = false,
   objectPosition = 'center',
+  variant = 'summary',
+  textOffset = 47,
 } = Astro.props;
+
+const hasBio = Astro.slots.has('default');
 
 const W = 546;
 const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(3)}%`;
@@ -53,7 +64,7 @@ const mediaStyle = [
 ].join('; ');
 ---
 
-<div class="host">
+<div class:list={['host', `host--${variant}`]} style={`--text-offset: ${textOffset}`}>
   <div class="host__media" style={mediaStyle}>
     {backdrop && <img class="host__backdrop" src={backdropImg.src} width="399" height="427" alt="" loading="lazy" />}
     <Image
@@ -70,7 +81,13 @@ const mediaStyle = [
     <p class="host__label">{label}</p>
     <h3 class="display display--xl host__name">{name}</h3>
     <p class="host__subtitle">{subtitle}</p>
-    <slot />
+    {
+      hasBio && (
+        <div class="host__bio">
+          <slot />
+        </div>
+      )
+    }
   </div>
 </div>
 
@@ -80,6 +97,20 @@ const mediaStyle = [
     grid-template-columns: calc(546 * var(--u)) 1fr;
     column-gap: calc(77 * var(--u));
     align-items: center;
+  }
+
+  .host--detail {
+    column-gap: calc(38 * var(--u));
+    align-items: start;
+  }
+
+  .host--detail .host__text {
+    padding-top: calc(var(--text-offset) * var(--u));
+  }
+
+  .host__bio {
+    max-width: calc(796 * var(--u));
+    margin: calc(60 * var(--u)) 0 0 calc(11 * var(--u));
   }
 
   .host__media {
@@ -169,6 +200,15 @@ const mediaStyle = [
 
     .host__subtitle {
       margin-top: 4px;
+    }
+
+    .host--detail .host__text {
+      padding-top: 0;
+    }
+
+    .host__bio {
+      max-width: none;
+      margin: 20px 0 0;
     }
   }
 </style>

@@ -1,0 +1,155 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import HostRow from '../components/HostRow.astro';
+import BtgSpotlight from '../components/BtgSpotlight.astro';
+import GalleryStrip from '../components/GalleryStrip.astro';
+
+import bassit from '../assets/images/host-bassit.png';
+import wiggins from '../assets/images/host-wiggins.png';
+import distractions from '../assets/images/host-distractions.png';
+---
+
+<Base
+  title="Your hosts"
+  active="hosts"
+  description="Meet the hosts of the Derby Gala Dinner 2027: Bassit Siddiqui, special guest Sir Bradley Wiggins and the gala house band The Distractions."
+>
+  <PageHeader title="Your hosts" />
+
+  <section class="hosts-page bg-stripes">
+    <p class="hosts-page__intro container">
+      Guiding you through the evening of substance and style, charged with ensuring your good time and shepherding a few
+      surprises along the way.
+    </p>
+
+    <div class="hosts-page__rows">
+      <HostRow
+        variant="detail"
+        textOffset={47}
+        label="Hosted by"
+        name="BASSIT SIDDIQUI"
+        subtitle="TV personality and passionate educator."
+        image={bassit}
+        alt="Bassit Siddiqui"
+        boxHeight={467}
+        imgLeft={116}
+        imgWidth={468}
+      >
+        <p>
+          He has combined his experiences in education, TV, and business in a unique way to support children in underserved
+          communities. In 2013, alongside his brothers and father, Baasit joined the original cast of the award-winning TV show
+          Gogglebox. In 2018, Baasit left his role as a full-time teacher to begin his journey as an entrepreneur and business
+          owner.
+        </p>
+        <p>
+          Since then, he has worked with hundreds of schools, colleges, universities, and businesses to help build the skills
+          and mindset needed to succeed beyond the classroom, focusing on character education, lifelong learning, and digital
+          literacy. Baasit is proud to support Bridge The Gap and the incredible work they do to bring hope to children,
+          families, and the wider community.
+        </p>
+      </HostRow>
+
+      <HostRow
+        variant="detail"
+        textOffset={92}
+        label="Special Guest"
+        name="Sir Bradley Wiggins"
+        subtitle="TV personality and passionate educator."
+        image={wiggins}
+        alt="Sir Bradley Wiggins"
+        boxHeight={540}
+        imgLeft={91}
+        imgWidth={464}
+        objectPosition="center top"
+      >
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+          aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+          occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </HostRow>
+
+      <HostRow
+        variant="detail"
+        textOffset={48}
+        label="Live music from:"
+        name="The Distractions"
+        subtitle="Gala house band for the night"
+        image={distractions}
+        alt="The Distractions performing on stage"
+        boxHeight={496}
+        imgLeft={-6}
+        imgWidth={657}
+        backdrop={false}
+        flip
+        objectPosition="left center"
+      >
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+          aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+          occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </HostRow>
+    </div>
+  </section>
+
+  <BtgSpotlight padTop={104} padBottom={141} />
+  <GalleryStrip label="Snap, snap, snap" padTop={70} padBottom={72} />
+</Base>
+
+<style>
+  .hosts-page {
+    padding: calc(141 * var(--u)) 0 calc(190 * var(--u));
+    /* Stripes image anchored to the bottom of the section, as in the Figma. */
+    background-size: 135.6% 113.9%;
+    background-position: 50.9% 100%;
+  }
+
+  .hosts-page__intro {
+    max-width: calc(1164 * var(--u) + 2 * var(--gutter));
+    font-family: var(--font-serif);
+    font-size: max(24px, calc(48 * var(--u)));
+    line-height: 1.31;
+    color: var(--gold);
+  }
+
+  .hosts-page__rows {
+    display: grid;
+    margin-top: calc(167 * var(--u));
+    padding: 0 calc(125 * var(--u)) 0 calc(153 * var(--u));
+  }
+
+  /* The Figma spaces the rows unevenly: the guest photo sits just under the host's bio, the band further down. */
+  .hosts-page__rows > :global(:nth-child(2)) {
+    margin-top: calc(15 * var(--u));
+  }
+
+  .hosts-page__rows > :global(:nth-child(3)) {
+    margin-top: calc(110 * var(--u));
+  }
+
+  @media (max-width: 899px) {
+    .hosts-page {
+      padding: 48px 0 72px;
+      background-size: cover;
+      background-position: center bottom;
+    }
+
+    .hosts-page__intro {
+      max-width: none;
+    }
+
+    .hosts-page__rows {
+      row-gap: 64px;
+      margin-top: 48px;
+      padding: 0 var(--gutter);
+    }
+
+    .hosts-page__rows > :global(:nth-child(n)) {
+      margin-top: 0;
+    }
+  }
+</style>
