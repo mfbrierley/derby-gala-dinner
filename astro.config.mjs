@@ -9,7 +9,10 @@ import { defineConfig } from 'astro/config';
  */
 const base = '/' + (process.env.BASE_PATH ?? '').replace(/^\/+|\/+$/g, '');
 
-/** .htaccess is a plain file (public/.htaccess); point its 404 page at the right folder. */
+/**
+ * .htaccess is a plain file (public/.htaccess); point its 404 page at the right folder.
+ * @type {import('astro').AstroIntegration}
+ */
 const htaccessBase = {
   name: 'htaccess-base',
   hooks: {
