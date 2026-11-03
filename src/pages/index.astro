@@ -183,7 +183,7 @@ const sponsors = [
    * keeps the text clear of the header.
    */
   .hero {
-    --u: min(1px, calc(100vw / 1728), calc(100svh / 996));
+    --u: min(calc(var(--max-vw) / 1728), calc(100vw / 1728), calc(100svh / 996));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -279,7 +279,7 @@ const sponsors = [
   .hosts {
     display: grid;
     row-gap: calc(41 * var(--u));
-    padding: 0 calc(110 * var(--u)) 0 calc(129 * var(--u));
+    padding: 0 calc(110 * var(--u) + var(--edge)) 0 calc(129 * var(--u) + var(--edge));
   }
 
   .hosts > :global(:nth-child(3)) {

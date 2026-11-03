@@ -210,7 +210,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
    * size variables are re-declared here so they use the scaled --u too.
    */
   .modal {
-    --u: calc(min(1px, 100vw / 1728) * var(--fit, 1));
+    --u: calc(min(var(--max-vw) / 1728, 100vw / 1728) * var(--fit, 1));
     --text-body: max(15px, calc(24 * var(--u)));
     --btn-height: max(40px, calc(58 * var(--u)));
     --field-height: max(48px, calc(66 * var(--u)));

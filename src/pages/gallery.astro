@@ -92,7 +92,7 @@ const photos = await Promise.all(
     grid-template-columns: repeat(3, 1fr);
     column-gap: calc(24 * var(--u));
     row-gap: calc(46 * var(--u));
-    padding: 0 calc(114 * var(--u)) 0 calc(113 * var(--u));
+    padding: 0 calc(114 * var(--u) + var(--edge)) 0 calc(113 * var(--u) + var(--edge));
   }
 
   .gallery__item {

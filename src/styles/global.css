@@ -2,10 +2,15 @@
  * Derby Gala Dinner — global styles
  *
  * The Figma frames are 1728px wide. Desktop measurements are written as
- * calc(<figma px> * var(--u)), where --u is 1px at 1728px wide and shrinks
- * proportionally below that, so the layout matches the design at any desktop
- * width. Text sizes have a minimum so they stay readable. Below 900px the
- * layouts switch to stacked mobile versions (see the media queries in each section).
+ * calc(<figma px> * var(--u)), where --u scales the design to the window width, so the
+ * layout matches the Figma's proportions at any desktop width. Text sizes have a minimum so
+ * they stay readable. Below 900px the layouts switch to stacked mobile versions (see the
+ * media queries in each section).
+ *
+ * Big screens: the design stops growing once the window is --max-vw wide. Beyond that the
+ * content stays the same size in a centred column; --edge is the extra space on each side,
+ * added to the side padding of the header, footer and page containers. Backgrounds still run
+ * edge to edge. Change --max-vw to make the site stop growing sooner or later.
  */
 
 :root {
@@ -21,10 +26,12 @@
   --font-serif: 'larken', 'larken-fallback', Georgia, 'Times New Roman', serif;
   --font-sans: 'sofia-pro', 'sofia-fallback', 'Helvetica Neue', Arial, sans-serif;
 
-  --u: min(1px, calc(100vw / 1728));
+  --max-vw: 1536px;
+  --u: min(calc(var(--max-vw) / 1728), calc(100vw / 1728));
+  --edge: max(0px, calc((100vw - var(--max-vw)) / 2));
   --radius: 10px;
-  --gutter: calc(188 * var(--u));
-  --gutter-wide: calc(121 * var(--u));
+  --gutter: calc(188 * var(--u) + var(--edge));
+  --gutter-wide: calc(121 * var(--u) + var(--edge));
 
   /* Height of the header (it sits over the top of the first section): top padding + logo. */
   --header-h: calc(59 * var(--u) + max(96px, calc(163 * var(--u))) * 99 / 163);

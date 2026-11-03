@@ -83,7 +83,7 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
   .site-header__inner {
     display: flex;
     align-items: flex-start;
-    padding: calc(59 * var(--u)) calc(113 * var(--u)) 0 calc(188 * var(--u));
+    padding: calc(59 * var(--u)) calc(113 * var(--u) + var(--edge)) 0 calc(188 * var(--u) + var(--edge));
   }
 
   .site-header__logo img {

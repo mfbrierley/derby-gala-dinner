@@ -54,7 +54,7 @@ const href = (path: string) => `${base}${path}`;
   .site-footer__inner {
     display: flex;
     align-items: center;
-    padding: 0 calc(101 * var(--u)) 0 calc(128 * var(--u));
+    padding: 0 calc(101 * var(--u) + var(--edge)) 0 calc(128 * var(--u) + var(--edge));
   }
 
   .site-footer__logo img {
@@ -108,7 +108,7 @@ const href = (path: string) => `${base}${path}`;
 
   .site-footer__legal {
     position: absolute;
-    right: calc(101 * var(--u));
+    right: calc(101 * var(--u) + var(--edge));
     bottom: max(14px, calc(24 * var(--u)));
     display: flex;
     gap: 20px;
