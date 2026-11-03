@@ -28,8 +28,9 @@ const {
 
 const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-// Keep Vercel preview builds out of search engines; the live IONOS build is indexable.
-const noindex = pageNoindex || Boolean(process.env.VERCEL);
+// Keep Vercel previews and the IONOS test copy (npm run build:test) out of search engines;
+// the live build (npm run build) is indexable.
+const noindex = pageNoindex || Boolean(process.env.VERCEL) || Boolean(process.env.NOINDEX);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // Gold stripes background used on most sections: a smaller file for phones.

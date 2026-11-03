@@ -18,16 +18,25 @@ npm run preview   # serves dist/ locally to check the build
 
 ## Deploying to IONOS
 
-1. Run `npm run build`.
-2. Connect to the IONOS web space with your SFTP client and open the directory the domain points to.
-3. Upload **the contents of `dist/`** (not the `dist` folder itself) into that directory, replacing what's there.
-   - Make sure `.htaccess` is uploaded too. SFTP clients often hide dotfiles.
-   - Old files in `_astro/` can be deleted. Their names change on every build.
+There are two builds, depending on where the files are going:
+
+| Command | Upload the contents of `dist/` to | Notes |
+|---|---|---|
+| `npm run build:test` | `/new-private/` | Test copy at derbygaladinner.co.uk/new-private/, hidden from search engines |
+| `npm run build` | `/` (the root) | The live site |
+
+The build has to match the folder: every image and link path starts with it, so a root build
+uploaded into `/new-private/` shows no images. To use a different test folder, change
+`BASE_PATH=/new-private` in `package.json`.
+
+1. Run the build for where you're uploading.
+2. Connect to the IONOS web space with your SFTP client and open that directory.
+3. Upload **the contents of `dist/`** (not the `dist` folder itself), replacing what's there.
+   - Make sure `.htaccess` is uploaded too. Macs and SFTP clients hide files starting with a dot
+     (in Finder, Cmd + Shift + . shows them).
+   - Delete the old `_astro/` folder on the server first. Its file names change on every build.
 
 `.htaccess` forces HTTPS, redirects `www.` to the bare domain, serves the custom 404 page and sets caching.
-
-If the site ever has to live in a sub-folder (e.g. `derbygaladinner.co.uk/new/`), set `base: '/new'` in
-`astro.config.mjs` and rebuild.
 
 ## Where things are
 

@@ -32,7 +32,7 @@ ErrorDocument 404 /404.html
   <FilesMatch "\.(html)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
-  <If "%{REQUEST_URI} =~ m#^/_astro/#">
+  <If "%{REQUEST_URI} =~ m#/_astro/#">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </If>
 </IfModule>
