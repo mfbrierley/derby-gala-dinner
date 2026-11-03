@@ -1,29 +1,48 @@
 ---
-import TableIcon from '../assets/svg/icon-table-white.svg';
-import StarIcon from '../assets/svg/icon-star.svg';
 import chevron from '../assets/svg/icon-chevron.svg?url';
 import { WEB3FORMS_ACCESS_KEY, WEB3FORMS_ENDPOINT, HCAPTCHA_SITEKEY } from '../config';
 
 interface Props {
-  /** `booking`: tables and sponsorship (opened by Book a table / Secure your sponsorship buttons).
-   *  `contact`: general enquiries (opened by CONTACT). */
-  variant: 'booking' | 'contact';
+  /**
+   * `booking`: Reserve a table (opened by the Book a table buttons, data-open-booking).
+   * `sponsorship`: Sponsorship enquiry (opened by Secure your sponsorship now, data-open-sponsorship).
+   * `contact`: general enquiries (opened by CONTACT, data-open-contact).
+   */
+  variant: 'booking' | 'sponsorship' | 'contact';
 }
 
 const { variant } = Astro.props;
-const id = variant === 'booking' ? 'enquiry-modal' : 'contact-modal';
-const isBooking = variant === 'booking';
+const id = `${variant}-modal`;
 
-// Copy from the Figma enquiry form. The sponsorship and contact intros are adapted
-// versions (not in the Figma) and are listed in PLACEHOLDERS.md for approval.
-const intros = {
-  table: 'Please complete the form below to reserve your table. A member of our team will contact you within 24hrs to confirm.',
-  sponsorship: 'Please complete the form below to enquire about sponsorship. A member of our team will contact you within 24hrs to discuss.',
-  contact: 'Please complete the form below and a member of our team will contact you within 24hrs.',
-};
+// Booking and sponsorship copy supplied by Matt. The contact form copy is adapted from the Figma.
+const copy = {
+  booking: {
+    eyebrow: '',
+    title: 'Reserve a table.',
+    intro: ['Please complete the form below to reserve your table. A member of our team will contact you within 24hrs to confirm.'],
+    subject: 'Derby Gala Dinner: table reservation',
+  },
+  sponsorship: {
+    eyebrow: '',
+    title: 'Sponsorship enquiry.',
+    intro: [
+      'Thank you for your interest in sponsoring the 2027 edition of the Derby Gala Dinner, it’s thanks to our sponsors that the event is able to make such an impact.',
+      'Please complete the form below and one of the sponsorship team will reach out to you to discuss available options.',
+    ],
+    subject: 'Derby Gala Dinner: sponsorship enquiry',
+  },
+  contact: {
+    eyebrow: 'Enquiry Form',
+    title: 'get in touch. get involved.',
+    intro: ['Please complete the form below and a member of our team will contact you within 24hrs.'],
+    subject: 'Derby Gala Dinner: general enquiry',
+  },
+}[variant];
 
-const packages = ['Headline sponsorship', 'Supporting sponsorship', 'Welcome drink sponsor', 'VIP lounge sponsor', 'Other sponsorship'];
+const tableTypes = ['Evening Table', 'VIP Table'];
+const sponsorshipTypes = ['Headline', 'Supporting', 'Welcome drinks', 'VIP lounge', 'Other'];
 const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
+const chevronStyle = `--chevron: url(${JSON.stringify(chevron)})`;
 ---
 
 <dialog class="modal" id={id} aria-labelledby={`${id}-title`} data-variant={variant}>
@@ -31,114 +50,139 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     <button class="modal__x" type="button" data-close aria-label="Close">X</button>
 
     <div class="modal__view" data-view="form">
-      <p class="label gold">Enquiry Form</p>
-      <h2 class="display display--md modal__title" id={`${id}-title`}>get in touch. get involved.</h2>
-      <p
-        class="modal__intro"
-        data-intro
-        data-intro-table={intros.table}
-        data-intro-sponsorship={intros.sponsorship}
-      >
-        {isBooking ? intros.table : intros.contact}
-      </p>
+      {copy.eyebrow && <p class="label gold">{copy.eyebrow}</p>}
+      <h2 class:list={['display display--md modal__title', { 'modal__title--first': !copy.eyebrow }]} id={`${id}-title`}>{copy.title}</h2>
+      {copy.intro.map((text) => <p class="modal__intro">{text}</p>)}
 
-      <form class="enquiry" action={WEB3FORMS_ENDPOINT} method="POST" novalidate data-hcaptcha-sitekey={HCAPTCHA_SITEKEY}>
+      <form class="enquiry" action={WEB3FORMS_ENDPOINT} method="POST" novalidate data-hcaptcha-sitekey={HCAPTCHA_SITEKEY} data-subject-base={copy.subject}>
         <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
-        <input type="hidden" name="subject" value={isBooking ? 'Derby Gala Dinner enquiry' : 'Derby Gala Dinner: general enquiry'} data-subject />
+        <input type="hidden" name="subject" value={copy.subject} data-subject />
         <input type="hidden" name="from_name" value="Derby Gala Dinner website" />
         <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true" style="display: none" />
 
-        <div class="enquiry__row enquiry__row--3">
-          <label class="field field--select" style={`--chevron: url(${JSON.stringify(chevron)})`}>
-            <span class="sr-only">Title</span>
-            <select name="Title" autocomplete="honorific-prefix">
-              <option value="" selected>Title</option>
-              {titles.map((t) => <option value={t}>{t}</option>)}
-            </select>
-          </label>
-          <label class="field">
-            <span class="sr-only">First Name (required)</span>
-            <input name="First Name" type="text" placeholder="First Name" autocomplete="given-name" required />
-          </label>
-          <label class="field">
-            <span class="sr-only">Surname (required)</span>
-            <input name="Surname" type="text" placeholder="Surname" autocomplete="family-name" required />
-          </label>
-        </div>
+        {
+          variant === 'booking' && (
+            <>
+              <div class="enquiry__row enquiry__row--2">
+                <label class="field">
+                  <span class="sr-only">Your Name (required)</span>
+                  <input name="name" type="text" placeholder="Your Name" autocomplete="name" required />
+                </label>
+                <label class="field">
+                  <span class="sr-only">Your email (required)</span>
+                  <input name="email" type="email" placeholder="Your email" autocomplete="email" required />
+                </label>
+              </div>
+              <div class="enquiry__row enquiry__row--2">
+                <label class="field">
+                  <span class="sr-only">Your Company name</span>
+                  <input name="Company Name" type="text" placeholder="Your Company name" autocomplete="organization" />
+                </label>
+                <label class="field">
+                  <span class="sr-only">VAT number (if applicable)</span>
+                  <input name="VAT Number" type="text" placeholder="VAT number (if applicable)" />
+                </label>
+              </div>
+              <label class="field field--textarea">
+                <span class="field__label">Company Address</span>
+                <textarea name="Company Address" rows="2" autocomplete="street-address"></textarea>
+              </label>
+              <label class="field field--select" style={chevronStyle}>
+                <span class="sr-only">Table type (required)</span>
+                <select name="Table type" required>
+                  <option value="" selected>Table type</option>
+                  {tableTypes.map((t) => <option value={t}>{t}</option>)}
+                </select>
+              </label>
+              <p class="enquiry__terms">
+                Thank you for your interest in purchasing a table, all bookings are managed via an invoice system with full payment required to secure a booking, a booking is only confirmed upon successful receipt of payment.
+                <br />
+                Evening details such as menu choices and dietary requirements will be managed closer to the date of the event. By clicking submit you confirm your agreement to these terms.
+              </p>
+            </>
+          )
+        }
 
-        <div class="enquiry__row enquiry__row--2">
-          <label class="field">
-            <span class="sr-only">Email Address (required)</span>
-            <input name="email" type="email" placeholder="Email Address" autocomplete="email" required />
-          </label>
-          <label class="field">
-            <span class="sr-only">Contact Number (required)</span>
-            <input name="Contact Number" type="tel" placeholder="Contact Number" autocomplete="tel" required />
-          </label>
-        </div>
+        {
+          variant === 'sponsorship' && (
+            <>
+              <div class="enquiry__row enquiry__row--2">
+                <label class="field">
+                  <span class="sr-only">Your Name (required)</span>
+                  <input name="name" type="text" placeholder="Your Name" autocomplete="name" required />
+                </label>
+                <label class="field">
+                  <span class="sr-only">Your email (required)</span>
+                  <input name="email" type="email" placeholder="Your email" autocomplete="email" required />
+                </label>
+              </div>
+              <div class="enquiry__row enquiry__row--2">
+                <label class="field">
+                  <span class="sr-only">Your phone number</span>
+                  <input name="Phone" type="tel" placeholder="Your phone number" autocomplete="tel" />
+                </label>
+                <label class="field">
+                  <span class="sr-only">Your Company name</span>
+                  <input name="Company Name" type="text" placeholder="Your Company name" autocomplete="organization" />
+                </label>
+              </div>
+              <fieldset class="checks" data-required-group>
+                <legend class="checks__legend">Type of sponsorship enquiry:</legend>
+                <div class="checks__options">
+                  {
+                    sponsorshipTypes.map((t) => (
+                      <label class="checks__option">
+                        <input type="checkbox" name="sponsorship_type" value={t} />
+                        <span class="checks__box" aria-hidden="true" />
+                        <span>{t}</span>
+                      </label>
+                    ))
+                  }
+                </div>
+              </fieldset>
+            </>
+          )
+        }
 
-        <div class="enquiry__row enquiry__row--2">
-          <label class="field" class:list={{ 'field--span': !isBooking }}>
-            <span class="sr-only">Company Name</span>
-            <input name="Company Name" type="text" placeholder="Company Name" autocomplete="organization" />
-          </label>
-          {
-            isBooking && (
+        {
+          variant === 'contact' && (
+            <>
+              <div class="enquiry__row enquiry__row--3">
+                <label class="field field--select" style={chevronStyle}>
+                  <span class="sr-only">Title</span>
+                  <select name="Title" autocomplete="honorific-prefix">
+                    <option value="" selected>Title</option>
+                    {titles.map((t) => <option value={t}>{t}</option>)}
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="sr-only">First Name (required)</span>
+                  <input name="First Name" type="text" placeholder="First Name" autocomplete="given-name" required />
+                </label>
+                <label class="field">
+                  <span class="sr-only">Surname (required)</span>
+                  <input name="Surname" type="text" placeholder="Surname" autocomplete="family-name" required />
+                </label>
+              </div>
+              <div class="enquiry__row enquiry__row--2">
+                <label class="field">
+                  <span class="sr-only">Email Address (required)</span>
+                  <input name="email" type="email" placeholder="Email Address" autocomplete="email" required />
+                </label>
+                <label class="field">
+                  <span class="sr-only">Contact Number (required)</span>
+                  <input name="Contact Number" type="tel" placeholder="Contact Number" autocomplete="tel" required />
+                </label>
+              </div>
               <label class="field">
-                <span class="sr-only">VAT Number (if applicable)</span>
-                <input name="VAT Number" type="text" placeholder="VAT Number (if applicable)" />
+                <span class="sr-only">Company Name</span>
+                <input name="Company Name" type="text" placeholder="Company Name" autocomplete="organization" />
               </label>
-            )
-          }
-        </div>
-
-        {
-          isBooking && (
-            <fieldset class="choice" data-choice>
-              <legend class="sr-only">What would you like to enquire about? (required)</legend>
-              <label class="choice__tile">
-                <input type="radio" name="Enquiry" value="Evening Table" required />
-                <TableIcon class="choice__icon" aria-hidden="true" />
-                <span class="choice__label">EVENING TABLE</span>
+              <label class="field field--textarea">
+                <span class="field__label">Message:</span>
+                <textarea name="Message" rows="3"></textarea>
               </label>
-              <label class="choice__tile">
-                <input type="radio" name="Enquiry" value="VIP Table" required />
-                <TableIcon class="choice__icon" aria-hidden="true" />
-                <span class="choice__label">VIP TABLE</span>
-              </label>
-              <label class="choice__tile">
-                <input type="radio" name="Enquiry" value="Sponsorship" required />
-                <StarIcon class="choice__icon choice__icon--star" aria-hidden="true" />
-                <span class="choice__label">SPONSORSHIP</span>
-              </label>
-            </fieldset>
-          )
-        }
-
-        {
-          isBooking && (
-            <label class="field field--select field--full" data-package-field hidden style={`--chevron: url(${JSON.stringify(chevron)})`}>
-              <span class="sr-only">Sponsorship package</span>
-              <select name="Sponsorship package" disabled>
-                <option value="" selected>Sponsorship package</option>
-                {packages.map((p) => <option value={p}>{p}</option>)}
-              </select>
-            </label>
-          )
-        }
-
-        <label class="field field--textarea">
-          <span class="field__label">{isBooking ? 'Additional information:' : 'Message:'}</span>
-          <textarea name={isBooking ? 'Additional information' : 'Message'} rows="3"></textarea>
-        </label>
-
-        {
-          isBooking && (
-            <p class="enquiry__terms">
-              Thank you for your interest in purchasing a table, all bookings are managed via an invoice system with full payment required to secure a booking, a booking is only confirmed upon successful receipt of payment.
-              <br />
-              Evening details such as menu choices and dietary requirements will be managed closer to the date of the event. By clicking submit you confirm your agreement to these terms.
-            </p>
+            </>
           )
         }
 
@@ -155,7 +199,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     </div>
 
     <div class="modal__view modal__view--thanks" data-view="thanks" hidden>
-      <p class="label gold">Enquiry Form</p>
+      {copy.eyebrow && <p class="label gold">{copy.eyebrow}</p>}
       <h2 class="display display--md modal__title" tabindex="-1" data-thanks-title>Thank you.</h2>
       <button class="modal__close-text" type="button" data-close>Close</button>
     </div>
@@ -213,9 +257,19 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     margin-top: calc(14 * var(--u));
   }
 
+  .modal__title--first {
+    margin-top: 0;
+    /* keep the heading clear of the X button */
+    padding-right: 40px;
+  }
+
   .modal__intro {
     max-width: calc(985 * var(--u));
     margin-top: max(16px, calc(42 * var(--u)));
+  }
+
+  .modal__intro + .modal__intro {
+    margin-top: 1em;
   }
 
   .modal__view--thanks {
@@ -367,72 +421,90 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     border-color: #ff8a80;
   }
 
-  /* ---------- Table / sponsorship choice ---------- */
+  /* ---------- Sponsorship type checkboxes ---------- */
 
-  .choice {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: max(12px, calc(24 * var(--u)));
+  .checks {
+    min-width: 0;
     margin: 0;
     padding: 0;
     border: 0;
-    min-width: 0;
   }
 
-  .choice__tile {
-    position: relative;
+  .checks__legend {
+    padding: 0;
+    margin-bottom: max(12px, calc(18 * var(--u)));
+  }
+
+  .checks__options {
     display: flex;
-    flex-direction: column;
-    height: max(150px, calc(286 * var(--u)));
-    padding: calc(105 * var(--u)) 12px 12px max(14px, calc(24 * var(--u)));
+    flex-wrap: wrap;
+    gap: max(10px, calc(16 * var(--u)));
+  }
+
+  .checks__option {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: var(--btn-height);
+    padding: 0 max(16px, calc(22 * var(--u)));
     border: 2px solid var(--white);
     border-radius: var(--radius);
-    color: var(--white);
     cursor: pointer;
     transition:
       color 0.2s ease,
       border-color 0.2s ease;
   }
 
-  .choice__tile input {
+  .checks__option:hover {
+    border-color: var(--gold-light);
+  }
+
+  .checks__option input {
     position: absolute;
     opacity: 0;
     pointer-events: none;
   }
 
-  .choice__tile:hover {
-    border-color: var(--gold-light);
+  .checks__box {
+    position: relative;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid currentColor;
+    border-radius: 4px;
   }
 
-  .choice__tile:has(input:checked) {
+  .checks__option:has(input:checked) {
+    border-color: var(--gold);
     color: var(--gold);
   }
 
-  .choice__tile:has(input:focus-visible) {
+  .checks__option:has(input:checked) .checks__box {
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+
+  /* tick */
+  .checks__option:has(input:checked) .checks__box::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 6px;
+    height: 11px;
+    border: solid var(--black);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .checks__option:has(input:focus-visible) {
     outline: 3px solid var(--gold);
     outline-offset: 3px;
   }
 
-  .choice[aria-invalid='true'] .choice__tile {
+  .checks[aria-invalid='true'] .checks__option {
     border-color: #ff8a80;
-  }
-
-  .choice__tile :global(.choice__icon) {
-    flex: none;
-    width: max(36px, calc(57 * var(--u)));
-    height: auto;
-  }
-
-  .choice__tile :global(.choice__icon path) {
-    fill: currentColor;
-  }
-
-  .choice__label {
-    margin-top: calc(29 * var(--u));
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: max(30px, calc(67 * var(--u)));
-    line-height: 0.9;
   }
 
   .enquiry__terms {
@@ -496,21 +568,9 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
       grid-template-columns: 1fr;
     }
 
-    .choice {
-      grid-template-columns: 1fr;
-    }
-
-    .choice__tile {
-      flex-direction: row;
-      align-items: center;
-      gap: 16px;
-      height: auto;
-      padding: 18px 16px;
-    }
-
-    .choice__label {
-      margin-top: 0;
-      font-size: 34px;
+    .checks__option {
+      padding: 0 14px;
+      gap: 10px;
     }
   }
 </style>
@@ -586,29 +646,9 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     }
   };
 
-  /** Booking form: reflect the chosen option in the intro copy and the sponsorship package select. */
-  const syncChoice = (dialog: HTMLDialogElement) => {
-    const form = dialog.querySelector('form');
-    if (!form) return;
-    const choice = form.querySelector<HTMLInputElement>('input[name="Enquiry"]:checked')?.value ?? '';
-    const isSponsorship = choice === 'Sponsorship';
+  type Preset = { table?: string; sponsorship?: string[] };
 
-    const pkgField = form.querySelector<HTMLElement>('[data-package-field]');
-    const pkgSelect = pkgField?.querySelector('select');
-    if (pkgField && pkgSelect) {
-      pkgField.hidden = !isSponsorship;
-      pkgSelect.disabled = !isSponsorship;
-    }
-
-    const intro = dialog.querySelector<HTMLElement>('[data-intro]');
-    if (intro?.dataset.introTable && intro.dataset.introSponsorship) {
-      intro.textContent = isSponsorship ? intro.dataset.introSponsorship : intro.dataset.introTable;
-    }
-
-    if (choice) form.querySelector('[data-choice]')?.removeAttribute('aria-invalid');
-  };
-
-  const openModal = (id: string, options: { enquiry?: string; pkg?: string } = {}) => {
+  const openModal = (id: string, preset: Preset = {}) => {
     const dialog = document.getElementById(id) as HTMLDialogElement | null;
     const form = dialog?.querySelector('form');
     if (!dialog || !form) return;
@@ -616,15 +656,14 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     showView(dialog, 'form');
     clearErrors(form);
 
-    if (options.enquiry) {
-      const radio = form.querySelector<HTMLInputElement>(`input[name="Enquiry"][value="${options.enquiry}"]`);
-      if (radio) radio.checked = true;
+    // Pre-select from the button that opened the form.
+    const table = form.querySelector<HTMLSelectElement>('select[name="Table type"]');
+    if (table && preset.table !== undefined) table.value = preset.table;
+    if (preset.sponsorship) {
+      form.querySelectorAll<HTMLInputElement>('input[name="sponsorship_type"]').forEach((box) => {
+        box.checked = preset.sponsorship!.includes(box.value);
+      });
     }
-    if (options.pkg) {
-      const select = form.querySelector<HTMLSelectElement>('select[name="Sponsorship package"]');
-      if (select) select.value = options.pkg;
-    }
-    if (dialog.dataset.variant === 'booking') syncChoice(dialog);
 
     dialog.showModal();
     lockScroll(true);
@@ -634,13 +673,18 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
 
-    const enquiryTrigger = target.closest<HTMLElement>('[data-open-enquiry]');
-    if (enquiryTrigger) {
+    const booking = target.closest<HTMLElement>('[data-open-booking]');
+    if (booking) {
       event.preventDefault();
-      openModal('enquiry-modal', {
-        enquiry: enquiryTrigger.dataset.openEnquiry || undefined,
-        pkg: enquiryTrigger.dataset.package,
-      });
+      openModal('booking-modal', { table: booking.dataset.openBooking ?? '' });
+      return;
+    }
+
+    const sponsorship = target.closest<HTMLElement>('[data-open-sponsorship]');
+    if (sponsorship) {
+      event.preventDefault();
+      const types = (sponsorship.dataset.openSponsorship ?? '').split(',').map((t) => t.trim()).filter(Boolean);
+      openModal('sponsorship-modal', { sponsorship: types });
       return;
     }
 
@@ -663,34 +707,34 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 
     dialog.querySelectorAll('[data-close]').forEach((btn) => btn.addEventListener('click', () => dialog.close()));
 
+    const group = form.querySelector<HTMLElement>('[data-required-group]');
+    const groupChecked = () => !group || !!group.querySelector('input:checked');
+
     form.addEventListener('change', (event) => {
-      const el = event.target as HTMLElement;
-      if (el.matches('input[name="Enquiry"]')) syncChoice(dialog);
-      if (el.getAttribute('aria-invalid') === 'true' && (el as HTMLInputElement).checkValidity?.()) {
-        el.removeAttribute('aria-invalid');
-      }
+      const el = event.target as HTMLInputElement;
+      if (el.getAttribute('aria-invalid') === 'true' && el.checkValidity?.()) el.removeAttribute('aria-invalid');
+      if (group && groupChecked()) group.removeAttribute('aria-invalid');
     });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       clearErrors(form);
 
-      // Validate required fields.
-      const invalid = Array.from(form.querySelectorAll<HTMLInputElement>('input[required]:not([type="radio"])')).filter(
-        (input) => !input.checkValidity(),
+      // Validate required fields (inputs and the table type dropdown), plus the sponsorship checkboxes.
+      const invalid = Array.from(form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input[required], select[required]')).filter(
+        (field) => !field.checkValidity(),
       );
-      invalid.forEach((input) => input.setAttribute('aria-invalid', 'true'));
+      invalid.forEach((field) => field.setAttribute('aria-invalid', 'true'));
 
-      const choice = form.querySelector<HTMLElement>('[data-choice]');
-      const choiceMissing = choice && !form.querySelector('input[name="Enquiry"]:checked');
-      if (choiceMissing) choice.setAttribute('aria-invalid', 'true');
+      const groupMissing = !groupChecked();
+      if (groupMissing) group!.setAttribute('aria-invalid', 'true');
 
-      if (invalid.length || choiceMissing) {
+      if (invalid.length || groupMissing) {
         const messages: string[] = [];
         if (invalid.length) messages.push('Please fill in the highlighted fields.');
-        if (choiceMissing) messages.push('Please choose Evening Table, VIP Table or Sponsorship.');
+        if (groupMissing) messages.push('Please choose at least one type of sponsorship.');
         showError(form, messages.join(' '));
-        (invalid[0] ?? choice?.querySelector('input'))?.focus();
+        (invalid[0] ?? group?.querySelector('input'))?.focus();
         return;
       }
 
@@ -701,13 +745,14 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
         return;
       }
 
-      // Subject line for the email.
-      const subject = form.querySelector<HTMLInputElement>('[data-subject]');
-      const enquiry = form.querySelector<HTMLInputElement>('input[name="Enquiry"]:checked')?.value;
-      if (subject && enquiry) {
-        const pkg = form.querySelector<HTMLSelectElement>('select[name="Sponsorship package"]:not(:disabled)')?.value;
-        subject.value = `Derby Gala Dinner enquiry: ${enquiry}${pkg ? ` (${pkg})` : ''}`;
-      }
+      // What gets emailed: the ticked sponsorship types go in one field, and the subject line says
+      // which table or sponsorship types were chosen.
+      const data = new FormData(form);
+      const types = data.getAll('sponsorship_type').map(String);
+      data.delete('sponsorship_type');
+      if (types.length) data.append('Sponsorship type', types.join(', '));
+      const detail = types.length ? types.join(', ') : String(data.get('Table type') ?? '');
+      data.set('subject', `${form.dataset.subjectBase}${detail ? ` (${detail})` : ''}`);
 
       const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
       const submitLabel = submit?.textContent ?? 'Submit';
@@ -720,13 +765,12 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
         const response = await fetch(WEB3FORMS_ENDPOINT, {
           method: 'POST',
           headers: { Accept: 'application/json' },
-          body: new FormData(form),
+          body: data,
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
 
         form.reset();
-        if (dialog.dataset.variant === 'booking') syncChoice(dialog);
         showView(dialog, 'thanks');
         dialog.querySelector<HTMLElement>('[data-thanks-title]')?.focus();
       } catch (error) {

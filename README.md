@@ -51,15 +51,18 @@ Adobe serves them; they can't be self-hosted. The site keeps working only while 
 
 ## Forms
 
-Both pop-ups (the table/sponsorship enquiry and the general contact form) post to
+All three pop-ups (Reserve a table, Sponsorship enquiry and the general contact form) post to
 [Web3Forms](https://web3forms.com), which emails each submission to the address the access key belongs to.
 Spam protection: Web3Forms' own filtering, a hidden honeypot field, and hCaptcha (switch hCaptcha on in the Web3Forms dashboard).
 
 Buttons open the pop-ups with data attributes:
 
 ```html
-<a href="/book-a-table/" data-open-enquiry="VIP Table">Book a table</a>
-<a href="/book-a-table/#sponsorship" data-open-enquiry="Sponsorship" data-package="Headline sponsorship">Secure your sponsorship now</a>
+<!-- Reserve a table, with the table type pre-selected (leave the value empty for none) -->
+<a href="/book-a-table/" data-open-booking="VIP Table">Book a table</a>
+<!-- Sponsorship enquiry, with one or more types ticked (comma-separated) -->
+<a href="/book-a-table/#sponsorship" data-open-sponsorship="Headline">Secure your sponsorship now</a>
+<!-- General enquiries -->
 <a href="#contact" data-open-contact>CONTACT</a>
 ```
 

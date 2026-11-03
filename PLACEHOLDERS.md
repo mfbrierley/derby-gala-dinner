@@ -38,10 +38,10 @@ the Figma, and open questions. Update it as items are resolved.
 
 ## Copy written for the build (not in the Figma), needs approval
 
-- [ ] **Enquiry form, sponsorship intro:** "Please complete the form below to enquire about sponsorship. A member of our team will contact you within 24hrs to discuss." (The table version is verbatim from the Figma.)
+- [x] **Reserve a table and Sponsorship enquiry forms:** two separate forms, with heading, intro, fields and terms supplied by Matt. Required: name and email on both, plus a table type (booking) or at least one sponsorship type (sponsorship). Everything else is optional.
 - [ ] **Contact form (general enquiries):** intro "Please complete the form below and a member of our team will contact you within 24hrs." The message box label is "Message:". It uses the same "Enquiry Form / GET IN TOUCH. GET INVOLVED." heading as the Figma.
-- [ ] **Form messages:** "Please fill in the highlighted fields.", "Please choose Evening Table, VIP Table or Sponsorship.", "Please complete the captcha check.", "Sorry, your enquiry couldn't be sent. Please try again in a moment.", "Sending…", plus the line under Submit: "We'll only use your details to respond to your enquiry. See our privacy policy."
-- [ ] **Form options:** Title list (Mr, Mrs, Ms, Miss, Mx, Dr). Sponsorship package list (Headline sponsorship, Supporting sponsorship, Welcome drink sponsor, VIP lounge sponsor, Other sponsorship), taken from the Book a table frame.
+- [ ] **Form messages:** "Please fill in the highlighted fields.", "Please choose at least one type of sponsorship.", "Please complete the captcha check.", "Sorry, your enquiry couldn't be sent. Please try again in a moment.", "Sending…", plus the line under Submit: "We'll only use your details to respond to your enquiry. See our privacy policy."
+- [ ] **Form options:** Table type dropdown (Evening Table, VIP Table). Sponsorship checkboxes (Headline, Supporting, Welcome drinks, VIP lounge, Other). Title list on the general contact form (Mr, Mrs, Ms, Miss, Mx, Dr).
 - [ ] **Cookie banner:** all copy.
 - [ ] **Map (before cookies are accepted):** "The live map is provided by Google, which sets cookies." with the buttons "Accept cookies and show map" and "Open in Google Maps".
 - [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
@@ -59,8 +59,8 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] The header from the Home / Book a table frames is used on every page, including Your hosts and Gallery (those frames still have the old TICKETS / ABOUT / CONTACT header) and Event details (that frame leaves out "Fundraising for Bridge the Gap" and the YOUR HOSTS / 2026 GALLERY links). The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
 - [ ] In the nav, bold means the current page. On Home, BOOK A TABLE is bold, as in the Figma.
 - [ ] YOUR HOSTS and 2026 GALLERY appear as a dropdown under EVENT DETAILS on hover.
-- [ ] The home hero's "Book a table" opens the enquiry form. "Sponsor the event" and the "Find out more" buttons go to the Book a table page.
-- [ ] Book a table page: each "Book a table" / "Secure your sponsorship now" button opens the enquiry form with that table or package already selected.
+- [ ] The home hero's "Book a table" opens the Reserve a table form. "Sponsor the event" and the "Find out more" buttons go to the Book a table page.
+- [ ] Book a table page: each "Book a table" button opens Reserve a table with that table type selected; each "Secure your sponsorship now" opens Sponsorship enquiry with that type ticked.
 - [ ] Mobile and tablet layouts are adapted from the desktop design (there are no mobile frames).
 - [ ] Home hero fills the screen with its content centred below the header (matches the Figma at 1728 × 996). On short screens the hero's text scales down so it all stays above the fold.
 - [ ] The thank-you pop-up is shorter than the Figma panel (1050px tall).
