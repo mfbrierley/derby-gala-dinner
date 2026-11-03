@@ -15,7 +15,10 @@ const { title } = Astro.props;
     padding: calc(216 * var(--u)) 0 calc(16 * var(--u));
   }
 
+  /* 185px at the Figma width (the design has 200px): a little smaller so longer titles such as
+     "Your hosts for the evening" fit on one line. Used for every inner page's title. */
   .page-header__title {
+    font-size: max(56px, calc(185 * var(--u)));
     color: var(--ink);
   }
 
@@ -25,7 +28,7 @@ const { title } = Astro.props;
     }
 
     .page-header__title {
-      font-size: 72px;
+      font-size: 66px;
     }
   }
 </style>
