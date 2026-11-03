@@ -61,5 +61,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <EnquiryModal variant="booking" />
     <EnquiryModal variant="contact" />
     <CookieBanner />
+    <script>
+      // Links like /book-a-table/#sponsorship: the browser jumps to the section before the
+      // Adobe fonts arrive, and the text above it changes height when they do. Re-align once loaded.
+      if (location.hash.length > 1) {
+        const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+        if (target) document.fonts?.ready.then(() => target.scrollIntoView({ behavior: 'instant', block: 'start' }));
+      }
+    </script>
   </body>
 </html>

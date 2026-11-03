@@ -12,6 +12,12 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
 - [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop.
 
+### Book a table
+- [ ] Price formatting differs between the cards: "£2,500 +VAT" and "£3,500 + vat".
+- [ ] The tile says "Welcome drinks sponsor" but the heading beside it says "Welcome drink sponsor".
+- [ ] Mixed spelling: "event program" (Welcome drink and VIP lounge) vs "event programme" (Headline and Supporting).
+- [ ] Availability ("1 remaining", "3 remaining", "Available") needs updating as packages sell. It's in the `packages` list at the top of `src/pages/book-a-table.astro`.
+
 ### Seen on other Figma pages (to build next)
 - [ ] Your hosts: Sir Bradley Wiggins and The Distractions bios are lorem ipsum.
 - [ ] Event details: the heading "Intinery" (typo for "Itinerary"), plus Itinerary and Menu both "Coming soon...".
@@ -41,6 +47,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] In the nav, bold means the current page. On Home, BOOK A TABLE is bold, as in the Figma.
 - [ ] YOUR HOSTS and 2026 GALLERY appear as a dropdown under EVENT DETAILS on hover.
 - [ ] The home hero's "Book a table" opens the enquiry form. "Sponsor the event" and the "Find out more" buttons go to the Book a table page.
+- [ ] Book a table page: each "Book a table" / "Secure your sponsorship now" button opens the enquiry form with that table or package already selected.
 - [ ] Mobile and tablet layouts are adapted from the desktop design (there are no mobile frames).
 - [ ] The thank-you pop-up is shorter than the Figma panel (1050px tall).
 - [ ] Favicon: the DGD logo on a black square. Will may want to supply a proper one.
@@ -54,5 +61,6 @@ the Figma, and open questions. Update it as items are resolved.
 
 ## Setup to-dos
 
-- [ ] Web3Forms dashboard: switch on hCaptcha for the form (Form settings → spam protection → hCaptcha).
+- [x] Web3Forms dashboard: hCaptcha switched on.
+- [ ] Send a test enquiry from the preview to confirm submissions arrive (needs a person to tick the hCaptcha box).
 - [ ] Adobe Fonts (Will's web project `hfo7qtb`): optionally set font-display to `swap`. No italics are used so far, so they could be removed from the project.

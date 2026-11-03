@@ -1,0 +1,636 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import GalleryStrip from '../components/GalleryStrip.astro';
+
+import tableEvening from '../assets/images/table-evening.jpg';
+import tableVip from '../assets/images/table-vip.jpg';
+import sponsorHeadline from '../assets/images/sponsor-headline.jpg';
+import sponsorSupporting from '../assets/images/sponsor-supporting.jpg';
+import sponsorDrinks from '../assets/images/sponsor-drinks.jpg';
+import sponsorLounge from '../assets/images/sponsor-lounge.jpg';
+import sponsorOther from '../assets/images/sponsor-other.jpg';
+
+/**
+ * Sponsor packages, copied from the Figma "Book a table" frame.
+ * `height` is the photo tile height in the Figma; `crop` reproduces the Figma image crop
+ * (image width/height and offset as % of the tile).
+ */
+const packages = [
+  {
+    id: 'headline',
+    title: ['Headline'],
+    image: sponsorHeadline,
+    alt: 'A Land Rover Defender on display at the 2026 gala',
+    height: 550,
+    crop: { w: 137.5, h: 110.68, l: -20.78, t: -5.34 },
+    heading: 'From £10,000 Headline sponsorship',
+    availability: '1 remaining',
+    includes: [
+      'Premium branding on all gala promotional materials',
+      'Premium evening on screen presence',
+      'Host interaction with sponsor during the evening',
+      'VIP table for 10 people',
+      'VIP lounge access for all guests',
+      'Professional group photo of your table',
+      'Letter from BTG acknowledging support',
+      'Use event and logos in your own promotion',
+      'Customisable inclusion in event programme',
+    ],
+    pkg: 'Headline sponsorship',
+  },
+  {
+    id: 'supporting',
+    title: ['supporting'],
+    image: sponsorSupporting,
+    alt: 'Guests at a sponsor gin bar',
+    height: 550,
+    crop: { w: 124.25, h: 100.01, l: -12.05, t: -0.01 },
+    heading: 'From £6,000 Supporting sponsorship',
+    availability: '3 remaining',
+    includes: [
+      'Branding on all gala promotional materials',
+      'Evening on screen presence & special host thank you announcement',
+      'VIP table for 10 people',
+      'VIP lounge access for all guests',
+      'Professional group photo of your table',
+      'Letter from BTG acknowledging support',
+      'Use event and logos in your own promotion',
+      'Full page advert in event programme',
+    ],
+    pkg: 'Supporting sponsorship',
+  },
+  {
+    id: 'welcome-drinks',
+    title: ['Welcome drinks sponsor'],
+    image: sponsorDrinks,
+    alt: 'Champagne being poured into rows of glasses',
+    height: 516,
+    crop: { w: 116.57, h: 100.01, l: -11.6, t: -0.01 },
+    heading: 'From £6,500 Welcome drink sponsor',
+    availability: 'Available',
+    includes: [
+      'Inclusion and thank you in the event program',
+      'Company branding inclusion at the event entry location of welcome drinks',
+      'Inclusion in post event communications',
+      'Sponsorship referenced on Gala website',
+      'Evening table for 10 people (upgradeable)',
+    ],
+    pkg: 'Welcome drink sponsor',
+  },
+  {
+    id: 'vip-lounge',
+    title: ['VIP lounge', 'sponsor'],
+    image: sponsorLounge,
+    alt: 'Guests raising a toast in the VIP lounge',
+    height: 505,
+    crop: { w: 148.79, h: 130.05, l: -22.36, t: -17.4 },
+    heading: 'From £8,500 VIP lounge sponsor',
+    availability: 'Available',
+    includes: [
+      'Inclusion and thank you in the event program',
+      'Sponsor branding in the lounge area (signage, coasters etc)',
+      'Shared photography of the event lounge',
+      'Company branding inclusion on lounge signage',
+      'Inclusion in post event communications',
+      'Sponsorship referenced on Gala website',
+      'VIP table for 10 guests',
+    ],
+    pkg: 'VIP lounge sponsor',
+    wide: true,
+  },
+  {
+    id: 'other',
+    title: ['Other', 'sponsorship'],
+    image: sponsorOther,
+    alt: 'Bottles of cider from a drinks sponsor',
+    height: 505,
+    crop: { w: 114.07, h: 100, l: -7.03, t: 0 },
+    text: 'We welcome ideas of support specific to your business. Please get in touch to discuss.',
+    pkg: 'Other sponsorship',
+  },
+];
+
+const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
+  `width: ${c.w}%; height: ${c.h}%; left: ${c.l}%; top: ${c.t}%`;
+---
+
+<Base
+  title="Book a table"
+  active="tables"
+  description="Book an Evening Table or VIP Table at the Derby Gala Dinner 2027, or sponsor the event in support of Bridge the Gap."
+>
+  <PageHeader title="Book a table" />
+
+  <section class="tables-page bg-stripes">
+    <div class="container">
+      <div class="lede-block">
+        <p class="lede">The 2027 edition of Derby Gala Dinner promises <br />to be bigger and better than ever before.</p>
+        <p class="lede-body lede-body--narrow">
+          More glamorous and more entertaining. The people of Derby coming together to show a commitment to the time to
+          change: Supporting a better future for our young people.
+        </p>
+      </div>
+
+      <!-- Evening Table -->
+      <article class="package-card package-card--evening" id="evening-table">
+        <div class="package-card__media">
+          <Image
+            src={tableEvening}
+            alt="A guest at the 2026 gala dinner"
+            widths={[600, 900, 1300, 1814]}
+            sizes="(max-width: 899px) 100vw, 53vw"
+            loading="lazy"
+          />
+        </div>
+        <div class="package-card__body">
+          <h2 class="display display--lg">EVENING TABLE</h2>
+          <div class="package-card__text">
+            <p>What’s included?</p>
+            <ul class="bullets bullets--bold">
+              <li>Welcome drink</li>
+              <li>10 person table</li>
+              <li>Place gift for all guests</li>
+              <li>Premium 3 course meal</li>
+              <li>Evening entertainment</li>
+            </ul>
+            <p class="package-card__price">£2,500 +VAT</p>
+          </div>
+        </div>
+        <a class="btn btn--white package-card__btn" href="#evening-table" data-open-enquiry="Evening Table">Book a table</a>
+      </article>
+
+      <!-- VIP Table -->
+      <article class="package-card package-card--vip" id="vip-table">
+        <div class="package-card__media">
+          <Image
+            src={tableVip}
+            alt="Guests mingling at the 2026 gala dinner"
+            widths={[600, 900, 1300, 1814]}
+            sizes="(max-width: 899px) 100vw, 53vw"
+            loading="lazy"
+          />
+        </div>
+        <div class="package-card__body">
+          <h2 class="display display--lg gold">VIP TABLE</h2>
+          <div class="package-card__text">
+            <p>What’s included?</p>
+            <p class="package-card__gap">Evening Table package, plus;</p>
+            <ul class="bullets bullets--bold">
+              <li>Personalised place gift for all guests</li>
+              <li>Exclusive pre-event VIP lounge</li>
+              <li>Open bar access in VIP lounge</li>
+              <li>Celebrity meet &amp; greet</li>
+              <li>VIP table location</li>
+            </ul>
+            <p class="package-card__price package-card__price--tight">£3,500 + vat</p>
+          </div>
+        </div>
+        <a class="btn btn--gold package-card__btn" href="#vip-table" data-open-enquiry="VIP Table">Book a table</a>
+      </article>
+
+      <!-- Sponsorship -->
+      <div class="lede-block lede-block--sponsors" id="sponsorship">
+        <p class="lede">
+          Sponsors enjoy a premium position throughout every phase of the event and it is because of their involvement this
+          event is able to have such an impact.
+        </p>
+        <p class="lede-body">
+          Becoming a sponsor is a strong statement to the world that you passionately support the time to change, to improve
+          the future of our young people.
+        </p>
+      </div>
+
+      <h2 class="label sponsors-label">Sponsor Packages</h2>
+
+      <ul class="sponsor-rows">
+        {
+          packages.map((p) => (
+            <li class="sponsor-row" id={p.id}>
+              <div class="sponsor-row__tile" style={`--tile-h: ${p.height}`}>
+                <Image
+                  class="sponsor-row__img"
+                  src={p.image}
+                  alt={p.alt}
+                  widths={[600, 900, 1300, 1600]}
+                  sizes="(max-width: 899px) 100vw, 58vw"
+                  loading="lazy"
+                  style={cropStyle(p.crop)}
+                />
+                <h3 class="display display--lg sponsor-row__title">
+                  {p.title.map((line, i) => (
+                    <>
+                      {i > 0 && <br />}
+                      {line}
+                    </>
+                  ))}
+                </h3>
+              </div>
+              <div class:list={['sponsor-row__text', { 'sponsor-row__text--wide': p.wide }]}>
+                {p.heading ? (
+                  <>
+                    <p class="sponsor-row__heading">{p.heading}</p>
+                    <p class="sponsor-row__availability">{p.availability}</p>
+                    <p class="sponsor-row__includes">Includes;</p>
+                    <ul class="bullets">
+                      {p.includes?.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <p>{p.text}</p>
+                )}
+                <a class="btn btn--gold sponsor-row__btn" href={`#${p.id}`} data-open-enquiry="Sponsorship" data-package={p.pkg}>
+                  Secure your sponsorship now
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <GalleryStrip />
+</Base>
+
+<style>
+  .tables-page {
+    padding: calc(112 * var(--u)) 0 calc(103 * var(--u));
+    /* Figma: stripes image at ~136% × 131% of the section, centred. */
+    background-size: 135.6% 131.3%;
+    background-position: 50.9% 51%;
+  }
+
+  [id] {
+    scroll-margin-top: 40px;
+  }
+
+  /* ---------- Intro text ---------- */
+
+  .lede {
+    max-width: calc(1337 * var(--u));
+    margin-left: calc(-7 * var(--u));
+    font-family: var(--font-serif);
+    font-size: max(24px, calc(48 * var(--u)));
+    line-height: 1.31;
+    color: var(--gold);
+  }
+
+  .lede-body {
+    max-width: calc(1157 * var(--u));
+    margin-top: calc(28 * var(--u));
+  }
+
+  .lede-body--narrow {
+    max-width: calc(1010 * var(--u));
+    margin-top: calc(35 * var(--u));
+  }
+
+  .lede-block--sponsors {
+    margin-top: calc(172 * var(--u));
+  }
+
+  /* ---------- Bulleted lists ---------- */
+
+  .bullets {
+    padding-left: 1.5em;
+    list-style: disc;
+  }
+
+  .bullets--bold {
+    padding-left: calc(36 * var(--u) + 0.4em);
+    font-weight: 700;
+  }
+
+  /* ---------- Evening / VIP table cards ---------- */
+
+  .package-card {
+    position: relative;
+    height: calc(604 * var(--u));
+    min-height: 420px;
+    margin-top: calc(82 * var(--u));
+    border: 3px solid var(--white);
+    isolation: isolate;
+  }
+
+  .package-card--vip {
+    margin-top: calc(54 * var(--u));
+    border-color: var(--gold);
+  }
+
+  .package-card__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+  }
+
+  .package-card__media :global(img) {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  /* Evening: photo on the right two thirds, fading to black towards the text on the left. */
+  .package-card--evening .package-card__media :global(img) {
+    left: 33.25%;
+    width: 66.73%;
+  }
+
+  .package-card--evening::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to right, #000 41.2%, rgba(0, 0, 0, 0) 66.1%);
+  }
+
+  /* VIP: photo on the left two thirds, fading to black towards the text on the right. */
+  .package-card--vip .package-card__media :global(img) {
+    left: -0.74%;
+    width: 66.63%;
+  }
+
+  .package-card--vip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 31.7%, #000 49%);
+  }
+
+  .package-card__body {
+    position: absolute;
+    top: calc(77 * var(--u));
+    left: calc(86 * var(--u));
+    width: calc(501 * var(--u));
+  }
+
+  .package-card--vip .package-card__body {
+    left: calc(737 * var(--u));
+  }
+
+  .package-card__text {
+    margin-top: calc(44 * var(--u));
+    max-width: calc(315 * var(--u));
+  }
+
+  .package-card--vip .package-card__text {
+    max-width: calc(501 * var(--u));
+  }
+
+  .package-card__text .bullets {
+    margin-top: 1.31em;
+  }
+
+  .package-card__gap {
+    margin-top: 1.31em;
+  }
+
+  .package-card__gap + .bullets {
+    margin-top: 0;
+  }
+
+  .package-card__price {
+    margin-top: 2.62em;
+    font-weight: 700;
+  }
+
+  .package-card__price--tight {
+    margin-top: 1.31em;
+  }
+
+  /* The button sits across the card's bottom border, as in the Figma. */
+  .package-card__btn {
+    position: absolute;
+    left: calc(85 * var(--u));
+    bottom: calc(-29 * var(--u) - 3px);
+  }
+
+  .package-card--vip .package-card__btn {
+    left: calc(731 * var(--u));
+  }
+
+  /* ---------- Sponsor packages ---------- */
+
+  .sponsors-label {
+    margin-top: calc(134 * var(--u));
+  }
+
+  .sponsor-rows {
+    display: grid;
+    gap: calc(32 * var(--u));
+    margin-top: calc(20 * var(--u));
+  }
+
+  .sponsor-row {
+    display: grid;
+    /* The text column runs past the content edge, as in the Figma (663–697px wide). */
+    grid-template-columns: calc(664 * var(--u)) calc(697 * var(--u));
+    column-gap: calc(68 * var(--u));
+    align-items: center;
+  }
+
+  .sponsor-row__tile {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    height: calc(var(--tile-h) * var(--u));
+    padding: 0 calc(42 * var(--u)) calc(30 * var(--u));
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .sponsor-row__tile :global(.sponsor-row__img) {
+    position: absolute;
+    z-index: -2;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  .sponsor-row__tile::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    height: calc(330 * var(--u));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
+  }
+
+  .sponsor-row__title {
+    max-width: calc(622 * var(--u));
+  }
+
+  .sponsor-row__text {
+    max-width: calc(663 * var(--u));
+  }
+
+  .sponsor-row__text--wide {
+    max-width: calc(697 * var(--u));
+  }
+
+  .sponsor-row__heading,
+  .sponsor-row__availability {
+    font-size: max(18px, calc(28 * var(--u)));
+  }
+
+  .sponsor-row__availability {
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .sponsor-row__includes {
+    margin-top: 1.31em;
+  }
+
+  .sponsor-row__btn {
+    width: calc(471 * var(--u));
+    min-width: 220px;
+    margin-top: calc(32 * var(--u));
+  }
+
+  /* ---------- Mobile ---------- */
+
+  @media (max-width: 899px) {
+    .tables-page {
+      padding: 48px 0 72px;
+      background-size: auto 100%;
+      background-position: center top;
+    }
+
+    .lede {
+      max-width: none;
+      margin-left: 0;
+    }
+
+    .lede br {
+      display: none;
+    }
+
+    .lede-body,
+    .lede-body--narrow {
+      max-width: none;
+      margin-top: 16px;
+    }
+
+    .lede-block--sponsors {
+      margin-top: 72px;
+    }
+
+    .package-card {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      min-height: 0;
+      margin-top: 40px;
+      background: #000;
+    }
+
+    .package-card--vip {
+      margin-top: 32px;
+    }
+
+    .package-card__media {
+      position: relative;
+      inset: auto;
+      z-index: 0;
+      aspect-ratio: 3 / 2;
+    }
+
+    .package-card--evening .package-card__media :global(img),
+    .package-card--vip .package-card__media :global(img) {
+      left: 0;
+      width: 100%;
+    }
+
+    .package-card::after {
+      display: none;
+    }
+
+    .package-card__media::after {
+      content: '';
+      position: absolute;
+      inset: 50% 0 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
+    }
+
+    .package-card__body,
+    .package-card--vip .package-card__body {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: auto;
+      margin-top: -36px;
+      padding: 0 20px;
+    }
+
+    .package-card__body h2 {
+      font-size: 56px;
+    }
+
+    .package-card__text,
+    .package-card--vip .package-card__text {
+      max-width: none;
+      margin-top: 16px;
+    }
+
+    .package-card__price {
+      margin-top: 1.31em;
+    }
+
+    .package-card__btn,
+    .package-card--vip .package-card__btn {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      align-self: flex-start;
+      margin: 20px 20px 24px;
+    }
+
+    .sponsors-label {
+      margin-top: 48px;
+    }
+
+    .sponsor-rows {
+      gap: 48px;
+      margin-top: 16px;
+    }
+
+    .sponsor-row {
+      grid-template-columns: 1fr;
+      row-gap: 20px;
+    }
+
+    .sponsor-row__tile {
+      height: auto;
+      aspect-ratio: 664 / var(--tile-h);
+      padding: 0 20px 20px;
+    }
+
+    .sponsor-row__tile::after {
+      height: 60%;
+    }
+
+    .sponsor-row__title {
+      font-size: 52px;
+    }
+
+    .sponsor-row__text,
+    .sponsor-row__text--wide {
+      max-width: none;
+    }
+
+    .sponsor-row__btn {
+      width: auto;
+      min-width: 0;
+      margin-top: 20px;
+    }
+  }
+</style>
