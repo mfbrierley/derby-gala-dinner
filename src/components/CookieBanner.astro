@@ -81,7 +81,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 </style>
 
 <script>
-  import { getConsent, setConsent } from '../scripts/consent';
+  import { getConsent, setConsent, CONSENT_EVENT } from '../scripts/consent';
 
   const banner = document.querySelector<HTMLElement>('[data-cookie-banner]');
 
@@ -91,6 +91,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     };
 
     if (!getConsent()) show();
+
+    // A choice made somewhere else (e.g. "Accept cookies and show map") also closes the banner.
+    document.addEventListener(CONSENT_EVENT, () => {
+      banner.hidden = true;
+    });
 
     banner.querySelectorAll<HTMLButtonElement>('[data-consent]').forEach((button) => {
       button.addEventListener('click', () => {

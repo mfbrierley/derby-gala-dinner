@@ -1,0 +1,120 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ConsentMap from '../components/ConsentMap.astro';
+import BtgSpotlight from '../components/BtgSpotlight.astro';
+import GalleryStrip from '../components/GalleryStrip.astro';
+---
+
+<Base
+  title="Event details"
+  active="details"
+  description="Derby Gala Dinner 2027: 22/04/27 at Vaillant Live Derby, 2 Colyear St, Derby DE1 1LA. Timings, itinerary and menu."
+>
+  <PageHeader title="Event details" />
+
+  <section class="details bg-stripes">
+    <div class="container">
+      <div class="details__top">
+        <div class="details__venue">
+          <h2 class="label">Date and Venue</h2>
+          <p class="details__big details__first"><time datetime="2027-04-22">22/04/27</time></p>
+          <p class="details__big details__gap">Vaillant Live Derby, <br />2 Colyear St, Derby DE1 1LA</p>
+        </div>
+        <ConsentMap />
+      </div>
+
+      <div class="details__bottom">
+        <div>
+          <h2 class="label">Timings</h2>
+          <p class="details__big details__first">Doors VIP 5.30pm</p>
+          <p class="details__big details__gap">All 6.00pm <br />Carriages 00:00</p>
+        </div>
+        <div>
+          <h2 class="label">Intinery</h2>
+          <p class="details__big details__first">Coming soon...</p>
+          <h2 class="label details__menu">Menu</h2>
+          <p class="details__big details__first">Coming soon...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <BtgSpotlight padTop={115} padBottom={105} />
+  <GalleryStrip />
+</Base>
+
+<style>
+  .details {
+    padding: calc(150 * var(--u)) 0 calc(171 * var(--u));
+    /* Figma: stripes image at ~136% × 114% of the section, anchored to its bottom. */
+    background-size: 135.6% 113.9%;
+    background-position: 50.9% 100%;
+  }
+
+  .details__top {
+    display: grid;
+    /* The map runs slightly past the content edge, as in the Figma. */
+    grid-template-columns: calc(641 * var(--u)) calc(742 * var(--u));
+  }
+
+  .details__venue {
+    padding-top: calc(24 * var(--u));
+  }
+
+  .details__big {
+    font-family: var(--font-serif);
+    font-size: max(24px, calc(48 * var(--u)));
+    line-height: 1.31;
+    color: var(--gold);
+  }
+
+  .details__first {
+    margin-top: calc(33 * var(--u));
+  }
+
+  .details__gap {
+    margin-top: 1.31em;
+  }
+
+  .details__bottom {
+    display: grid;
+    grid-template-columns: calc(579 * var(--u)) 1fr;
+    margin-top: calc(176 * var(--u));
+  }
+
+  .details__menu {
+    margin-top: calc(124 * var(--u));
+  }
+
+  @media (max-width: 899px) {
+    .details {
+      padding: 48px 0 72px;
+      background-size: cover;
+      background-position: center bottom;
+    }
+
+    .details__top,
+    .details__bottom {
+      grid-template-columns: 1fr;
+      row-gap: 32px;
+    }
+
+    .details__venue {
+      padding-top: 0;
+    }
+
+    .details__first {
+      margin-top: 8px;
+    }
+
+    .details__bottom {
+      margin-top: 48px;
+      row-gap: 40px;
+    }
+
+    .details__menu {
+      margin-top: 40px;
+    }
+  }
+</style>

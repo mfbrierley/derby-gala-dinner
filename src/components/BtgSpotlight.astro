@@ -3,9 +3,16 @@ import { Image } from 'astro:assets';
 import spotlight from '../assets/images/btg-spotlight.jpg';
 import btgLogo from '../assets/images/btg-logo.png';
 import { BTG_URL } from '../config';
+
+interface Props {
+  /** Top / bottom padding in Figma px (the frames differ slightly: home 159/125, event details 115/105). */
+  padTop?: number;
+  padBottom?: number;
+}
+const { padTop = 159, padBottom = 125 } = Astro.props;
 ---
 
-<section class="spotlight bg-white">
+<section class="spotlight bg-white" style={`--pad-top: ${padTop}; --pad-bottom: ${padBottom}`}>
   <div class="spotlight__inner container">
     <div class="spotlight__text">
       <p class="label">Spotlight on</p>
@@ -33,7 +40,7 @@ import { BTG_URL } from '../config';
 
 <style>
   .spotlight {
-    padding: calc(159 * var(--u)) 0 calc(125 * var(--u));
+    padding: calc(var(--pad-top) * var(--u)) 0 calc(var(--pad-bottom) * var(--u));
   }
 
   .spotlight__inner {

@@ -18,9 +18,13 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] Mixed spelling: "event program" (Welcome drink and VIP lounge) vs "event programme" (Headline and Supporting).
 - [ ] Availability ("1 remaining", "3 remaining", "Available") needs updating as packages sell. It's in the `packages` list at the top of `src/pages/book-a-table.astro`.
 
+### Event details
+- [ ] The heading "Intinery" is a typo for "Itinerary". It's kept as-is until confirmed.
+- [ ] Itinerary and Menu both say "Coming soon...".
+- [ ] The map in the Figma is a screenshot. The build uses a live Google map that only loads after cookies are accepted; until then the screenshot is shown dimmed behind the consent message.
+
 ### Seen on other Figma pages (to build next)
 - [ ] Your hosts: Sir Bradley Wiggins and The Distractions bios are lorem ipsum.
-- [ ] Event details: the heading "Intinery" (typo for "Itinerary"), plus Itinerary and Menu both "Coming soon...".
 - [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). **Not built.**
 - [ ] 2026 gallery: the grid repeats the same 3 photos. Needs the real gallery photos.
 
@@ -31,6 +35,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] **Form messages:** "Please fill in the highlighted fields.", "Please choose Evening Table, VIP Table or Sponsorship.", "Please complete the captcha check.", "Sorry, your enquiry couldn't be sent. Please try again in a moment.", "Sending…", plus the line under Submit: "We'll only use your details to respond to your enquiry. See our privacy policy."
 - [ ] **Form options:** Title list (Mr, Mrs, Ms, Miss, Mx, Dr). Sponsorship package list (Headline sponsorship, Supporting sponsorship, Welcome drink sponsor, VIP lounge sponsor, Other sponsorship), taken from the Book a table frame.
 - [ ] **Cookie banner:** all copy.
+- [ ] **Map (before cookies are accepted):** "The live map is provided by Google, which sets cookies." with the buttons "Accept cookies and show map" and "Open in Google Maps".
 - [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
   - [ ] [Organiser name]
   - [ ] [Organiser address]
@@ -43,7 +48,7 @@ the Figma, and open questions. Update it as items are resolved.
 
 ## Design decisions to confirm with Will
 
-- [ ] The header from the Home / Book a table frames is used on every page. The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
+- [ ] The header from the Home / Book a table frames is used on every page, including Event details (that frame leaves out "Fundraising for Bridge the Gap" and the YOUR HOSTS / 2026 GALLERY links). The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
 - [ ] In the nav, bold means the current page. On Home, BOOK A TABLE is bold, as in the Figma.
 - [ ] YOUR HOSTS and 2026 GALLERY appear as a dropdown under EVENT DETAILS on hover.
 - [ ] The home hero's "Book a table" opens the enquiry form. "Sponsor the event" and the "Find out more" buttons go to the Book a table page.
