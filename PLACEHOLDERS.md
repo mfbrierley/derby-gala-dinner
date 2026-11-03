@@ -33,6 +33,10 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] Photo descriptions are generic ("Derby Gala Dinner 2026, photo 5 of 24"). Fine for a gallery, but they could be more specific.
 - [x] Gallery page: the Bridge the Gap spotlight and the gold "See how…" photo strip have been removed (Matt). The page now goes straight from the photo grid to the footer.
 
+### Sponsors (hero and footer, from the "dgd - matt" Figma)
+- [ ] Logos and labels come from the Figma: Headline sponsor = Stratstone Land Rover Derby, Supporting sponsor = Enigma Seven, plus "A Volt7 production". They're set in one place, `src/data/sponsors.ts`, which feeds both the home hero and the footer. The logos don't link anywhere (Matt).
+- [ ] The Enigma Seven logo is exported from the footer version in the Figma (the hero one is the same artwork, drawn slightly smaller).
+
 ### Not built
 - [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). Not linked from anywhere in the Figma nav.
 
@@ -50,19 +54,20 @@ the Figma, and open questions. Update it as items are resolved.
   - [x] Privacy contact email: hello@volt7.agency
   - [ ] Retention periods: [12 months] for enquiries, [6 years] for invoices
   - [ ] Confirm whether enquiry details are shared with Bridge the Gap (the draft says they aren't mentioned)
-- [ ] **Footer:** added "Privacy policy" and "Cookie settings" links (needed for the policy and the cookie banner).
+- [ ] **Footer:** added "Privacy policy" and "Cookie settings" links (needed for the policy and the cookie banner). They sit on the right of the black "A Volt7 production" bar on wide screens and below it on narrower ones.
 - [ ] **404 page:** "Page not found", "Sorry, we couldn't find that page.", "Back to home".
 - [ ] **Image alt text and the site meta description.**
 
 ## Design decisions to confirm with Will
 
+- [ ] The new footer (sponsors plus the black Volt7 bar) is used on every page (Matt). It no longer has the "Fundraising for Bridge the Gap" lockup, as in the new Figma; the header still has it.
 - [ ] The header from the Home / Book a table frames is used on every page, including Your hosts and Gallery (those frames still have the old TICKETS / ABOUT / CONTACT header) and Event details (that frame leaves out "Fundraising for Bridge the Gap" and the YOUR HOSTS / 2026 GALLERY links). The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
 - [ ] In the nav, bold means the current page. On Home, BOOK A TABLE is bold, as in the Figma.
 - [ ] YOUR HOSTS and 2026 GALLERY appear as a dropdown under EVENT DETAILS on hover.
 - [ ] The home hero's "Book a table" opens the Reserve a table form. "Sponsor the event" and the "Find out more" buttons go to the Book a table page.
 - [ ] Book a table page: each "Book a table" button opens Reserve a table with that table type selected; each "Secure your sponsorship now" opens Sponsorship enquiry with that type ticked.
 - [ ] Mobile and tablet layouts are adapted from the desktop design (there are no mobile frames).
-- [ ] Home hero fills the screen with its content centred below the header (matches the Figma at 1728 × 996). On short screens the hero's text scales down so it all stays above the fold.
+- [ ] Home hero fills the screen with its content centred below the header (matches the Figma at 1728 × 996). On short screens the hero's text and sponsor logos scale down so it all stays above the fold. A phone held sideways is the one case where it scrolls.
 - [ ] The thank-you pop-up is shorter than the Figma panel (1050px tall).
 - [ ] Gallery: clicking a photo opens it full-size in a viewer (arrows, swipe, Esc to close). Not in the Figma.
 - [ ] Gallery rows are evenly spaced; the Figma has one row gap that's smaller than the rest.

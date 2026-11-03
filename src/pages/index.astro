@@ -14,6 +14,7 @@ import sponsorHeadline from '../assets/images/sponsor-headline.jpg';
 import sponsorSupporting from '../assets/images/sponsor-supporting.jpg';
 import sponsorDrinks from '../assets/images/sponsor-drinks.jpg';
 import sponsorLounge from '../assets/images/sponsor-lounge.jpg';
+import { SPONSORS, PRODUCTION_CREDIT } from '../data/sponsors';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (path: string) => `${base}${path}`;
@@ -37,6 +38,28 @@ const sponsors = [
       <div class="hero__actions">
         <a class="btn btn--gold" href={href('/book-a-table/')} data-open-booking="">Book a table</a>
         <a class="btn btn--cream" href={href('/book-a-table/#sponsorship')}>Sponsor the event</a>
+      </div>
+
+      <div class="hero__sponsors">
+        <p class="sponsor-rule sponsor-rule--gold"><span>{SPONSORS.headline.label}</span></p>
+        <img
+          class="hero__logo hero__logo--headline"
+          src={SPONSORS.headline.logo}
+          width={SPONSORS.headline.width}
+          height={SPONSORS.headline.height}
+          alt={SPONSORS.headline.name}
+          style={`--w: ${SPONSORS.headline.heroWidth}`}
+        />
+        <p class="sponsor-rule sponsor-rule--white"><span>{SPONSORS.supporting.label}</span></p>
+        <img
+          class="hero__logo hero__logo--supporting"
+          src={SPONSORS.supporting.logo}
+          width={SPONSORS.supporting.width}
+          height={SPONSORS.supporting.height}
+          alt={SPONSORS.supporting.name}
+          style={`--w: ${SPONSORS.supporting.heroWidth}`}
+        />
+        <p class="hero__production">{PRODUCTION_CREDIT}</p>
       </div>
     </div>
   </section>
@@ -183,13 +206,14 @@ const sponsors = [
    * keeps the text clear of the header.
    */
   .hero {
-    --u: min(calc(var(--max-vw) / 1728), calc(100vw / 1728), calc(100svh / 996));
+    /* 1060 rather than the Figma's 996: a little headroom for the minimum text and button sizes. */
+    --u: min(calc(var(--max-vw) / 1728), calc(100vw / 1728), calc(100svh / 1060));
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     min-height: 100svh;
-    padding: calc(var(--header-h) + 24px) var(--gutter) max(40px, calc(64 * var(--u)));
+    padding: calc(var(--header-h) + 24px) var(--gutter) max(28px, calc(64 * var(--u)));
     /* Stripes anchored to the bottom, at the Figma's 119% width, but always tall enough to cover. */
     background-size: max(119.04%, 178svh) auto;
     background-position: 51.7% 100%;
@@ -200,7 +224,8 @@ const sponsors = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(970 * var(--u));
+    /* Wide enough for "TABLES NOW AVAILABLE." on one line, as in the Figma. */
+    width: calc(1412 * var(--u));
   }
 
   .hero__date,
@@ -220,7 +245,7 @@ const sponsors = [
   }
 
   .hero__venue {
-    margin-top: calc(39 * var(--u));
+    margin-top: calc(7 * var(--u));
     font-size: max(22px, calc(40 * var(--u)));
   }
 
@@ -229,7 +254,76 @@ const sponsors = [
     flex-wrap: wrap;
     justify-content: center;
     gap: calc(27 * var(--u));
-    margin-top: calc(19 * var(--u));
+    margin-top: calc(24 * var(--u));
+  }
+
+  /* Sponsors: small letter-spaced labels between fine lines, then the logo. */
+  .hero__sponsors {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(1069 * var(--u));
+    max-width: 100%;
+    margin-top: calc(40 * var(--u));
+  }
+
+  .sponsor-rule {
+    display: flex;
+    align-items: center;
+    gap: calc(21 * var(--u));
+    width: 100%;
+    font-family: var(--font-sans);
+    font-size: max(10px, calc(15 * var(--u)));
+    line-height: 1;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--white);
+    white-space: nowrap;
+  }
+
+  /* cancel the letter-spacing after the last letter so the label sits centred between the lines */
+  .sponsor-rule span {
+    margin-right: -0.4em;
+  }
+
+  .sponsor-rule::before,
+  .sponsor-rule::after {
+    content: '';
+    flex: 1;
+    height: max(1px, calc(2 * var(--u)));
+    background: var(--rule-color);
+  }
+
+  .sponsor-rule--gold {
+    --rule-color: var(--gold);
+  }
+
+  .sponsor-rule--white {
+    --rule-color: var(--white);
+  }
+
+  .hero__logo {
+    width: calc(var(--w) * var(--u));
+    height: auto;
+  }
+
+  .hero__logo--headline {
+    margin: calc(28 * var(--u)) 0 calc(33 * var(--u));
+  }
+
+  .hero__logo--supporting {
+    margin: calc(30 * var(--u)) 0 calc(40 * var(--u));
+  }
+
+  .hero__production {
+    font-family: var(--font-sans);
+    font-size: max(12px, calc(20 * var(--u)));
+    line-height: 1;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--white);
+    /* trailing letter-spacing */
+    margin-right: -0.4em;
   }
 
   /* ---------- It's time to make a difference ---------- */
@@ -425,7 +519,7 @@ const sponsors = [
 
   @media (max-width: 899px) {
     .hero {
-      padding: calc(var(--header-h) + 24px) var(--gutter) 48px;
+      padding: calc(var(--header-h) + 12px) var(--gutter) 28px;
       background-size: cover;
       background-position: center bottom;
     }
@@ -435,17 +529,54 @@ const sponsors = [
     }
 
     .hero__title {
-      margin-top: 12px;
-      font-size: 84px;
+      margin-top: 8px;
+      /* smaller on short phones so the hero still fits the screen */
+      font-size: clamp(56px, 10svh, 72px);
     }
 
     .hero__venue {
-      margin-top: 20px;
+      margin-top: 12px;
     }
 
     .hero__actions {
       gap: 12px;
-      margin-top: 24px;
+      margin-top: 20px;
+    }
+
+    .hero__sponsors {
+      width: 100%;
+      margin-top: 26px;
+    }
+
+    .sponsor-rule {
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+    }
+
+    .sponsor-rule span {
+      margin-right: -0.3em;
+    }
+
+    .sponsor-rule::before,
+    .sponsor-rule::after {
+      height: 1px;
+    }
+
+    .hero__logo--headline {
+      width: 140px;
+      margin: 14px 0 18px;
+    }
+
+    .hero__logo--supporting {
+      width: 132px;
+      margin: 14px 0 22px;
+    }
+
+    .hero__production {
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      margin-right: -0.3em;
     }
 
     .difference {

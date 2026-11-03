@@ -1,49 +1,71 @@
 ---
 import logo from '../assets/svg/logo-dgd.svg?url';
-import fundraisingFor from '../assets/svg/fundraising-for-footer.svg?url';
-import btgLogo from '../assets/images/btg-logo.png';
-import { BTG_URL } from '../config';
+import { SPONSORS, PRODUCTION_CREDIT } from '../data/sponsors';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (path: string) => `${base}${path}`;
 ---
 
-<footer class="site-footer bg-stripes">
-  <div class="site-footer__inner">
-    <a class="site-footer__logo" href={href('/')}>
-      <img src={logo} width="163" height="99" alt="Derby Gala Dinner" />
-    </a>
+<footer class="site-footer">
+  <div class="site-footer__main bg-stripes">
+    <div class="site-footer__inner">
+      <a class="site-footer__logo" href={href('/')}>
+        <img src={logo} width="163" height="99" alt="Derby Gala Dinner" />
+      </a>
 
-    <nav class="site-footer__nav" aria-label="Footer">
-      <ul>
-        <li><a href={href('/book-a-table/')}><strong>BOOK A TABLE</strong></a></li>
-        <li><a href={href('/book-a-table/#sponsorship')}>SPONSOR EVENT</a></li>
-        <li><a href={href('/event-details/')}>EVENT DETAILS</a></li>
-        <li><a href={href('/your-hosts/')}>YOUR HOSTS</a></li>
-        <li><a href={href('/gallery/')}>2026 GALLERY</a></li>
-        <li><a href="#contact" data-open-contact>CONTACT</a></li>
-      </ul>
-    </nav>
+      <nav class="site-footer__nav" aria-label="Footer">
+        <ul>
+          <li><a href={href('/book-a-table/')}><strong>BOOK A TABLE</strong></a></li>
+          <li><a href={href('/book-a-table/#sponsorship')}>SPONSOR EVENT</a></li>
+          <li><a href={href('/event-details/')}>EVENT DETAILS</a></li>
+          <li><a href={href('/your-hosts/')}>YOUR HOSTS</a></li>
+          <li><a href={href('/gallery/')}>2026 GALLERY</a></li>
+          <li><a href="#contact" data-open-contact>CONTACT</a></li>
+        </ul>
+      </nav>
 
-    <a class="fundraising site-footer__fundraising" href={BTG_URL} target="_blank" rel="noopener">
-      <img class="fundraising__text" src={fundraisingFor} width="307" height="15" alt="Fundraising for" />
-      <img class="fundraising__logo" src={btgLogo.src} width="81" height="81" alt="Bridge the Gap" />
-    </a>
+      <div class="site-footer__sponsors">
+        <div class="footer-sponsor footer-sponsor--headline">
+          <p class="footer-sponsor__label">{SPONSORS.headline.label}</p>
+          <img
+            class="footer-sponsor__logo"
+            src={SPONSORS.headline.logo}
+            width={SPONSORS.headline.width}
+            height={SPONSORS.headline.height}
+            alt={SPONSORS.headline.name}
+            loading="lazy"
+          />
+        </div>
+        <div class="footer-sponsor footer-sponsor--supporting">
+          <p class="footer-sponsor__label">{SPONSORS.supporting.label}</p>
+          <img
+            class="footer-sponsor__logo"
+            src={SPONSORS.supporting.logo}
+            width={SPONSORS.supporting.width}
+            height={SPONSORS.supporting.height}
+            alt={SPONSORS.supporting.name}
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Not in the Figma: legal links needed for the privacy policy and cookie choices. -->
-  <ul class="site-footer__legal">
-    <li><a href={href('/privacy-policy/')}>Privacy policy</a></li>
-    <li><button type="button" data-cookie-settings>Cookie settings</button></li>
-  </ul>
+  <div class="site-footer__bar">
+    <p class="site-footer__production">{PRODUCTION_CREDIT}</p>
+    <!-- Not in the Figma: legal links needed for the privacy policy and cookie choices. -->
+    <ul class="site-footer__legal">
+      <li><a href={href('/privacy-policy/')}>Privacy policy</a></li>
+      <li><button type="button" data-cookie-settings>Cookie settings</button></li>
+    </ul>
+  </div>
 </footer>
 
 <style>
-  .site-footer {
-    position: relative;
+  /* Figma: 329px of stripes, then a 51px black bar with the production credit. */
+  .site-footer__main {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
     min-height: calc(329 * var(--u));
     padding: calc(40 * var(--u)) 0;
     /* Figma crops the stripes image to its bottom edge, scaled to 194.83% of the footer box. */
@@ -54,6 +76,7 @@ const href = (path: string) => `${base}${path}`;
   .site-footer__inner {
     display: flex;
     align-items: center;
+    width: 100%;
     padding: 0 calc(101 * var(--u) + var(--edge)) 0 calc(128 * var(--u) + var(--edge));
   }
 
@@ -83,36 +106,92 @@ const href = (path: string) => `${base}${path}`;
     font-weight: 700;
   }
 
-  .fundraising {
+  /* ---------- Sponsors: a fine vertical line before each (gold for headline, white for supporting) ---------- */
+
+  .site-footer__sponsors {
+    display: flex;
+    margin-left: calc(89 * var(--u));
+  }
+
+  .footer-sponsor {
+    position: relative;
+    min-height: calc(121 * var(--u));
+  }
+
+  .footer-sponsor::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: max(1px, calc(2 * var(--u)));
+    background: var(--rule-color);
+  }
+
+  .footer-sponsor--headline {
+    --rule-color: var(--gold);
+    padding-left: calc(62 * var(--u));
+  }
+
+  .footer-sponsor--supporting {
+    --rule-color: var(--white);
+    margin-left: calc(71 * var(--u));
+    padding-left: calc(44 * var(--u));
+  }
+
+  .footer-sponsor__label {
+    font-size: max(10px, calc(15 * var(--u)));
+    line-height: 1;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--white);
+    white-space: nowrap;
+  }
+
+  .footer-sponsor__logo {
+    width: calc(203 * var(--u));
+    min-width: 120px;
+    height: auto;
+  }
+
+  .footer-sponsor--headline .footer-sponsor__logo {
+    margin-top: calc(18 * var(--u));
+  }
+
+  .footer-sponsor--supporting .footer-sponsor__logo {
+    margin-top: calc(28 * var(--u));
+  }
+
+  /* ---------- Black bar ---------- */
+
+  .site-footer__bar {
+    position: relative;
     display: flex;
     align-items: center;
-    text-decoration: none;
+    justify-content: center;
+    min-height: max(40px, calc(51 * var(--u)));
+    padding: 0 calc(101 * var(--u) + var(--edge)) 0 calc(128 * var(--u) + var(--edge));
+    background: #000;
   }
 
-  .site-footer__fundraising {
-    gap: calc(24 * var(--u));
-    margin-left: auto;
-  }
-
-  .site-footer__fundraising .fundraising__text {
-    width: calc(307 * var(--u));
-    min-width: 160px;
-    height: auto;
-  }
-
-  .site-footer__fundraising .fundraising__logo {
-    width: calc(81 * var(--u));
-    min-width: 48px;
-    height: auto;
+  .site-footer__production {
+    font-size: max(12px, calc(20 * var(--u)));
+    line-height: 1;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--white);
+    /* trailing letter-spacing */
+    margin-right: -0.4em;
   }
 
   .site-footer__legal {
     position: absolute;
     right: calc(101 * var(--u) + var(--edge));
-    bottom: max(14px, calc(24 * var(--u)));
+    top: 50%;
     display: flex;
     gap: 20px;
     font-size: 13px;
+    transform: translateY(-50%);
   }
 
   .site-footer__legal a,
@@ -132,9 +211,24 @@ const href = (path: string) => `${base}${path}`;
     color: var(--white);
   }
 
+  /* Narrower desktops: the credit and legal links would collide, so the links drop below. */
+  @media (min-width: 900px) and (max-width: 1279px) {
+    .site-footer__bar {
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 14px;
+      padding-bottom: 14px;
+    }
+
+    .site-footer__legal {
+      position: static;
+      transform: none;
+    }
+  }
+
   @media (max-width: 899px) {
-    .site-footer {
-      padding: 48px var(--gutter) 28px;
+    .site-footer__main {
+      padding: 48px var(--gutter) 40px;
       background-size: cover;
       background-position: center bottom;
     }
@@ -155,14 +249,49 @@ const href = (path: string) => `${base}${path}`;
       line-height: 1.8;
     }
 
-    .site-footer__fundraising {
+    .site-footer__sponsors {
+      flex-direction: column;
+      gap: 28px;
       margin-left: 0;
-      gap: 14px;
+    }
+
+    .footer-sponsor {
+      min-height: 0;
+      padding: 0 0 0 18px;
+    }
+
+    .footer-sponsor--supporting {
+      margin-left: 0;
+    }
+
+    .footer-sponsor__label {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+    }
+
+    .footer-sponsor__logo,
+    .footer-sponsor--headline .footer-sponsor__logo,
+    .footer-sponsor--supporting .footer-sponsor__logo {
+      width: 150px;
+      min-width: 0;
+      margin-top: 14px;
+    }
+
+    .site-footer__bar {
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px var(--gutter);
+    }
+
+    .site-footer__production {
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      margin-right: -0.3em;
     }
 
     .site-footer__legal {
       position: static;
-      margin-top: 32px;
+      transform: none;
     }
   }
 </style>
