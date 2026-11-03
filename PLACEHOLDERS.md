@@ -31,7 +31,7 @@ the Figma, and open questions. Update it as items are resolved.
 ### 2026 gallery
 - [ ] **Needs the real 2026 photos.** The Figma grid repeats the same 3 photos (24 tiles), and the build does the same for now. Add the photos to `src/assets/gallery/` and set `PREVIEW_REPEAT` to `1` in `src/pages/gallery.astro` (see the README in that folder).
 - [ ] Photo descriptions are generic ("Derby Gala Dinner 2026, photo 5 of 24"). Fine for a gallery, but they could be more specific.
-- [ ] The photo strip at the bottom of the gallery page has a "View Gallery" button that links to the same page, as in the Figma. Keep it, or drop the strip on this page?
+- [x] Gallery page: the Bridge the Gap spotlight and the gold "See how…" photo strip have been removed (Matt). The page now goes straight from the photo grid to the footer.
 
 ### Not built
 - [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). Not linked from anywhere in the Figma nav.
