@@ -213,7 +213,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     --u: calc(min(1px, 100vw / 1728) * var(--fit, 1));
     --text-body: max(15px, calc(24 * var(--u)));
     --btn-height: max(40px, calc(58 * var(--u)));
-    --field-height: max(46px, calc(64 * var(--u)));
+    --field-height: max(48px, calc(66 * var(--u)));
     color-scheme: dark;
     font-size: var(--text-body);
     width: 100%;
@@ -338,15 +338,17 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
   }
 
   /*
-   * Fields: transparent with a fine underline that turns gold on focus. The label sits inside the
-   * field and moves up (smaller, gold) once the field has focus or a value, so it stays visible.
+   * Fields: transparent, with a fine rounded outline (same corners as the buttons) that turns gold
+   * on focus. The label sits inside the field and moves up to the top edge (smaller, gold) once the
+   * field has focus or a value, so it stays visible while typing.
    */
   .field {
     position: relative;
     display: block;
     --line: rgba(255, 255, 255, 0.5);
     --label-rest: rgba(255, 255, 255, 0.72);
-    --pad-top: max(16px, calc(22 * var(--u)));
+    --pad-x: max(14px, calc(20 * var(--u)));
+    --pad-top: max(17px, calc(24 * var(--u)));
   }
 
   .field input,
@@ -355,10 +357,9 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     display: block;
     width: 100%;
     height: var(--field-height);
-    padding: var(--pad-top) 0 max(6px, calc(8 * var(--u)));
-    border: 0;
-    border-bottom: 1px solid var(--line);
-    border-radius: 0;
+    padding: var(--pad-top) var(--pad-x) max(4px, calc(6 * var(--u)));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     background: transparent;
     color: var(--white);
     font-size: var(--text-body);
@@ -370,18 +371,18 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
       box-shadow 0.2s ease;
   }
 
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+
   .field input:focus,
   .field select:focus,
   .field textarea:focus {
     outline: none;
-    border-bottom-color: var(--gold);
-    box-shadow: 0 1px 0 0 var(--gold);
-  }
-
-  .field input:hover,
-  .field select:hover,
-  .field textarea:hover {
-    border-bottom-color: rgba(255, 255, 255, 0.8);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px var(--gold);
   }
 
   /* Browser autofill: keep the dark background and white text. */
@@ -391,16 +392,24 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     caret-color: var(--white);
   }
 
+  .field input:-webkit-autofill:focus {
+    box-shadow:
+      0 0 0 1000px var(--black) inset,
+      0 0 0 1px var(--gold);
+  }
+
   .field__label {
     position: absolute;
-    left: 0;
-    top: calc(var(--pad-top) + 0.15em);
+    left: calc(var(--pad-x) + 1px);
+    top: 50%;
     color: var(--label-rest);
     font-size: var(--text-body);
     line-height: 1.3;
     pointer-events: none;
+    transform: translateY(-50%);
     transform-origin: left top;
     transition:
+      top 0.2s ease,
       transform 0.2s ease,
       color 0.2s ease;
   }
@@ -410,13 +419,16 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
   .field textarea:focus + .field__label,
   .field textarea:not(:placeholder-shown) + .field__label,
   .field input:-webkit-autofill + .field__label {
+    top: max(6px, calc(8 * var(--u)));
     color: var(--gold);
-    transform: translateY(calc(-1 * var(--pad-top) - 0.1em)) scale(0.62);
+    transform: translateY(0) scale(0.62);
   }
 
   /* Dropdowns: the first option ("Table type", "Title") is the label; a gold caret on the right. */
   .field--select select {
-    padding-right: 28px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: calc(var(--pad-x) + 22px);
     cursor: pointer;
   }
 
@@ -432,25 +444,31 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
   .field--select::after {
     content: '';
     position: absolute;
-    right: 4px;
-    bottom: calc(max(6px, calc(8 * var(--u))) + 0.55em);
+    right: calc(var(--pad-x) + 2px);
+    top: 50%;
     width: 8px;
     height: 8px;
     border: solid var(--gold);
     border-width: 0 1.5px 1.5px 0;
-    transform: rotate(45deg);
+    transform: translateY(-70%) rotate(45deg);
     pointer-events: none;
   }
 
+  /* Message box: the label rests on the first line rather than in the middle. */
   .field--textarea textarea {
     height: auto;
-    min-height: calc(var(--pad-top) + 3 * 1.3em + 8px);
+    min-height: calc(var(--pad-top) + 3 * 1.3em + 12px);
     resize: vertical;
   }
 
+  .field--textarea .field__label {
+    top: calc(var(--pad-top) + 1px);
+    transform: none;
+  }
+
   .field [aria-invalid='true'] {
-    border-bottom-color: #ff8a80;
-    box-shadow: 0 1px 0 0 #ff8a80;
+    border-color: #ff8a80;
+    box-shadow: 0 0 0 1px #ff8a80;
   }
 
   .field [aria-invalid='true'] + .field__label {
@@ -486,7 +504,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     height: var(--btn-height);
     padding: 0 max(16px, calc(22 * var(--u)));
     border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 999px;
+    border-radius: var(--radius);
     cursor: pointer;
     transition:
       color 0.2s ease,
