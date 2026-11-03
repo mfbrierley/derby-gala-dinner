@@ -40,6 +40,7 @@ If the site ever has to live in a sub-folder (e.g. `derbygaladinner.co.uk/new/`)
 | `src/assets/` | Images and SVGs from the Figma. Astro resizes the photos and converts them to WebP at build time |
 | `src/config.ts` | Adobe Fonts project, Web3Forms key, hCaptcha key, Bridge the Gap link |
 | `public/` | Copied as-is: `.htaccess`, `favicon.svg`, `robots.txt` |
+| `src/assets/gallery/` | Photos for the 2026 Gallery page (filename order; see the README there) |
 | `PLACEHOLDERS.md` | Placeholder copy, unapproved copy and open questions |
 
 ## Fonts

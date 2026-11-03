@@ -1,0 +1,345 @@
+---
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import BtgSpotlight from '../components/BtgSpotlight.astro';
+import GalleryStrip from '../components/GalleryStrip.astro';
+import chevron from '../assets/svg/icon-chevron.svg?url';
+
+/**
+ * Every image in src/assets/gallery/ appears here in filename order (see the README there).
+ * The Figma grid has 24 tiles made from the same 3 photos; until the real 2026 photos are added
+ * the 3 placeholders are repeated to fill it. Set PREVIEW_REPEAT to 1 once the real photos are in.
+ */
+const PREVIEW_REPEAT = 8;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/gallery/*.{jpg,jpeg,png,webp}', { eager: true });
+const sources = Object.keys(files)
+  .sort()
+  .map((path) => files[path].default);
+
+const list = Array.from({ length: PREVIEW_REPEAT }, () => sources).flat();
+const total = list.length;
+
+// Full-size versions for the viewer (srcset so phones don't download the largest file).
+const photos = await Promise.all(
+  list.map(async (src, i) => {
+    const large = await getImage({ src, widths: [960, 1600, 2400], format: 'webp' });
+    return {
+      src,
+      alt: `Derby Gala Dinner 2026, photo ${i + 1} of ${total}`,
+      largeSrc: large.src,
+      largeSrcset: large.srcSet.attribute,
+    };
+  }),
+);
+---
+
+<Base
+  title="2026 gallery"
+  active="gallery"
+  description="Photos from the Derby Gala Dinner 2026 at Vaillant Live Derby, in support of Bridge the Gap."
+>
+  <PageHeader title="2026 Gallery" />
+
+  <section class="gallery bg-stripes" aria-label="Photos from 2026">
+    <ul class="gallery__grid">
+      {
+        photos.map((photo, i) => (
+          <li>
+            <button
+              type="button"
+              class="gallery__item"
+              data-gallery-index={i}
+              data-large-src={photo.largeSrc}
+              data-large-srcset={photo.largeSrcset}
+              aria-label={`View ${photo.alt} full size`}
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                widths={[400, 600, 970]}
+                sizes="(max-width: 899px) 46vw, 28vw"
+                loading={i < 6 ? 'eager' : 'lazy'}
+              />
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <BtgSpotlight padTop={113} padBottom={141} />
+  <GalleryStrip label="Snap, snap, snap" padTop={70} padBottom={72} />
+
+  <dialog class="lightbox" aria-label="Photo viewer" data-lightbox style={`--chevron: url(${JSON.stringify(chevron)})`}>
+    <figure class="lightbox__figure">
+      <img class="lightbox__img" alt="" data-lightbox-img />
+      <figcaption class="lightbox__count" aria-live="polite" data-lightbox-count></figcaption>
+    </figure>
+    <button type="button" class="lightbox__close" data-lightbox-close aria-label="Close">X</button>
+    <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Previous photo"></button>
+    <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Next photo"></button>
+  </dialog>
+</Base>
+
+<style>
+  .gallery {
+    padding: calc(106 * var(--u)) 0 calc(88 * var(--u));
+    /* Stripes image anchored to the bottom of the section, as in the Figma. */
+    background-size: 135.6% 113.9%;
+    background-position: 50.9% 100%;
+  }
+
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: calc(24 * var(--u));
+    row-gap: calc(46 * var(--u));
+    padding: 0 calc(114 * var(--u)) 0 calc(113 * var(--u));
+  }
+
+  .gallery__item {
+    display: block;
+    width: 100%;
+    aspect-ratio: 485 / 323;
+    padding: 0;
+    border: 0;
+    background: #111;
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+
+  .gallery__item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      transform 0.4s ease,
+      opacity 0.2s ease;
+  }
+
+  .gallery__item:hover :global(img) {
+    transform: scale(1.03);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery__item:hover :global(img) {
+      transform: none;
+    }
+  }
+
+  .gallery__item:focus-visible {
+    outline-offset: 3px;
+  }
+
+  /* ---------- Lightbox ---------- */
+
+  .lightbox {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--white);
+    overflow: hidden;
+  }
+
+  .lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.92);
+  }
+
+  .lightbox__figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    max-width: calc(100vw - 160px);
+    max-height: calc(100vh - 80px);
+    touch-action: pan-y;
+  }
+
+  .lightbox__img {
+    max-width: 100%;
+    max-height: calc(100vh - 120px);
+    object-fit: contain;
+    user-select: none;
+  }
+
+  .lightbox__count {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .lightbox__close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    padding: 6px 10px;
+    border: 0;
+    background: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .lightbox__nav {
+    position: absolute;
+    top: 50%;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--gold);
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .lightbox__nav:hover {
+    background: #d4b977;
+  }
+
+  .lightbox__nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--chevron) center / 18px 16px no-repeat;
+  }
+
+  .lightbox__nav--prev {
+    left: 24px;
+  }
+
+  .lightbox__nav--prev::before {
+    transform: rotate(-90deg);
+  }
+
+  .lightbox__nav--next {
+    right: 24px;
+  }
+
+  .lightbox__nav--next::before {
+    transform: rotate(90deg);
+  }
+
+  @media (max-width: 899px) {
+    .gallery {
+      padding: 32px 0 56px;
+      background-size: cover;
+    }
+
+    .gallery__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 0 var(--gutter);
+    }
+
+    .lightbox__figure {
+      max-width: 100vw;
+    }
+
+    .lightbox__img {
+      max-height: calc(100vh - 160px);
+    }
+
+    .lightbox__nav {
+      top: auto;
+      bottom: 24px;
+      width: 48px;
+      height: 48px;
+      transform: none;
+    }
+
+    .lightbox__nav--prev {
+      left: calc(50% - 64px);
+    }
+
+    .lightbox__nav--next {
+      right: calc(50% - 64px);
+    }
+
+    .lightbox__count {
+      position: absolute;
+      top: 26px;
+      left: 20px;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const items = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-gallery-index]'));
+
+  if (dialog && items.length) {
+    const img = dialog.querySelector<HTMLImageElement>('[data-lightbox-img]')!;
+    const count = dialog.querySelector<HTMLElement>('[data-lightbox-count]')!;
+    let index = 0;
+    let opener: HTMLElement | null = null;
+
+    const show = (i: number) => {
+      index = (i + items.length) % items.length;
+      const item = items[index];
+      const thumb = item.querySelector('img');
+      img.removeAttribute('src');
+      img.srcset = item.dataset.largeSrcset ?? '';
+      img.sizes = '100vw';
+      img.src = item.dataset.largeSrc ?? '';
+      img.alt = thumb?.alt ?? '';
+      count.textContent = `${index + 1} / ${items.length}`;
+    };
+
+    const open = (i: number, from: HTMLElement) => {
+      opener = from;
+      show(i);
+      dialog.showModal();
+      document.body.classList.add('is-locked');
+    };
+
+    items.forEach((item, i) => item.addEventListener('click', () => open(i, item)));
+
+    dialog.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('[data-lightbox-next]')?.addEventListener('click', () => show(index + 1));
+    dialog.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
+
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('is-locked');
+      opener?.focus();
+    });
+
+    // Click on the dark area around the photo closes the viewer.
+    dialog.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target === dialog || target.classList.contains('lightbox__figure')) dialog.close();
+    });
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') show(index - 1);
+      if (event.key === 'ArrowRight') show(index + 1);
+    });
+
+    // Swipe left / right on touch screens.
+    let startX = 0;
+    let startY = 0;
+    dialog.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+    dialog.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(index + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>

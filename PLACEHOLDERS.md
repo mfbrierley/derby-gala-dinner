@@ -10,7 +10,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] "Derby Gala Dinner proceeds have contributed to supporting **X** families with Bridge the Gap." — needs the real number.
 - [ ] Sir Bradley Wiggins' subtitle is "TV personality and passionate educator.", the same as Bassit Siddiqui's. Probably a copy-paste in the Figma.
 - [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
-- [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop.
+- [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop. (It uses its own 3 photos in `src/components/GalleryStrip.astro`, separate from the gallery folder.)
 
 ### Book a table
 - [ ] Price formatting differs between the cards: "£2,500 +VAT" and "£3,500 + vat".
@@ -28,9 +28,13 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] Spelling: the heading says "BASSIT SIDDIQUI" but his bio says "Baasit" (twice). Which is right?
 - [ ] Sir Bradley Wiggins' subtitle is again "TV personality and passionate educator." (same as Bassit's).
 
-### Seen on other Figma pages (to build next)
-- [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). **Not built.**
-- [ ] 2026 gallery: the grid repeats the same 3 photos. Needs the real gallery photos.
+### 2026 gallery
+- [ ] **Needs the real 2026 photos.** The Figma grid repeats the same 3 photos (24 tiles), and the build does the same for now. Add the photos to `src/assets/gallery/` and set `PREVIEW_REPEAT` to `1` in `src/pages/gallery.astro` (see the README in that folder).
+- [ ] Photo descriptions are generic ("Derby Gala Dinner 2026, photo 5 of 24"). Fine for a gallery, but they could be more specific.
+- [ ] The photo strip at the bottom of the gallery page has a "View Gallery" button that links to the same page, as in the Figma. Keep it, or drop the strip on this page?
+
+### Not built
+- [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). Not linked from anywhere in the Figma nav.
 
 ## Copy written for the build (not in the Figma), needs approval
 
@@ -59,6 +63,8 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] Book a table page: each "Book a table" / "Secure your sponsorship now" button opens the enquiry form with that table or package already selected.
 - [ ] Mobile and tablet layouts are adapted from the desktop design (there are no mobile frames).
 - [ ] The thank-you pop-up is shorter than the Figma panel (1050px tall).
+- [ ] Gallery: clicking a photo opens it full-size in a viewer (arrows, swipe, Esc to close). Not in the Figma.
+- [ ] Gallery rows are evenly spaced; the Figma has one row gap that's smaller than the rest.
 - [ ] Favicon: the DGD logo on a black square. Will may want to supply a proper one.
 - [ ] No social sharing image (og:image) yet.
 
