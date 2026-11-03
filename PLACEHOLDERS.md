@@ -8,7 +8,7 @@ the Figma, and open questions. Update it as items are resolved.
 
 ### Home
 - [x] Proceeds text (was "…supporting X families…") replaced with the Family support fund wording supplied by Matt.
-- [ ] Sir Bradley Wiggins' subtitle is "TV personality and passionate educator.", the same as Bassit Siddiqui's. Probably a copy-paste in the Figma.
+- [x] Sir Bradley Wiggins' subtitle is now "Olympic gold medallist and first British Tour de France winner." (was a copy of Bassit's).
 - [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
 - [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop. (It uses its own 3 photos in `src/components/GalleryStrip.astro`, separate from the gallery folder.)
 
@@ -26,7 +26,7 @@ the Figma, and open questions. Update it as items are resolved.
 ### Your hosts
 - [ ] Sir Bradley Wiggins and The Distractions bios are lorem ipsum.
 - [ ] Spelling: the heading says "BASSIT SIDDIQUI" but his bio says "Baasit" (twice). Which is right?
-- [ ] Sir Bradley Wiggins' subtitle is again "TV personality and passionate educator." (same as Bassit's).
+- [x] Sir Bradley Wiggins' subtitle updated to match the home page.
 
 ### 2026 gallery
 - [ ] **Needs the real 2026 photos.** The Figma grid repeats the same 3 photos (24 tiles), and the build does the same for now. Add the photos to `src/assets/gallery/` and set `PREVIEW_REPEAT` to `1` in `src/pages/gallery.astro` (see the README in that folder).
