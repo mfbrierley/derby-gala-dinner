@@ -1,0 +1,528 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HostRow from '../components/HostRow.astro';
+import BtgSpotlight from '../components/BtgSpotlight.astro';
+import GalleryStrip from '../components/GalleryStrip.astro';
+
+import bassit from '../assets/images/host-bassit.png';
+import wiggins from '../assets/images/host-wiggins.png';
+import distractions from '../assets/images/host-distractions.png';
+import tableEvening from '../assets/images/table-evening.jpg';
+import tableVip from '../assets/images/table-vip.jpg';
+import sponsorHeadline from '../assets/images/sponsor-headline.jpg';
+import sponsorSupporting from '../assets/images/sponsor-supporting.jpg';
+import sponsorDrinks from '../assets/images/sponsor-drinks.jpg';
+import sponsorLounge from '../assets/images/sponsor-lounge.jpg';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const href = (path: string) => `${base}${path}`;
+
+// Object positions reproduce the crops in the Figma frame.
+const sponsors = [
+  { title: 'Headline', image: sponsorHeadline, position: '36% 50%', alt: 'A Land Rover Defender on display at the 2026 gala' },
+  { title: 'supporting', image: sponsorSupporting, position: '0% 50%', alt: 'Guests at a sponsor gin bar' },
+  { title: 'Drinks', image: sponsorDrinks, position: '56% 50%', alt: 'Champagne being poured into rows of glasses' },
+  { title: 'Lounge', image: sponsorLounge, position: '74% 56%', alt: 'Guests raising a toast in the VIP lounge' },
+];
+---
+
+<Base active="home">
+  <!-- Hero -->
+  <section class="hero bg-stripes">
+    <div class="hero__inner">
+      <p class="hero__date">22/04/27</p>
+      <h1 class="display display--xl hero__title">TABLES NOW AVAILABLE.</h1>
+      <p class="hero__venue">Vaillant Live Derby</p>
+      <div class="hero__actions">
+        <a class="btn btn--gold" href={href('/book-a-table/')} data-open-enquiry="">Book a table</a>
+        <a class="btn btn--cream" href={href('/book-a-table/#sponsorship')}>Sponsor the event</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- It's time to make a difference -->
+  <section class="difference bg-white">
+    <div class="difference__inner container-wide">
+      <div class="difference__main">
+        <h2 class="display display--xl gold difference__title">IT’S TIME TO MAKE A DIFFERENCE.</h2>
+        <p class="difference__lede">Bigger and better for 2027.</p>
+      </div>
+      <p class="difference__aside">Derby Gala Dinner proceeds have contributed to supporting X families with Bridge the Gap.</p>
+    </div>
+  </section>
+
+  <!-- Hosts, the evening, tables and sponsorship -->
+  <section class="evening bg-stripes">
+    <div class="hosts">
+      <HostRow
+        label="Hosted by"
+        name="BASSIT SIDDIQUI"
+        subtitle="TV personality and passionate educator."
+        image={bassit}
+        alt="Bassit Siddiqui"
+        boxHeight={467}
+        imgLeft={116}
+        imgWidth={468}
+      />
+      <HostRow
+        label="Special Guest"
+        name="Sir Bradley Wiggins"
+        subtitle="TV personality and passionate educator."
+        image={wiggins}
+        alt="Sir Bradley Wiggins"
+        boxHeight={540}
+        imgLeft={91}
+        imgWidth={464}
+        objectPosition="center top"
+      />
+      <HostRow
+        label="Live music from:"
+        name="The Distractions"
+        subtitle="Gala house band for the night"
+        image={distractions}
+        alt="The Distractions performing on stage"
+        boxHeight={496}
+        imgLeft={-21}
+        imgWidth={657}
+        backdrop={false}
+        flip
+        objectPosition="left center"
+      />
+    </div>
+
+    <div class="intro container">
+      <h2 class="display display--xl intro__title">An evening of decadence that makes a difference.</h2>
+      <p class="intro__lede">Please join us for a premium black tie evening of entertainment.</p>
+      <p class="intro__body">
+        Gather together in decadent surroundings, in the presence of celebrity guests and incredible entertainment in the
+        service of Bridge the Gap, the organisation that is on a mission to ensure every child feels hope.
+      </p>
+    </div>
+
+    <div class="tables container">
+      <h2 class="label">Book a table</h2>
+      <div class="tables__grid">
+        <article class="table-card table-card--evening">
+          <Image
+            class="table-card__img"
+            src={tableEvening}
+            alt="A guest at the 2026 gala dinner"
+            widths={[480, 720, 1000, 1328]}
+            sizes="(max-width: 899px) 90vw, 39vw"
+            loading="lazy"
+          />
+          <div class="table-card__body">
+            <h3 class="display display--lg">EVENING TABLE</h3>
+            <p class="table-card__desc">A 10 person table including place gift for all guests</p>
+            <a class="btn btn--white table-card__btn" href={href('/book-a-table/#evening-table')}>Find out more</a>
+          </div>
+        </article>
+        <article class="table-card table-card--vip">
+          <Image
+            class="table-card__img"
+            src={tableVip}
+            alt="Guests mingling at the 2026 gala dinner"
+            widths={[480, 720, 1000, 1328]}
+            sizes="(max-width: 899px) 90vw, 39vw"
+            loading="lazy"
+          />
+          <div class="table-card__body">
+            <h3 class="display display--lg">VIP TABLE</h3>
+            <p class="table-card__desc table-card__desc--wide">A 10 person table, situated in a premium location with extras.</p>
+            <a class="btn btn--gold table-card__btn" href={href('/book-a-table/#vip-table')}>Find out more</a>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="sponsors container">
+      <h2 class="label">Sponsor Packages</h2>
+      <ul class="sponsors__grid">
+        {
+          sponsors.map((s) => (
+            <li class="sponsor-tile">
+              <Image
+                class="sponsor-tile__img"
+                src={s.image}
+                alt={s.alt}
+                widths={[480, 720, 1000, 1328]}
+                sizes="(max-width: 899px) 90vw, 39vw"
+                loading="lazy"
+                style={`object-position: ${s.position}`}
+              />
+              <h3 class="display display--lg sponsor-tile__title">{s.title}</h3>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="sponsors__cta">
+        <a class="btn btn--gold btn--wide" href={href('/book-a-table/#sponsorship')}>Find out more</a>
+      </div>
+    </div>
+  </section>
+
+  <BtgSpotlight />
+  <GalleryStrip />
+</Base>
+
+<style>
+  /* ---------- Hero ---------- */
+
+  .hero {
+    display: flex;
+    justify-content: center;
+    min-height: calc(996 * var(--u));
+    padding-top: calc(259 * var(--u));
+    /* Figma: stripes image stretched to 2057 × 1218 and anchored to the bottom of the hero. */
+    background-size: 119.04% 122.29%;
+    background-position: 51.7% 100%;
+    text-align: center;
+  }
+
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(970 * var(--u));
+  }
+
+  .hero__date,
+  .hero__venue {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--gold);
+  }
+
+  .hero__date {
+    font-size: max(26px, calc(48 * var(--u)));
+  }
+
+  .hero__title {
+    margin-top: calc(14 * var(--u));
+  }
+
+  .hero__venue {
+    margin-top: calc(39 * var(--u));
+    font-size: max(22px, calc(40 * var(--u)));
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: calc(27 * var(--u));
+    margin-top: calc(19 * var(--u));
+  }
+
+  /* ---------- It's time to make a difference ---------- */
+
+  .difference {
+    padding: calc(123 * var(--u)) 0 calc(153 * var(--u));
+  }
+
+  .difference__inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .difference__main {
+    max-width: calc(866 * var(--u));
+  }
+
+  .difference__lede,
+  .difference__aside {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: max(20px, calc(36 * var(--u)));
+    line-height: 1.31;
+    color: var(--black);
+  }
+
+  .difference__lede {
+    margin-top: calc(16 * var(--u));
+  }
+
+  .difference__aside {
+    flex: none;
+    width: calc(524 * var(--u));
+    margin-right: calc(8 * var(--u));
+  }
+
+  /* ---------- Dark section ---------- */
+
+  .evening {
+    padding: calc(103 * var(--u)) 0 calc(146 * var(--u));
+    /* Figma: stripes image at 137.33% of the section, anchored to its bottom. */
+    background-size: 137.33% 137.33%;
+    background-position: 50% 100%;
+  }
+
+  .hosts {
+    display: grid;
+    row-gap: calc(41 * var(--u));
+    padding: 0 calc(110 * var(--u)) 0 calc(129 * var(--u));
+  }
+
+  .hosts > :global(:nth-child(3)) {
+    margin-top: calc(16 * var(--u));
+  }
+
+  .intro {
+    margin-top: calc(275 * var(--u));
+    text-align: center;
+  }
+
+  .intro__title {
+    max-width: calc(1450 * var(--u));
+    margin-inline: auto;
+  }
+
+  .intro__lede {
+    margin-top: calc(43 * var(--u));
+    font-family: var(--font-serif);
+    font-size: max(24px, calc(48 * var(--u)));
+    line-height: 1.31;
+    color: var(--gold);
+  }
+
+  .intro__body {
+    max-width: calc(1337 * var(--u));
+    margin: calc(31 * var(--u)) auto 0;
+  }
+
+  .tables {
+    margin-top: calc(26 * var(--u));
+  }
+
+  .tables__grid,
+  .sponsors__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: calc(24 * var(--u));
+  }
+
+  .tables__grid {
+    margin-top: calc(20 * var(--u));
+  }
+
+  .table-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: calc(732 * var(--u));
+    padding: 0 calc(42 * var(--u)) calc(52 * var(--u));
+    border: 3px solid var(--white);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .table-card--vip {
+    border-color: var(--gold);
+  }
+
+  .table-card :global(.table-card__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .table-card--evening :global(.table-card__img) {
+    object-position: 31% 50%;
+  }
+
+  .table-card--vip :global(.table-card__img) {
+    object-position: 72% 50%;
+  }
+
+  .table-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 25.41%, #000 81.42%);
+  }
+
+  .table-card__desc {
+    max-width: calc(315 * var(--u));
+    margin-top: calc(19 * var(--u));
+  }
+
+  .table-card__desc--wide {
+    max-width: calc(501 * var(--u));
+  }
+
+  .table-card__btn {
+    height: max(44px, calc(54 * var(--u)));
+    margin-top: calc(26 * var(--u));
+  }
+
+  .sponsors {
+    margin-top: calc(77 * var(--u));
+  }
+
+  .sponsors__grid {
+    margin-top: calc(49 * var(--u));
+    row-gap: calc(14 * var(--u));
+  }
+
+  .sponsor-tile {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    aspect-ratio: 664 / 340;
+    padding: 0 calc(42 * var(--u)) calc(40 * var(--u));
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .sponsor-tile :global(.sponsor-tile__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .sponsor-tile::after {
+    content: '';
+    position: absolute;
+    inset: 40% 0 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
+  }
+
+  .sponsors__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: calc(60 * var(--u));
+  }
+
+  /* ---------- Mobile ---------- */
+
+  @media (max-width: 899px) {
+    .hero {
+      min-height: 100svh;
+      min-height: max(620px, 100svh);
+      padding: 150px var(--gutter) 80px;
+      background-size: cover;
+      background-position: center bottom;
+    }
+
+    .hero__inner {
+      width: 100%;
+    }
+
+    .hero__title {
+      margin-top: 12px;
+      font-size: 84px;
+    }
+
+    .hero__venue {
+      margin-top: 20px;
+    }
+
+    .hero__actions {
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .difference {
+      padding: 64px 0;
+    }
+
+    .difference__inner {
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .difference__main,
+    .difference__aside {
+      width: auto;
+      max-width: none;
+      margin-right: 0;
+    }
+
+    .difference__title {
+      font-size: 72px;
+    }
+
+    .evening {
+      padding: 64px 0 72px;
+      background-size: auto 100%;
+      background-position: center bottom;
+    }
+
+    .hosts {
+      row-gap: 56px;
+      padding: 0 var(--gutter);
+    }
+
+    .intro {
+      margin-top: 96px;
+    }
+
+    .intro__title {
+      font-size: 60px;
+    }
+
+    .intro__lede {
+      margin-top: 24px;
+    }
+
+    .intro__body {
+      margin-top: 16px;
+    }
+
+    .tables,
+    .sponsors {
+      margin-top: 56px;
+    }
+
+    .tables__grid,
+    .sponsors__grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .table-card {
+      min-height: 480px;
+      padding: 0 20px 24px;
+    }
+
+    .table-card h3 {
+      font-size: 56px;
+    }
+
+    .table-card__desc,
+    .table-card__desc--wide {
+      max-width: 320px;
+      margin-top: 12px;
+    }
+
+    .table-card__btn {
+      margin-top: 20px;
+      align-self: flex-start;
+    }
+
+    .sponsor-tile {
+      padding: 0 20px 20px;
+    }
+
+    .sponsor-tile__title {
+      font-size: 56px;
+    }
+
+    .sponsors__cta {
+      margin-top: 32px;
+    }
+  }
+</style>

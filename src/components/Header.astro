@@ -1,0 +1,323 @@
+---
+import logo from '../assets/svg/logo-dgd.svg?url';
+import fundraisingFor from '../assets/svg/fundraising-for-header.svg?url';
+import btgLogo from '../assets/images/btg-logo.png';
+import { BTG_URL } from '../config';
+import type { NavKey } from '../types';
+
+interface Props {
+  active?: NavKey;
+  /** Show the "Fundraising for Bridge the Gap" lock-up (the Event Details frame omits it). */
+  showFundraising?: boolean;
+}
+
+const { active = 'none', showFundraising = true } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const href = (path: string) => `${base}${path}`;
+
+// The home frame shows BOOK A TABLE in bold, the same as the Book a table frame.
+const isBold = (key: NavKey) => active === key || (active === 'home' && key === 'tables');
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-header__logo" href={href('/')}>
+      <img src={logo} width="163" height="99" alt="Derby Gala Dinner" />
+    </a>
+
+    {
+      showFundraising && (
+        <a class="fundraising fundraising--header" href={BTG_URL} target="_blank" rel="noopener">
+          <img class="fundraising__text" src={fundraisingFor} width="267" height="13" alt="Fundraising for" />
+          <img class="fundraising__logo" src={btgLogo.src} width="69" height="69" alt="Bridge the Gap" />
+        </a>
+      )
+    }
+
+    <nav class="site-nav" aria-label="Main">
+      <ul class="site-nav__list">
+        <li><a href={href('/book-a-table/')} class:list={{ 'is-bold': isBold('tables') }} aria-current={active === 'tables' ? 'page' : undefined}>BOOK A TABLE</a></li>
+        <li><a href={href('/book-a-table/#sponsorship')} class:list={{ 'is-bold': isBold('sponsor') }}>SPONSOR EVENT</a></li>
+        <li class="site-nav__has-sub">
+          <a href={href('/event-details/')} class:list={{ 'is-bold': isBold('details') }} aria-current={active === 'details' ? 'page' : undefined}>EVENT DETAILS</a>
+          <ul class="site-nav__sub">
+            <li><a href={href('/your-hosts/')} class:list={{ 'is-bold': isBold('hosts') }} aria-current={active === 'hosts' ? 'page' : undefined}>YOUR HOSTS</a></li>
+            <li><a href={href('/gallery/')} class:list={{ 'is-bold': isBold('gallery') }} aria-current={active === 'gallery' ? 'page' : undefined}>2026 GALLERY</a></li>
+          </ul>
+        </li>
+        <li><a href="#contact" data-open-contact>CONTACT</a></li>
+      </ul>
+    </nav>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">
+      <span class="menu-toggle__bars" aria-hidden="true"></span>
+      <span class="sr-only">Menu</span>
+    </button>
+  </div>
+
+  <div class="mobile-menu bg-stripes" id="mobile-menu" hidden>
+    <nav aria-label="Mobile">
+      <ul class="mobile-menu__list">
+        <li><a href={href('/book-a-table/')}>BOOK A TABLE</a></li>
+        <li><a href={href('/book-a-table/#sponsorship')}>SPONSOR EVENT</a></li>
+        <li><a href={href('/event-details/')}>EVENT DETAILS</a></li>
+        <li class="mobile-menu__sub"><a href={href('/your-hosts/')}>YOUR HOSTS</a></li>
+        <li class="mobile-menu__sub"><a href={href('/gallery/')}>2026 GALLERY</a></li>
+        <li><a href="#contact" data-open-contact>CONTACT</a></li>
+      </ul>
+    </nav>
+    <a class="fundraising fundraising--menu" href={BTG_URL} target="_blank" rel="noopener">
+      <img class="fundraising__text" src={fundraisingFor} width="267" height="13" alt="Fundraising for" />
+      <img class="fundraising__logo" src={btgLogo.src} width="69" height="69" alt="Bridge the Gap" />
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 50;
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: flex-start;
+    padding: calc(59 * var(--u)) calc(113 * var(--u)) 0 calc(188 * var(--u));
+  }
+
+  .site-header__logo img {
+    width: max(96px, calc(163 * var(--u)));
+    height: auto;
+  }
+
+  .fundraising {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .fundraising--header {
+    gap: calc(21 * var(--u));
+    margin-top: calc(-3 * var(--u));
+    margin-left: calc(167 * var(--u));
+  }
+
+  .fundraising--header .fundraising__text {
+    width: calc(267 * var(--u));
+    height: auto;
+  }
+
+  .fundraising--header .fundraising__logo {
+    width: calc(69 * var(--u));
+    min-width: 44px;
+    height: auto;
+  }
+
+  .site-nav {
+    margin-left: auto;
+    margin-top: calc(27 * var(--u));
+  }
+
+  .site-nav__list {
+    display: flex;
+    gap: calc(44 * var(--u));
+  }
+
+  .site-nav a {
+    display: block;
+    font-size: var(--text-nav);
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--white);
+  }
+
+  .site-nav a.is-bold {
+    font-weight: 700;
+  }
+
+  .site-nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+
+  .site-nav__has-sub {
+    position: relative;
+  }
+
+  .site-nav__sub {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    display: grid;
+    gap: calc(18 * var(--u));
+    padding-top: calc(18 * var(--u));
+    text-align: center;
+    transform: translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease;
+  }
+
+  .site-nav__has-sub:hover .site-nav__sub,
+  .site-nav__has-sub:focus-within .site-nav__sub {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: none;
+  }
+
+  @media (max-width: 899px) {
+    .site-header__inner {
+      align-items: center;
+      padding: 20px var(--gutter) 0;
+    }
+
+    .fundraising--header,
+    .site-nav {
+      display: none;
+    }
+
+    .menu-toggle {
+      position: relative;
+      z-index: 60;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      margin-left: auto;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    .menu-toggle__bars,
+    .menu-toggle__bars::before,
+    .menu-toggle__bars::after {
+      display: block;
+      width: 28px;
+      height: 2px;
+      background: var(--white);
+      transition:
+        transform 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    .menu-toggle__bars {
+      position: relative;
+    }
+
+    .menu-toggle__bars::before,
+    .menu-toggle__bars::after {
+      content: '';
+      position: absolute;
+      left: 0;
+    }
+
+    .menu-toggle__bars::before {
+      top: -9px;
+    }
+
+    .menu-toggle__bars::after {
+      top: 9px;
+    }
+
+    .menu-toggle[aria-expanded='true'] .menu-toggle__bars {
+      background: transparent;
+    }
+
+    .menu-toggle[aria-expanded='true'] .menu-toggle__bars::before {
+      transform: translateY(9px) rotate(45deg);
+    }
+
+    .menu-toggle[aria-expanded='true'] .menu-toggle__bars::after {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    .mobile-menu:not([hidden]) {
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 120px var(--gutter) 40px;
+      background-size: cover;
+      background-position: center bottom;
+      overflow-y: auto;
+    }
+
+    .mobile-menu__list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .mobile-menu__list a {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 44px;
+      line-height: 0.95;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .mobile-menu__sub a {
+      padding-left: 20px;
+      font-size: 32px;
+      color: var(--gold);
+    }
+
+    .fundraising--menu {
+      gap: 14px;
+      margin-top: 40px;
+    }
+
+    .fundraising--menu .fundraising__text {
+      width: 200px;
+      height: auto;
+    }
+
+    .fundraising--menu .fundraising__logo {
+      width: 56px;
+      height: auto;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  if (toggle && menu) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      menu.hidden = !open;
+      document.body.classList.toggle('is-locked', open);
+    };
+
+    toggle.addEventListener('click', () => setOpen(menu.hidden));
+    menu.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !menu.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia('(min-width: 900px)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>

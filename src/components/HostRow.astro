@@ -1,0 +1,174 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import goldLine from '../assets/svg/gold-line.svg?url';
+import backdropImg from '../assets/images/host-backdrop.jpg';
+
+/**
+ * One host / guest / band row: photo on the left (with the gold stripes backdrop and
+ * gold underline from the Figma), label + name + subtitle on the right.
+ * Media geometry comes from the Figma frame and is expressed as percentages of the
+ * 546px-wide media box so it scales on smaller screens.
+ */
+interface Props {
+  label: string;
+  name: string;
+  subtitle: string;
+  image: ImageMetadata;
+  alt: string;
+  /** Figma media box height in px (width is always 546). */
+  boxHeight: number;
+  /** Photo placement inside the media box, in Figma px. */
+  imgLeft: number;
+  imgWidth: number;
+  /** Show the stripes backdrop behind a cut-out photo. */
+  backdrop?: boolean;
+  /** Mirror the photo horizontally (the band photo is flipped in the Figma). */
+  flip?: boolean;
+  objectPosition?: string;
+}
+
+const {
+  label,
+  name,
+  subtitle,
+  image,
+  alt,
+  boxHeight,
+  imgLeft,
+  imgWidth,
+  backdrop = true,
+  flip = false,
+  objectPosition = 'center',
+} = Astro.props;
+
+const W = 546;
+const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(3)}%`;
+const mediaStyle = [
+  `--box-h: ${boxHeight}`,
+  `--img-left: ${pct(imgLeft, W)}`,
+  `--img-w: ${pct(imgWidth, W)}`,
+  `--backdrop-h: ${pct(427, boxHeight)}`,
+  `--object-position: ${objectPosition}`,
+].join('; ');
+---
+
+<div class="host">
+  <div class="host__media" style={mediaStyle}>
+    {backdrop && <img class="host__backdrop" src={backdropImg.src} width="399" height="427" alt="" loading="lazy" />}
+    <Image
+      class:list={['host__img', { 'host__img--flip': flip }]}
+      src={image}
+      alt={alt}
+      widths={[480, 720, 1000]}
+      sizes="(max-width: 899px) 90vw, 40vw"
+      loading="lazy"
+    />
+    <img class="host__line" src={goldLine} width="546" height="4" alt="" />
+  </div>
+  <div class="host__text">
+    <p class="host__label">{label}</p>
+    <h3 class="display display--xl host__name">{name}</h3>
+    <p class="host__subtitle">{subtitle}</p>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .host {
+    display: grid;
+    grid-template-columns: calc(546 * var(--u)) 1fr;
+    column-gap: calc(77 * var(--u));
+    align-items: center;
+  }
+
+  .host__media {
+    position: relative;
+    width: calc(546 * var(--u));
+    height: calc(var(--box-h) * var(--u));
+  }
+
+  .host__backdrop {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 73.077%;
+    height: var(--backdrop-h);
+    object-fit: cover;
+  }
+
+  .host__media :global(.host__img) {
+    position: absolute;
+    left: var(--img-left);
+    bottom: 0;
+    width: var(--img-w);
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--object-position);
+  }
+
+  .host__media :global(.host__img--flip) {
+    transform: scaleX(-1);
+  }
+
+  .host__line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    transform: translateY(50%);
+  }
+
+  .host__text {
+    padding-top: calc(30 * var(--u));
+    max-width: calc(866 * var(--u));
+  }
+
+  .host__label,
+  .host__subtitle {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: max(20px, calc(36 * var(--u)));
+    line-height: 1.31;
+    color: var(--gold);
+  }
+
+  .host__name {
+    margin-top: calc(5 * var(--u));
+    color: var(--white);
+  }
+
+  .host__subtitle {
+    margin-top: calc(-6 * var(--u));
+  }
+
+  @media (max-width: 899px) {
+    .host {
+      grid-template-columns: 1fr;
+      row-gap: 24px;
+    }
+
+    .host__media {
+      width: min(100%, 420px);
+      height: auto;
+      aspect-ratio: 546 / var(--box-h);
+      overflow-x: clip;
+    }
+
+    .host__text {
+      padding-top: 0;
+      max-width: none;
+    }
+
+    .host__name {
+      margin-top: 4px;
+      font-size: 64px;
+    }
+
+    .host__subtitle {
+      margin-top: 4px;
+    }
+  }
+</style>

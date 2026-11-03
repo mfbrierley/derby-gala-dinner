@@ -1,0 +1,38 @@
+# Derby Gala Dinner — Apache config for the IONOS web space.
+# This file is copied into dist/ by `npm run build`. Upload it with the rest of
+# the site (SFTP clients often hide dotfiles; make sure it is transferred).
+
+Options -Indexes
+DirectoryIndex index.html
+
+# Custom 404 page (written by Astro as /404.html).
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Force HTTPS.
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # www -> non-www.
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Compress text files.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript image/svg+xml application/json text/plain
+</IfModule>
+
+# Caching: Astro puts fingerprinted (content-hashed) files in /_astro/, so they can be cached for a year.
+# HTML is always revalidated so updates show up straight away.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <If "%{REQUEST_URI} =~ m#^/_astro/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+</IfModule>

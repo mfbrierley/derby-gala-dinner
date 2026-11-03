@@ -1,0 +1,58 @@
+# Placeholder and unconfirmed content
+
+All page copy is copied word-for-word from Will's Figma file (`dgd`). This list tracks
+anything that is a placeholder in the Figma, anything written for the build that isn't in
+the Figma, and open questions. Update it as items are resolved.
+
+## Placeholders in the Figma (copied as-is)
+
+### Home
+- [ ] "Derby Gala Dinner proceeds have contributed to supporting **X** families with Bridge the Gap." — needs the real number.
+- [ ] Sir Bradley Wiggins' subtitle is "TV personality and passionate educator.", the same as Bassit Siddiqui's. Probably a copy-paste in the Figma.
+- [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
+- [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop.
+
+### Seen on other Figma pages (to build next)
+- [ ] Your hosts: Sir Bradley Wiggins and The Distractions bios are lorem ipsum.
+- [ ] Event details: the heading "Intinery" (typo for "Itinerary"), plus Itinerary and Menu both "Coming soon...".
+- [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). **Not built.**
+- [ ] 2026 gallery: the grid repeats the same 3 photos. Needs the real gallery photos.
+
+## Copy written for the build (not in the Figma), needs approval
+
+- [ ] **Enquiry form, sponsorship intro:** "Please complete the form below to enquire about sponsorship. A member of our team will contact you within 24hrs to discuss." (The table version is verbatim from the Figma.)
+- [ ] **Contact form (general enquiries):** intro "Please complete the form below and a member of our team will contact you within 24hrs." The message box label is "Message:". It uses the same "Enquiry Form / GET IN TOUCH. GET INVOLVED." heading as the Figma.
+- [ ] **Form messages:** "Please fill in the highlighted fields.", "Please choose Evening Table, VIP Table or Sponsorship.", "Please complete the captcha check.", "Sorry, your enquiry couldn't be sent. Please try again in a moment.", "Sending…", plus the line under Submit: "We'll only use your details to respond to your enquiry. See our privacy policy."
+- [ ] **Form options:** Title list (Mr, Mrs, Ms, Miss, Mx, Dr). Sponsorship package list (Headline sponsorship, Supporting sponsorship, Welcome drink sponsor, VIP lounge sponsor, Other sponsorship), taken from the Book a table frame.
+- [ ] **Cookie banner:** all copy.
+- [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
+  - [ ] [Organiser name]
+  - [ ] [Organiser address]
+  - [ ] [Privacy contact email]
+  - [ ] Retention periods: [12 months] for enquiries, [6 years] for invoices
+  - [ ] Confirm whether enquiry details are shared with Bridge the Gap (the draft says they aren't mentioned)
+- [ ] **Footer:** added "Privacy policy" and "Cookie settings" links (needed for the policy and the cookie banner).
+- [ ] **404 page:** "Page not found", "Sorry, we couldn't find that page.", "Back to home".
+- [ ] **Image alt text and the site meta description.**
+
+## Design decisions to confirm with Will
+
+- [ ] The header from the Home / Book a table frames is used on every page. The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
+- [ ] In the nav, bold means the current page. On Home, BOOK A TABLE is bold, as in the Figma.
+- [ ] YOUR HOSTS and 2026 GALLERY appear as a dropdown under EVENT DETAILS on hover.
+- [ ] The home hero's "Book a table" opens the enquiry form. "Sponsor the event" and the "Find out more" buttons go to the Book a table page.
+- [ ] Mobile and tablet layouts are adapted from the desktop design (there are no mobile frames).
+- [ ] The thank-you pop-up is shorter than the Figma panel (1050px tall).
+- [ ] Favicon: the DGD logo on a black square. Will may want to supply a proper one.
+- [ ] No social sharing image (og:image) yet.
+
+## Assets to request
+
+- [ ] **Bridge the Gap logo as SVG.** It's built from masked layers in the Figma, so it's exported as a 225px PNG and looks slightly soft on high-resolution screens.
+- [ ] **Bridge the Gap spotlight photo:** it's a screenshot (about 924px wide). An original would be sharper.
+- (The other photos came out of the Figma at full resolution, so they're fine.)
+
+## Setup to-dos
+
+- [ ] Web3Forms dashboard: switch on hCaptcha for the form (Form settings → spam protection → hCaptcha).
+- [ ] Adobe Fonts (Will's web project `hfo7qtb`): optionally set font-display to `swap`. No italics are used so far, so they could be removed from the project.

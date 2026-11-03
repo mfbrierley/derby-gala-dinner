@@ -1,0 +1,221 @@
+---
+import { Image } from 'astro:assets';
+import strip1 from '../assets/images/strip-1.jpg';
+import strip2 from '../assets/images/strip-2.jpg';
+import strip3 from '../assets/images/strip-3.jpg';
+
+/**
+ * Gold "See how the Derby Gala Dinner 2026 unfolded." band.
+ * The photo row scrolls on its own and can be swiped / dragged. It pauses while
+ * someone is interacting with it, and stays still for people who prefer reduced motion.
+ */
+const photos = [
+  { src: strip1, alt: 'Guests chatting at the 2026 Derby Gala Dinner' },
+  { src: strip2, alt: 'Guests taking a selfie at the 2026 Derby Gala Dinner' },
+  { src: strip3, alt: 'Guests signing a board at the 2026 Derby Gala Dinner' },
+];
+// Three copies so the row can loop seamlessly in both directions.
+const copies = [0, 1, 2];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<section class="strip bg-gold" aria-label="2026 gallery preview">
+  <div class="strip__viewport" data-strip tabindex="0" aria-label="Photos from 2026, scrollable">
+    <ul class="strip__track">
+      {
+        copies.map((copy) =>
+          photos.map((photo) => (
+            <li class="strip__item" aria-hidden={copy !== 1 ? 'true' : undefined}>
+              <Image
+                src={photo.src}
+                alt={copy === 1 ? photo.alt : ''}
+                widths={[400, 640, 960, 1270]}
+                sizes="(max-width: 899px) 75vw, 37vw"
+                loading="lazy"
+                draggable="false"
+              />
+            </li>
+          )),
+        )
+      }
+    </ul>
+  </div>
+
+  <div class="strip__footer container-wide">
+    <h2 class="display display--md strip__title">See how the Derby Gala Dinner 2026 unfolded.</h2>
+    <a class="btn btn--white btn--wide strip__btn" href={`${base}/gallery/`}>View Gallery</a>
+  </div>
+</section>
+
+<style>
+  .strip {
+    padding: calc(96 * var(--u)) 0 calc(81 * var(--u));
+  }
+
+  .strip__viewport {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .strip__viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .strip__viewport.is-dragging {
+    cursor: grabbing;
+  }
+
+  .strip__viewport:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .strip__track {
+    display: flex;
+    gap: calc(32 * var(--u));
+    width: max-content;
+  }
+
+  .strip__item {
+    flex: none;
+    width: calc(635 * var(--u));
+    aspect-ratio: 635 / 424;
+  }
+
+  .strip__item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .strip__title {
+    max-width: calc(1246 * var(--u));
+    margin-top: calc(34 * var(--u));
+    color: var(--brown);
+  }
+
+  .strip__btn {
+    margin-top: calc(42 * var(--u));
+  }
+
+  @media (max-width: 899px) {
+    .strip {
+      padding: 48px 0;
+    }
+
+    .strip__track {
+      gap: 14px;
+    }
+
+    .strip__item {
+      width: 75vw;
+    }
+
+    .strip__title {
+      margin-top: 28px;
+      font-size: 44px;
+    }
+
+    .strip__btn {
+      margin-top: 24px;
+    }
+  }
+</style>
+
+<script>
+  const SPEED = 40; // px per second
+  const RESUME_AFTER = 2500; // ms after the last interaction
+
+  document.querySelectorAll<HTMLElement>('[data-strip]').forEach((viewport) => {
+    const track = viewport.querySelector<HTMLElement>('.strip__track');
+    if (!track) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let setWidth = 0;
+    let position = 0;
+    let pausedUntil = 0;
+    let hovering = false;
+    let visible = true;
+    let last = performance.now();
+
+    const measure = () => {
+      setWidth = track.scrollWidth / 3;
+      // Start in the middle copy, offset like the Figma (first photo partly off the left edge).
+      const offset = viewport.clientWidth * (293 / 1728);
+      position = setWidth + offset;
+      viewport.scrollLeft = position;
+    };
+
+    const wrap = () => {
+      if (!setWidth) return;
+      if (viewport.scrollLeft < setWidth * 0.5) viewport.scrollLeft += setWidth;
+      else if (viewport.scrollLeft > setWidth * 1.5) viewport.scrollLeft -= setWidth;
+    };
+
+    const pause = () => {
+      pausedUntil = performance.now() + RESUME_AFTER;
+    };
+
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 100) / 1000;
+      last = now;
+      const active = !reduceMotion.matches && !hovering && visible && now > pausedUntil && !document.hidden;
+      if (active && setWidth) {
+        position += SPEED * dt;
+        if (position > setWidth * 1.5) position -= setWidth;
+        viewport.scrollLeft = position;
+      } else {
+        position = viewport.scrollLeft;
+      }
+      requestAnimationFrame(tick);
+    };
+
+    viewport.addEventListener('scroll', () => {
+      wrap();
+    });
+
+    // Touch / trackpad / wheel: pause and let the browser scroll natively.
+    ['touchstart', 'wheel', 'keydown'].forEach((type) => viewport.addEventListener(type, pause, { passive: true }));
+    viewport.addEventListener('mouseenter', () => (hovering = true));
+    viewport.addEventListener('mouseleave', () => (hovering = false));
+
+    // Mouse drag to scroll (touch already swipes natively).
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragging = false;
+    viewport.addEventListener('pointerdown', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      dragging = true;
+      dragStartX = event.clientX;
+      dragStartScroll = viewport.scrollLeft;
+      viewport.classList.add('is-dragging');
+      viewport.setPointerCapture(event.pointerId);
+    });
+    viewport.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      viewport.scrollLeft = dragStartScroll - (event.clientX - dragStartX);
+    });
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      viewport.classList.remove('is-dragging');
+      pause();
+    };
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    }).observe(viewport);
+
+    window.addEventListener('resize', measure);
+    measure();
+    // Re-measure once images have sizes.
+    window.addEventListener('load', measure, { once: true });
+    requestAnimationFrame(tick);
+  });
+</script>

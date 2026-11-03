@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import type { NavKey } from '../types';
+import Footer from '../components/Footer.astro';
+import EnquiryModal from '../components/EnquiryModal.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+import { SITE_NAME, TYPEKIT_CSS } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  active?: NavKey;
+  showFundraising?: boolean;
+}
+
+const {
+  title,
+  description = 'Derby Gala Dinner: a premium black tie evening of entertainment in the service of Bridge the Gap. 22/04/27, Vaillant Live Derby.',
+  active = 'none',
+  showFundraising = true,
+} = Astro.props;
+
+const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+// Keep Vercel preview builds out of search engines; the live IONOS build is indexable.
+const noindex = Boolean(process.env.VERCEL);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#080808" />
+
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+    <link rel="preconnect" href="https://p.typekit.net" crossorigin />
+    <link rel="stylesheet" href={TYPEKIT_CSS} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header active={active} showFundraising={showFundraising} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <EnquiryModal variant="booking" />
+    <EnquiryModal variant="contact" />
+    <CookieBanner />
+  </body>
+</html>

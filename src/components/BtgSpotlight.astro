@@ -1,0 +1,114 @@
+---
+import { Image } from 'astro:assets';
+import spotlight from '../assets/images/btg-spotlight.jpg';
+import btgLogo from '../assets/images/btg-logo.png';
+import { BTG_URL } from '../config';
+---
+
+<section class="spotlight bg-white">
+  <div class="spotlight__inner container">
+    <div class="spotlight__text">
+      <p class="label">Spotlight on</p>
+      <h2 class="display display--xl gold spotlight__title">BRIDGE <br />THE GAP</h2>
+      <p class="spotlight__desc">
+        Bridge the Gap helps children and families build confidence, emotional understanding ensuring every Child feels the
+        hope they deserve.
+      </p>
+      <a class="btn btn--gold btn--wide spotlight__btn" href={BTG_URL} target="_blank" rel="noopener">Visit website</a>
+    </div>
+
+    <div class="spotlight__media">
+      <Image
+        class="spotlight__photo"
+        src={spotlight}
+        alt="Two Bridge the Gap team members smiling and reading children's books"
+        widths={[460, 700, 924]}
+        sizes="(max-width: 899px) 90vw, 40vw"
+        loading="lazy"
+      />
+      <img class="spotlight__logo" src={btgLogo.src} width="225" height="225" alt="Bridge the Gap" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .spotlight {
+    padding: calc(159 * var(--u)) 0 calc(125 * var(--u));
+  }
+
+  .spotlight__inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .spotlight__text {
+    max-width: calc(607 * var(--u));
+    padding-top: calc(28 * var(--u));
+  }
+
+  .spotlight__title {
+    margin-top: calc(34 * var(--u));
+  }
+
+  .spotlight__desc {
+    margin-top: calc(32 * var(--u));
+    line-height: 1.2;
+    color: var(--black);
+  }
+
+  .spotlight__btn {
+    margin-top: calc(30 * var(--u));
+  }
+
+  .spotlight__media {
+    position: relative;
+    flex: none;
+    width: calc(691 * var(--u));
+    aspect-ratio: 691 / 735;
+  }
+
+  .spotlight__media :global(.spotlight__photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .spotlight__logo {
+    position: absolute;
+    top: 3.81%;
+    left: 50%;
+    width: 32.5%;
+    height: auto;
+    transform: translateX(-50%);
+  }
+
+  @media (max-width: 899px) {
+    .spotlight {
+      padding: 64px 0;
+    }
+
+    .spotlight__inner {
+      flex-direction: column;
+    }
+
+    .spotlight__text {
+      max-width: none;
+      padding-top: 0;
+    }
+
+    .spotlight__title {
+      margin-top: 12px;
+      font-size: 80px;
+    }
+
+    .spotlight__desc,
+    .spotlight__btn {
+      margin-top: 20px;
+    }
+
+    .spotlight__media {
+      width: 100%;
+    }
+  }
+</style>

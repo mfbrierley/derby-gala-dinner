@@ -1,0 +1,31 @@
+---
+/** Gold band with the big page title, used at the top of every inner page in the Figma. */
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<section class="page-header bg-gold">
+  <h1 class="display display--xl page-header__title container">{title}</h1>
+</section>
+
+<style>
+  .page-header {
+    padding: calc(216 * var(--u)) 0 calc(16 * var(--u));
+  }
+
+  .page-header__title {
+    color: var(--ink);
+  }
+
+  @media (max-width: 899px) {
+    .page-header {
+      padding: 120px 0 20px;
+    }
+
+    .page-header__title {
+      font-size: 72px;
+    }
+  }
+</style>

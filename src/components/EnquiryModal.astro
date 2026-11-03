@@ -1,0 +1,744 @@
+---
+import TableIcon from '../assets/svg/icon-table-white.svg';
+import StarIcon from '../assets/svg/icon-star.svg';
+import chevron from '../assets/svg/icon-chevron.svg?url';
+import { WEB3FORMS_ACCESS_KEY, WEB3FORMS_ENDPOINT, HCAPTCHA_SITEKEY } from '../config';
+
+interface Props {
+  /** `booking`: tables and sponsorship (opened by Book a table / Secure your sponsorship buttons).
+   *  `contact`: general enquiries (opened by CONTACT). */
+  variant: 'booking' | 'contact';
+}
+
+const { variant } = Astro.props;
+const id = variant === 'booking' ? 'enquiry-modal' : 'contact-modal';
+const isBooking = variant === 'booking';
+
+// Copy from the Figma enquiry form. The sponsorship and contact intros are adapted
+// versions (not in the Figma) and are listed in PLACEHOLDERS.md for approval.
+const intros = {
+  table: 'Please complete the form below to reserve your table. A member of our team will contact you within 24hrs to confirm.',
+  sponsorship: 'Please complete the form below to enquire about sponsorship. A member of our team will contact you within 24hrs to discuss.',
+  contact: 'Please complete the form below and a member of our team will contact you within 24hrs.',
+};
+
+const packages = ['Headline sponsorship', 'Supporting sponsorship', 'Welcome drink sponsor', 'VIP lounge sponsor', 'Other sponsorship'];
+const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
+---
+
+<dialog class="modal" id={id} aria-labelledby={`${id}-title`} data-variant={variant}>
+  <div class="modal__panel">
+    <button class="modal__x" type="button" data-close aria-label="Close">X</button>
+
+    <div class="modal__view" data-view="form">
+      <p class="label gold">Enquiry Form</p>
+      <h2 class="display display--md modal__title" id={`${id}-title`}>get in touch. get involved.</h2>
+      <p
+        class="modal__intro"
+        data-intro
+        data-intro-table={intros.table}
+        data-intro-sponsorship={intros.sponsorship}
+      >
+        {isBooking ? intros.table : intros.contact}
+      </p>
+
+      <form class="enquiry" action={WEB3FORMS_ENDPOINT} method="POST" novalidate data-hcaptcha-sitekey={HCAPTCHA_SITEKEY}>
+        <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
+        <input type="hidden" name="subject" value={isBooking ? 'Derby Gala Dinner enquiry' : 'Derby Gala Dinner: general enquiry'} data-subject />
+        <input type="hidden" name="from_name" value="Derby Gala Dinner website" />
+        <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true" style="display: none" />
+
+        <div class="enquiry__row enquiry__row--3">
+          <label class="field field--select" style={`--chevron: url(${JSON.stringify(chevron)})`}>
+            <span class="sr-only">Title</span>
+            <select name="Title" autocomplete="honorific-prefix">
+              <option value="" selected>Title</option>
+              {titles.map((t) => <option value={t}>{t}</option>)}
+            </select>
+          </label>
+          <label class="field">
+            <span class="sr-only">First Name (required)</span>
+            <input name="First Name" type="text" placeholder="First Name" autocomplete="given-name" required />
+          </label>
+          <label class="field">
+            <span class="sr-only">Surname (required)</span>
+            <input name="Surname" type="text" placeholder="Surname" autocomplete="family-name" required />
+          </label>
+        </div>
+
+        <div class="enquiry__row enquiry__row--2">
+          <label class="field">
+            <span class="sr-only">Email Address (required)</span>
+            <input name="email" type="email" placeholder="Email Address" autocomplete="email" required />
+          </label>
+          <label class="field">
+            <span class="sr-only">Contact Number (required)</span>
+            <input name="Contact Number" type="tel" placeholder="Contact Number" autocomplete="tel" required />
+          </label>
+        </div>
+
+        <div class="enquiry__row enquiry__row--2">
+          <label class="field" class:list={{ 'field--span': !isBooking }}>
+            <span class="sr-only">Company Name</span>
+            <input name="Company Name" type="text" placeholder="Company Name" autocomplete="organization" />
+          </label>
+          {
+            isBooking && (
+              <label class="field">
+                <span class="sr-only">VAT Number (if applicable)</span>
+                <input name="VAT Number" type="text" placeholder="VAT Number (if applicable)" />
+              </label>
+            )
+          }
+        </div>
+
+        {
+          isBooking && (
+            <fieldset class="choice" data-choice>
+              <legend class="sr-only">What would you like to enquire about? (required)</legend>
+              <label class="choice__tile">
+                <input type="radio" name="Enquiry" value="Evening Table" required />
+                <TableIcon class="choice__icon" aria-hidden="true" />
+                <span class="choice__label">EVENING TABLE</span>
+              </label>
+              <label class="choice__tile">
+                <input type="radio" name="Enquiry" value="VIP Table" required />
+                <TableIcon class="choice__icon" aria-hidden="true" />
+                <span class="choice__label">VIP TABLE</span>
+              </label>
+              <label class="choice__tile">
+                <input type="radio" name="Enquiry" value="Sponsorship" required />
+                <StarIcon class="choice__icon choice__icon--star" aria-hidden="true" />
+                <span class="choice__label">SPONSORSHIP</span>
+              </label>
+            </fieldset>
+          )
+        }
+
+        {
+          isBooking && (
+            <label class="field field--select field--full" data-package-field hidden style={`--chevron: url(${JSON.stringify(chevron)})`}>
+              <span class="sr-only">Sponsorship package</span>
+              <select name="Sponsorship package" disabled>
+                <option value="" selected>Sponsorship package</option>
+                {packages.map((p) => <option value={p}>{p}</option>)}
+              </select>
+            </label>
+          )
+        }
+
+        <label class="field field--textarea">
+          <span class="field__label">{isBooking ? 'Additional information:' : 'Message:'}</span>
+          <textarea name={isBooking ? 'Additional information' : 'Message'} rows="3"></textarea>
+        </label>
+
+        {
+          isBooking && (
+            <p class="enquiry__terms">
+              Thank you for your interest in purchasing a table, all bookings are managed via an invoice system with full payment required to secure a booking, a booking is only confirmed upon successful receipt of payment.
+              <br />
+              Evening details such as menu choices and dietary requirements will be managed closer to the date of the event. By clicking submit you confirm your agreement to these terms.
+            </p>
+          )
+        }
+
+        <div class="enquiry__captcha" data-captcha></div>
+
+        <p class="enquiry__error" role="alert" data-error hidden></p>
+
+        <button class="btn btn--gold enquiry__submit" type="submit">Submit</button>
+
+        <p class="enquiry__privacy">
+          We'll only use your details to respond to your enquiry. See our <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/privacy-policy/`}>privacy policy</a>.
+        </p>
+      </form>
+    </div>
+
+    <div class="modal__view modal__view--thanks" data-view="thanks" hidden>
+      <p class="label gold">Enquiry Form</p>
+      <h2 class="display display--md modal__title" tabindex="-1" data-thanks-title>Thank you.</h2>
+      <button class="modal__close-text" type="button" data-close>Close</button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .modal {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 16px;
+    border: 0;
+    background: transparent;
+    color: var(--white);
+    overflow-y: auto;
+  }
+
+  .modal[open] {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .modal::backdrop {
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal__panel {
+    position: relative;
+    width: min(100%, calc(1084 * var(--u)));
+    min-width: min(100%, 720px);
+    margin: auto 0;
+    padding: max(32px, calc(47 * var(--u))) max(24px, calc(50 * var(--u))) max(32px, calc(62 * var(--u)));
+    border-radius: max(20px, calc(34 * var(--u)));
+    background: var(--black);
+  }
+
+  .modal__x {
+    position: absolute;
+    top: max(20px, calc(42 * var(--u)));
+    right: max(20px, calc(33 * var(--u)));
+    padding: 4px 8px;
+    border: 0;
+    background: none;
+    font-size: var(--text-body);
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .modal__title {
+    margin-top: calc(14 * var(--u));
+  }
+
+  .modal__intro {
+    max-width: calc(985 * var(--u));
+    margin-top: max(16px, calc(42 * var(--u)));
+  }
+
+  .modal__view--thanks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: max(360px, calc(700 * var(--u)));
+    text-align: center;
+  }
+
+  .modal__view--thanks[hidden],
+  .modal__view[hidden] {
+    display: none;
+  }
+
+  .modal__view--thanks .modal__title:focus {
+    outline: none;
+  }
+
+  .modal__close-text {
+    margin-top: max(40px, calc(80 * var(--u)));
+    padding: 8px 16px;
+    border: 0;
+    background: none;
+    font-size: var(--text-body);
+    cursor: pointer;
+  }
+
+  .modal__close-text:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* ---------- Form ---------- */
+
+  .enquiry {
+    display: grid;
+    gap: max(14px, calc(34 * var(--u)));
+    margin-top: max(24px, calc(50 * var(--u)));
+  }
+
+  .enquiry__row {
+    display: grid;
+    gap: max(12px, calc(24 * var(--u)));
+  }
+
+  .enquiry__row--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .enquiry__row--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .field--span {
+    grid-column: 1 / -1;
+  }
+
+  .field {
+    position: relative;
+    display: block;
+  }
+
+  .field input,
+  .field select {
+    display: block;
+    width: 100%;
+    height: var(--btn-height);
+    padding: 0 16px;
+    border: 3px solid transparent;
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--black);
+    font-size: var(--text-body);
+    text-align: center;
+    text-align-last: center;
+    appearance: none;
+  }
+
+  .field input::placeholder {
+    color: var(--black);
+    opacity: 1;
+  }
+
+  .field input:focus::placeholder {
+    color: #8a8a8a;
+  }
+
+  .field--select select {
+    padding-right: 44px;
+    padding-left: 44px;
+    cursor: pointer;
+  }
+
+  .field--select::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    width: 14px;
+    height: 12px;
+    background: var(--chevron) center / contain no-repeat;
+    transform: translateY(-50%) rotate(180deg);
+    pointer-events: none;
+  }
+
+  .field--select[hidden] {
+    display: none;
+  }
+
+  .field--textarea {
+    min-height: max(100px, calc(110 * var(--u)));
+    padding: max(12px, calc(20 * var(--u))) max(16px, calc(44 * var(--u)));
+    border: 3px solid transparent;
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--black);
+    cursor: text;
+  }
+
+  .field__label {
+    display: block;
+  }
+
+  .field--textarea textarea {
+    display: block;
+    width: 100%;
+    min-height: 3em;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--black);
+    font-size: var(--text-body);
+    resize: vertical;
+  }
+
+  .field--textarea textarea:focus {
+    outline: none;
+  }
+
+  .field--textarea:focus-within {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .field [aria-invalid='true'],
+  .field--textarea:has([aria-invalid='true']) {
+    border-color: #ff8a80;
+  }
+
+  /* ---------- Table / sponsorship choice ---------- */
+
+  .choice {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: max(12px, calc(24 * var(--u)));
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .choice__tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: max(150px, calc(286 * var(--u)));
+    padding: calc(105 * var(--u)) 12px 12px max(14px, calc(24 * var(--u)));
+    border: 2px solid var(--white);
+    border-radius: var(--radius);
+    color: var(--white);
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .choice__tile input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .choice__tile:hover {
+    border-color: var(--gold-light);
+  }
+
+  .choice__tile:has(input:checked) {
+    color: var(--gold);
+  }
+
+  .choice__tile:has(input:focus-visible) {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .choice[aria-invalid='true'] .choice__tile {
+    border-color: #ff8a80;
+  }
+
+  .choice__tile :global(.choice__icon) {
+    flex: none;
+    width: max(36px, calc(57 * var(--u)));
+    height: auto;
+  }
+
+  .choice__tile :global(.choice__icon path) {
+    fill: currentColor;
+  }
+
+  .choice__label {
+    margin-top: calc(29 * var(--u));
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: max(30px, calc(67 * var(--u)));
+    line-height: 0.9;
+  }
+
+  .enquiry__terms {
+    max-width: calc(985 * var(--u));
+  }
+
+  .enquiry__captcha:empty {
+    display: none;
+  }
+
+  .enquiry__error {
+    color: #ff8a80;
+  }
+
+  .enquiry__submit {
+    width: 100%;
+  }
+
+  .enquiry__submit[disabled] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .enquiry__privacy {
+    font-size: max(13px, calc(16 * var(--u)));
+    color: rgba(255, 255, 255, 0.72);
+    text-align: center;
+  }
+
+  @media (max-width: 899px) {
+    .modal {
+      padding: 0;
+    }
+
+    .modal__panel {
+      min-width: 0;
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 64px 20px 40px;
+      border-radius: 0;
+    }
+
+    .modal__x {
+      top: 20px;
+      right: 16px;
+      font-size: 22px;
+    }
+
+    .modal__title {
+      font-size: 44px;
+    }
+
+    .modal__intro,
+    .enquiry__terms {
+      max-width: none;
+    }
+
+    .enquiry__row--3,
+    .enquiry__row--2 {
+      grid-template-columns: 1fr;
+    }
+
+    .choice {
+      grid-template-columns: 1fr;
+    }
+
+    .choice__tile {
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      height: auto;
+      padding: 18px 16px;
+    }
+
+    .choice__label {
+      margin-top: 0;
+      font-size: 34px;
+    }
+  }
+</style>
+
+<script>
+  import { WEB3FORMS_ENDPOINT } from '../config';
+
+  type Hcaptcha = {
+    render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+    getResponse: (id: string) => string;
+    reset: (id: string) => void;
+  };
+
+  declare global {
+    interface Window {
+      hcaptcha?: Hcaptcha;
+      __dgdHcaptchaReady?: () => void;
+    }
+  }
+
+  let hcaptchaPromise: Promise<void> | null = null;
+
+  const loadHcaptcha = () => {
+    if (window.hcaptcha) return Promise.resolve();
+    hcaptchaPromise ??= new Promise<void>((resolve, reject) => {
+      window.__dgdHcaptchaReady = () => resolve();
+      const script = document.createElement('script');
+      script.src = 'https://js.hcaptcha.com/1/api.js?render=explicit&onload=__dgdHcaptchaReady&recaptchacompat=off';
+      script.async = true;
+      script.onerror = () => reject(new Error('hCaptcha failed to load'));
+      document.head.appendChild(script);
+    });
+    return hcaptchaPromise;
+  };
+
+  const renderCaptcha = async (form: HTMLFormElement) => {
+    const slot = form.querySelector<HTMLElement>('[data-captcha]');
+    if (!slot || slot.dataset.widgetId) return;
+    try {
+      await loadHcaptcha();
+      if (!window.hcaptcha || slot.dataset.widgetId) return;
+      slot.dataset.widgetId = window.hcaptcha.render(slot, {
+        sitekey: form.dataset.hcaptchaSitekey,
+        theme: 'dark',
+      });
+    } catch {
+      // If hCaptcha is blocked, the form still submits; Web3Forms' own spam filter still applies.
+    }
+  };
+
+  const lockScroll = (locked: boolean) => document.body.classList.toggle('is-locked', locked);
+
+  const showView = (dialog: HTMLDialogElement, view: 'form' | 'thanks') => {
+    dialog.querySelectorAll<HTMLElement>('[data-view]').forEach((el) => {
+      el.hidden = el.dataset.view !== view;
+    });
+  };
+
+  const clearErrors = (form: HTMLFormElement) => {
+    form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+    const error = form.querySelector<HTMLElement>('[data-error]');
+    if (error) {
+      error.hidden = true;
+      error.textContent = '';
+    }
+  };
+
+  const showError = (form: HTMLFormElement, message: string) => {
+    const error = form.querySelector<HTMLElement>('[data-error]');
+    if (error) {
+      error.textContent = message;
+      error.hidden = false;
+    }
+  };
+
+  /** Booking form: reflect the chosen option in the intro copy and the sponsorship package select. */
+  const syncChoice = (dialog: HTMLDialogElement) => {
+    const form = dialog.querySelector('form');
+    if (!form) return;
+    const choice = form.querySelector<HTMLInputElement>('input[name="Enquiry"]:checked')?.value ?? '';
+    const isSponsorship = choice === 'Sponsorship';
+
+    const pkgField = form.querySelector<HTMLElement>('[data-package-field]');
+    const pkgSelect = pkgField?.querySelector('select');
+    if (pkgField && pkgSelect) {
+      pkgField.hidden = !isSponsorship;
+      pkgSelect.disabled = !isSponsorship;
+    }
+
+    const intro = dialog.querySelector<HTMLElement>('[data-intro]');
+    if (intro?.dataset.introTable && intro.dataset.introSponsorship) {
+      intro.textContent = isSponsorship ? intro.dataset.introSponsorship : intro.dataset.introTable;
+    }
+
+    if (choice) form.querySelector('[data-choice]')?.removeAttribute('aria-invalid');
+  };
+
+  const openModal = (id: string, options: { enquiry?: string; pkg?: string } = {}) => {
+    const dialog = document.getElementById(id) as HTMLDialogElement | null;
+    const form = dialog?.querySelector('form');
+    if (!dialog || !form) return;
+
+    showView(dialog, 'form');
+    clearErrors(form);
+
+    if (options.enquiry) {
+      const radio = form.querySelector<HTMLInputElement>(`input[name="Enquiry"][value="${options.enquiry}"]`);
+      if (radio) radio.checked = true;
+    }
+    if (options.pkg) {
+      const select = form.querySelector<HTMLSelectElement>('select[name="Sponsorship package"]');
+      if (select) select.value = options.pkg;
+    }
+    if (dialog.dataset.variant === 'booking') syncChoice(dialog);
+
+    dialog.showModal();
+    lockScroll(true);
+    renderCaptcha(form);
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+
+    const enquiryTrigger = target.closest<HTMLElement>('[data-open-enquiry]');
+    if (enquiryTrigger) {
+      event.preventDefault();
+      openModal('enquiry-modal', {
+        enquiry: enquiryTrigger.dataset.openEnquiry || undefined,
+        pkg: enquiryTrigger.dataset.package,
+      });
+      return;
+    }
+
+    if (target.closest('[data-open-contact]')) {
+      event.preventDefault();
+      openModal('contact-modal');
+    }
+  });
+
+  document.querySelectorAll<HTMLDialogElement>('dialog.modal').forEach((dialog) => {
+    const form = dialog.querySelector('form');
+    if (!form) return;
+
+    dialog.addEventListener('close', () => lockScroll(false));
+
+    // Close on backdrop click.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    dialog.querySelectorAll('[data-close]').forEach((btn) => btn.addEventListener('click', () => dialog.close()));
+
+    form.addEventListener('change', (event) => {
+      const el = event.target as HTMLElement;
+      if (el.matches('input[name="Enquiry"]')) syncChoice(dialog);
+      if (el.getAttribute('aria-invalid') === 'true' && (el as HTMLInputElement).checkValidity?.()) {
+        el.removeAttribute('aria-invalid');
+      }
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearErrors(form);
+
+      // Validate required fields.
+      const invalid = Array.from(form.querySelectorAll<HTMLInputElement>('input[required]:not([type="radio"])')).filter(
+        (input) => !input.checkValidity(),
+      );
+      invalid.forEach((input) => input.setAttribute('aria-invalid', 'true'));
+
+      const choice = form.querySelector<HTMLElement>('[data-choice]');
+      const choiceMissing = choice && !form.querySelector('input[name="Enquiry"]:checked');
+      if (choiceMissing) choice.setAttribute('aria-invalid', 'true');
+
+      if (invalid.length || choiceMissing) {
+        const messages: string[] = [];
+        if (invalid.length) messages.push('Please fill in the highlighted fields.');
+        if (choiceMissing) messages.push('Please choose Evening Table, VIP Table or Sponsorship.');
+        showError(form, messages.join(' '));
+        (invalid[0] ?? choice?.querySelector('input'))?.focus();
+        return;
+      }
+
+      const slot = form.querySelector<HTMLElement>('[data-captcha]');
+      const widgetId = slot?.dataset.widgetId;
+      if (window.hcaptcha && widgetId && !window.hcaptcha.getResponse(widgetId)) {
+        showError(form, 'Please complete the captcha check.');
+        return;
+      }
+
+      // Subject line for the email.
+      const subject = form.querySelector<HTMLInputElement>('[data-subject]');
+      const enquiry = form.querySelector<HTMLInputElement>('input[name="Enquiry"]:checked')?.value;
+      if (subject && enquiry) {
+        const pkg = form.querySelector<HTMLSelectElement>('select[name="Sponsorship package"]:not(:disabled)')?.value;
+        subject.value = `Derby Gala Dinner enquiry: ${enquiry}${pkg ? ` (${pkg})` : ''}`;
+      }
+
+      const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const submitLabel = submit?.textContent ?? 'Submit';
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = 'Sending…';
+      }
+
+      try {
+        const response = await fetch(WEB3FORMS_ENDPOINT, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
+
+        form.reset();
+        if (dialog.dataset.variant === 'booking') syncChoice(dialog);
+        showView(dialog, 'thanks');
+        dialog.querySelector<HTMLElement>('[data-thanks-title]')?.focus();
+      } catch (error) {
+        console.error('Enquiry failed', error);
+        showError(form, "Sorry, your enquiry couldn't be sent. Please try again in a moment.");
+      } finally {
+        if (submit) {
+          submit.disabled = false;
+          submit.textContent = submitLabel;
+        }
+        if (window.hcaptcha && widgetId) window.hcaptcha.reset(widgetId);
+      }
+    });
+  });
+</script>

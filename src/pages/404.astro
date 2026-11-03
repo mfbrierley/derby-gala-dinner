@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Base title="Page not found">
+  <PageHeader title="Page not found" />
+  <section class="not-found bg-stripes container">
+    <p>Sorry, we couldn't find that page.</p>
+    <a class="btn btn--gold" href={`${base}/`}>Back to home</a>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    display: grid;
+    justify-items: start;
+    gap: 32px;
+    padding-top: 80px;
+    padding-bottom: 160px;
+    background-size: cover;
+    background-position: center bottom;
+  }
+</style>

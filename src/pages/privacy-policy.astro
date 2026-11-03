@@ -1,0 +1,178 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+
+// DRAFT for the organiser to review. Items in [square brackets] need filling in
+// (also listed in PLACEHOLDERS.md). This is not legal advice.
+const updated = '3 November 2026';
+---
+
+<Base title="Privacy policy" description="How Derby Gala Dinner collects and uses your personal information.">
+  <PageHeader title="Privacy policy" />
+
+  <section class="policy bg-stripes">
+    <div class="policy__inner container">
+      <p class="policy__updated">Last updated: {updated}</p>
+
+      <p class="policy__lede">
+        This policy explains how [Organiser name] ("we", "us") collects and uses personal information through the Derby Gala
+        Dinner website, derbygaladinner.co.uk.
+      </p>
+
+      <h2 class="label gold">Who we are</h2>
+      <p>
+        Derby Gala Dinner is organised by [Organiser name], [Organiser address], to raise funds for Bridge the Gap. We are
+        responsible for the personal information you give us through this website. If you have any questions about this policy
+        or your information, email us at [Privacy contact email].
+      </p>
+
+      <h2 class="label gold">What we collect</h2>
+      <p>When you send us an enquiry or a message through the website, we collect:</p>
+      <ul>
+        <li>your title, first name and surname</li>
+        <li>your email address and contact number</li>
+        <li>your company name and VAT number, if you give them</li>
+        <li>what you are enquiring about (for example an Evening Table, VIP Table or a sponsorship package)</li>
+        <li>anything you write in the message box</li>
+      </ul>
+      <p>We do not take payments or collect card details on this website.</p>
+
+      <h2 class="label gold">How we use it</h2>
+      <ul>
+        <li>to reply to your enquiry</li>
+        <li>to arrange table bookings and sponsorship, including sending invoices</li>
+        <li>if you book, to contact you about the event, such as menu choices and dietary requirements</li>
+      </ul>
+      <p>We will not use your details for marketing unless you ask us to, and we never sell them.</p>
+
+      <h2 class="label gold">Our legal basis</h2>
+      <p>
+        Under UK data protection law (UK GDPR), we use your information because you have asked us to take steps before
+        entering into an agreement with you (a booking or sponsorship), and because we have a legitimate interest in
+        responding to enquiries about the event.
+      </p>
+
+      <h2 class="label gold">Who we share it with</h2>
+      <p>We use a small number of service providers to run the website:</p>
+      <ul>
+        <li><strong>Web3Forms</strong> delivers form submissions to our email inbox.</li>
+        <li>
+          <strong>hCaptcha</strong> (Intuition Machines, Inc.) checks that form submissions come from a person and not a spam
+          bot. It processes information such as your IP address and device details to do this.
+        </li>
+        <li><strong>Adobe Fonts</strong> provides the fonts used on the website.</li>
+        <li><strong>Google</strong> provides the map on the event details page, only if you accept cookies.</li>
+        <li><strong>IONOS</strong> hosts the website.</li>
+      </ul>
+      <p>
+        Some of these providers are based outside the UK. Where your information is transferred outside the UK, it is protected
+        by the safeguards that UK data protection law requires.
+      </p>
+
+      <h2 class="label gold">How long we keep it</h2>
+      <p>
+        We keep enquiries that do not lead to a booking for up to [12 months]. If you book a table or sponsor the event, we keep
+        your details for as long as we need them to run the event and to meet our legal and accounting obligations (usually
+        [6 years] for invoices).
+      </p>
+
+      <h2 class="label gold">Your rights</h2>
+      <p>
+        You have the right to ask for a copy of the information we hold about you, and to ask us to correct it, delete it,
+        restrict how we use it, or stop using it. To do any of these, email [Privacy contact email].
+      </p>
+      <p>
+        If you are unhappy with how we have handled your information, you can complain to the Information Commissioner's Office
+        (ICO) at <a href="https://ico.org.uk/make-a-complaint/" target="_blank" rel="noopener">ico.org.uk</a> or on 0303 123
+        1113.
+      </p>
+
+      <h2 class="label gold" id="cookies">Cookies</h2>
+      <ul>
+        <li>
+          <strong>Your cookie choice.</strong> We remember whether you accepted or rejected cookies by saving that choice in your
+          browser. This is essential for the cookie banner to work.
+        </li>
+        <li>
+          <strong>Google Maps.</strong> The live map on the event details page is only loaded if you choose Accept. Google may then
+          set cookies; see
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>.
+        </li>
+        <li>
+          <strong>hCaptcha.</strong> When you open an enquiry form, hCaptcha loads to protect the form from spam. It may set
+          cookies that are needed for this security check.
+        </li>
+      </ul>
+      <p>
+        We do not use analytics or advertising cookies. You can change your choice at any time using
+        <button type="button" class="policy__link" data-cookie-settings>Cookie settings</button>.
+      </p>
+
+      <h2 class="label gold">Changes to this policy</h2>
+      <p>If we change this policy, we will update it on this page and change the date at the top.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .policy {
+    padding: calc(100 * var(--u)) 0 calc(160 * var(--u));
+    background-size: 137% 137%;
+    background-position: 50% 100%;
+  }
+
+  .policy__inner {
+    max-width: calc(985 * var(--u) + 2 * var(--gutter));
+  }
+
+  .policy__inner > * + * {
+    margin-top: 16px;
+  }
+
+  .policy__inner > h2 {
+    margin-top: 48px;
+  }
+
+  .policy__updated {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .policy__lede {
+    font-family: var(--font-serif);
+    font-size: max(22px, calc(36 * var(--u)));
+    color: var(--gold);
+  }
+
+  .policy ul {
+    display: grid;
+    gap: 8px;
+    padding-left: 1.2em;
+    list-style: disc;
+  }
+
+  .policy a,
+  .policy__link {
+    color: var(--gold);
+    text-underline-offset: 3px;
+  }
+
+  .policy__link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  @media (max-width: 899px) {
+    .policy {
+      padding: 48px 0 80px;
+      background-size: cover;
+    }
+
+    .policy__inner {
+      max-width: none;
+    }
+  }
+</style>
