@@ -5,7 +5,7 @@ import PageHeader from '../components/PageHeader.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
-<Base title="Page not found">
+<Base title="Page not found" noindex>
   <PageHeader title="Page not found" />
   <section class="not-found bg-stripes container">
     <p>Sorry, we couldn't find that page.</p>

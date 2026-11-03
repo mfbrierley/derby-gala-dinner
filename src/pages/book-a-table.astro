@@ -309,8 +309,8 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
   .package-card {
     position: relative;
-    height: calc(604 * var(--u));
-    min-height: 420px;
+    /* Figma height, but the card grows if the text needs more room (narrow desktop widths). */
+    min-height: calc(604 * var(--u));
     margin-top: calc(82 * var(--u));
     border: 3px solid var(--white);
     isolation: isolate;
@@ -365,19 +365,18 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
   }
 
   .package-card__body {
-    position: absolute;
-    top: calc(77 * var(--u));
-    left: calc(86 * var(--u));
-    width: calc(501 * var(--u));
+    width: max(calc(501 * var(--u)), 260px);
+    margin-left: calc(86 * var(--u));
+    padding: calc(77 * var(--u)) 0 max(calc(60 * var(--u)), 44px);
   }
 
   .package-card--vip .package-card__body {
-    left: calc(737 * var(--u));
+    margin-left: calc(737 * var(--u));
   }
 
   .package-card__text {
     margin-top: calc(44 * var(--u));
-    max-width: calc(315 * var(--u));
+    max-width: max(calc(315 * var(--u)), 240px);
   }
 
   .package-card--vip .package-card__text {
@@ -564,9 +563,8 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
     .package-card__body,
     .package-card--vip .package-card__body {
       position: relative;
-      top: auto;
-      left: auto;
       width: auto;
+      margin-left: 0;
       margin-top: -36px;
       padding: 0 20px;
     }
@@ -619,6 +617,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
     }
 
     .sponsor-row__title {
+      max-width: none;
       font-size: 52px;
     }
 

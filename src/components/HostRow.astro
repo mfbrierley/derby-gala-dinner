@@ -33,6 +33,8 @@ interface Props {
    */
   variant?: 'summary' | 'detail';
   textOffset?: number;
+  /** Heading level for the name: 3 on the home page (under a section h2), 2 on Your hosts. */
+  headingLevel?: 2 | 3;
 }
 
 const {
@@ -49,7 +51,10 @@ const {
   objectPosition = 'center',
   variant = 'summary',
   textOffset = 47,
+  headingLevel = 3,
 } = Astro.props;
+
+const Heading = headingLevel === 2 ? ("h2" as const) : ("h3" as const);
 
 const hasBio = Astro.slots.has('default');
 
@@ -79,7 +84,7 @@ const mediaStyle = [
   </div>
   <div class="host__text">
     <p class="host__label">{label}</p>
-    <h3 class="display display--xl host__name">{name}</h3>
+    <Heading class="display display--xl host__name">{name}</Heading>
     <p class="host__subtitle">{subtitle}</p>
     {
       hasBio && (

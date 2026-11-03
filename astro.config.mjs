@@ -13,5 +13,8 @@ export default defineConfig({
   build: {
     // /event-details/ is written as /event-details/index.html, which Apache serves without any rewrite rules.
     format: 'directory',
+    // Put the site's CSS inside each page rather than separate files: one less request
+    // before the page can show (about 25 KB per page, 6 KB compressed).
+    inlineStylesheets: 'always',
   },
 });

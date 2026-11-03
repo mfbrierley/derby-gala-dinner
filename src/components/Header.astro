@@ -114,6 +114,17 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
     height: auto;
   }
 
+  /* Narrow desktops: drop the "Fundraising for" wording so the lock-up doesn't run into the nav. */
+  @media (min-width: 900px) and (max-width: 1099px) {
+    .fundraising--header {
+      margin-left: calc(80 * var(--u));
+    }
+
+    .fundraising--header .fundraising__text {
+      display: none;
+    }
+  }
+
   .site-nav {
     margin-left: auto;
     margin-top: calc(27 * var(--u));
@@ -155,17 +166,17 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
     padding-top: calc(18 * var(--u));
     text-align: center;
     transform: translateX(-50%);
+    /* Hidden with opacity (not visibility) so the links stay reachable with the Tab key;
+       focusing one opens the menu through :focus-within. */
     opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.2s ease,
-      visibility 0.2s ease;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
   }
 
   .site-nav__has-sub:hover .site-nav__sub,
   .site-nav__has-sub:focus-within .site-nav__sub {
     opacity: 1;
-    visibility: visible;
+    pointer-events: auto;
   }
 
   .menu-toggle {
@@ -306,7 +317,7 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
       document.body.classList.toggle('is-locked', open);
     };
 
-    toggle.addEventListener('click', () => setOpen(menu.hidden));
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
     menu.addEventListener('click', (event) => {
       if ((event.target as HTMLElement).closest('a')) setOpen(false);
     });

@@ -68,6 +68,14 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] Favicon: the DGD logo on a black square. Will may want to supply a proper one.
 - [ ] No social sharing image (og:image) yet.
 
+## Accessibility points from the full check (design decisions for Will)
+
+Automated checks (axe-core, Lighthouse) pass apart from these, which all come from the design:
+
+- [ ] **Gold on white headings** ("IT'S TIME TO MAKE A DIFFERENCE.", "BRIDGE THE GAP"): contrast 2.3:1. The guideline for large text is 3:1. A slightly deeper gold for headings on white (around `#9A7B33`) would pass.
+- [ ] **White nav text on the gold header band** (inner pages): contrast 2.3:1. The guideline for small text is 4.5:1. Black nav text on the gold band would pass easily.
+- [ ] **Desktop footer links** are stacked 16px apart. The guideline asks for 24px tap targets. More line spacing would fix it. (The phone footer already passes.)
+
 ## Assets to request
 
 - [ ] **Bridge the Gap logo as SVG.** It's built from masked layers in the Figma, so it's exported as a 225px PNG and looks slightly soft on high-resolution screens.

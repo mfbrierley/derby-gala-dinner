@@ -5,6 +5,8 @@ import type { NavKey } from '../types';
 import Footer from '../components/Footer.astro';
 import EnquiryModal from '../components/EnquiryModal.astro';
 import CookieBanner from '../components/CookieBanner.astro';
+import { getImage } from 'astro:assets';
+import stripesSrc from '../assets/images/stripes-bg.jpg';
 import { SITE_NAME, TYPEKIT_CSS } from '../config';
 
 interface Props {
@@ -12,6 +14,8 @@ interface Props {
   description?: string;
   active?: NavKey;
   showFundraising?: boolean;
+  /** Keep this page out of search engines (e.g. the 404 page). */
+  noindex?: boolean;
 }
 
 const {
@@ -19,13 +23,19 @@ const {
   description = 'Derby Gala Dinner: a premium black tie evening of entertainment in the service of Bridge the Gap. 22/04/27, Vaillant Live Derby.',
   active = 'none',
   showFundraising = true,
+  noindex: pageNoindex = false,
 } = Astro.props;
 
 const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 // Keep Vercel preview builds out of search engines; the live IONOS build is indexable.
-const noindex = Boolean(process.env.VERCEL);
+const noindex = pageNoindex || Boolean(process.env.VERCEL);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Gold stripes background used on most sections: a smaller file for phones.
+const stripesSmall = await getImage({ src: stripesSrc, width: 1200, format: 'webp', quality: 72 });
+const stripesLarge = await getImage({ src: stripesSrc, width: 2400, format: 'webp', quality: 72 });
+const stripesCss = `:root{--stripes:url(${stripesLarge.src})}@media (max-width:899px){:root{--stripes:url(${stripesSmall.src})}}`;
 ---
 
 <!doctype html>
@@ -35,21 +45,35 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {!pageNoindex && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    {!pageNoindex && <meta property="og:url" content={canonical} />}
     <meta name="theme-color" content="#080808" />
 
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
 
+    <link rel="preload" as="image" href={stripesSmall.src} media="(max-width: 899px)" />
+    <link rel="preload" as="image" href={stripesLarge.src} media="(min-width: 900px)" />
+    <style is:inline set:html={stripesCss} />
+
     <link rel="preconnect" href="https://use.typekit.net" crossorigin />
     <link rel="preconnect" href="https://p.typekit.net" crossorigin />
     <link rel="stylesheet" href={TYPEKIT_CSS} />
+    <script is:inline>
+      // If the Adobe fonts can't load (network or subscription problem), switch to normal-sized
+      // fallback fonts rather than the width-matched ones (see "Fallback fonts" in global.css).
+      if (document.fonts && document.fonts.load) {
+        document.fonts
+          .load('700 1em "arteria-std-compress"')
+          .then(function (faces) { if (!faces.length) document.documentElement.classList.add('fonts-failed'); })
+          .catch(function () { document.documentElement.classList.add('fonts-failed'); });
+      }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

@@ -16,9 +16,10 @@
   --brown: #241916;
   --white: #ffffff;
 
-  --font-display: 'arteria-std-compress', 'Arial Narrow', 'Roboto Condensed', 'Helvetica Neue', sans-serif;
-  --font-serif: 'larken', Georgia, 'Times New Roman', serif;
-  --font-sans: 'sofia-pro', 'Helvetica Neue', Arial, sans-serif;
+  /* Each Adobe font is followed by a size-matched local fallback (see "Fallback fonts" below). */
+  --font-display: 'arteria-std-compress', 'arteria-fallback', 'Arial Narrow', sans-serif;
+  --font-serif: 'larken', 'larken-fallback', Georgia, 'Times New Roman', serif;
+  --font-sans: 'sofia-pro', 'sofia-fallback', 'Helvetica Neue', Arial, sans-serif;
 
   --u: min(1px, calc(100vw / 1728));
   --radius: 10px;
@@ -30,7 +31,7 @@
   --text-nav: max(13px, calc(16 * var(--u)));
   --btn-height: max(46px, calc(58 * var(--u)));
 
-  --stripes: url('../assets/images/stripes-bg.jpg');
+  /* --stripes (the gold stripes background) is set in Base.astro, so phones get a smaller file. */
 }
 
 @media (max-width: 899px) {
@@ -38,6 +39,39 @@
     --gutter: 20px;
     --gutter-wide: 20px;
   }
+}
+
+/* ---------- Fallback fonts ----------
+ * While the Adobe fonts download, text is laid out in these local fonts (invisibly). They are
+ * scaled to the same width as the Adobe fonts, so nothing moves when the real fonts arrive.
+ * Arteria is very condensed, so its fallback is Arial at 44%: right for measuring, far too small
+ * to read. If the Adobe fonts fail to load at all, Base.astro adds .fonts-failed to <html> and
+ * normal-sized fallbacks are used instead.
+ * Sizes measured against Arial / Times New Roman (via their metric twins Liberation Sans / Serif).
+ */
+
+@font-face {
+  font-family: 'arteria-fallback';
+  src: local('Arial'), local('ArialMT'), local('Helvetica Neue'), local('Helvetica'), local('Liberation Sans'), local('Roboto');
+  size-adjust: 44.4%;
+}
+
+@font-face {
+  font-family: 'larken-fallback';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Times'), local('Liberation Serif');
+  size-adjust: 106.4%;
+}
+
+@font-face {
+  font-family: 'sofia-fallback';
+  src: local('Arial'), local('ArialMT'), local('Helvetica Neue'), local('Helvetica'), local('Liberation Sans'), local('Roboto');
+  size-adjust: 101%;
+}
+
+:root.fonts-failed {
+  --font-display: 'Arial Narrow', 'Roboto Condensed', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-sans: 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* ---------- Reset ---------- */
