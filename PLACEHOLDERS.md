@@ -45,7 +45,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] **Cookie banner:** all copy.
 - [ ] **Map (before cookies are accepted):** "The live map is provided by Google, which sets cookies." with the buttons "Accept cookies and show map" and "Open in Google Maps".
 - [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
-  - [ ] [Organiser name]
+  - [x] Organiser name: VOLT7
   - [ ] [Organiser address]
   - [ ] [Privacy contact email]
   - [ ] Retention periods: [12 months] for enquiries, [6 years] for invoices
@@ -62,6 +62,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] The home hero's "Book a table" opens the enquiry form. "Sponsor the event" and the "Find out more" buttons go to the Book a table page.
 - [ ] Book a table page: each "Book a table" / "Secure your sponsorship now" button opens the enquiry form with that table or package already selected.
 - [ ] Mobile and tablet layouts are adapted from the desktop design (there are no mobile frames).
+- [ ] Home hero fills the screen with its content centred below the header (matches the Figma at 1728 × 996). On short screens the hero's text scales down so it all stays above the fold.
 - [ ] The thank-you pop-up is shorter than the Figma panel (1050px tall).
 - [ ] Gallery: clicking a photo opens it full-size in a viewer (arrows, swipe, Esc to close). Not in the Figma.
 - [ ] Gallery rows are evenly spaced; the Figma has one row gap that's smaller than the rest.

@@ -169,13 +169,26 @@ const sponsors = [
 <style>
   /* ---------- Hero ---------- */
 
+  /*
+   * The hero fills the screen (100svh = the height visible with the browser's toolbars showing)
+   * and its content is centred in the space below the header. At 1728 × 996 that lands exactly
+   * where the Figma has it.
+   *
+   * Inside the hero, sizes scale with the screen height as well as the width (whichever is
+   * smaller), so everything fits above the fold on short laptop screens too. If a screen is
+   * too short even for that (e.g. a phone held sideways), the hero simply grows and the padding
+   * keeps the text clear of the header.
+   */
   .hero {
+    --u: min(1px, calc(100vw / 1728), calc(100svh / 996));
     display: flex;
+    align-items: center;
     justify-content: center;
-    min-height: calc(996 * var(--u));
-    padding-top: calc(259 * var(--u));
-    /* Figma: stripes image stretched to 2057 × 1218 and anchored to the bottom of the hero. */
-    background-size: 119.04% 122.29%;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: calc(var(--header-h) + 24px) var(--gutter) max(40px, calc(64 * var(--u)));
+    /* Stripes anchored to the bottom, at the Figma's 119% width, but always tall enough to cover. */
+    background-size: max(119.04%, 178svh) auto;
     background-position: 51.7% 100%;
     text-align: center;
   }
@@ -409,9 +422,7 @@ const sponsors = [
 
   @media (max-width: 899px) {
     .hero {
-      min-height: 100svh;
-      min-height: max(620px, 100svh);
-      padding: 150px var(--gutter) 80px;
+      padding: calc(var(--header-h) + 24px) var(--gutter) 48px;
       background-size: cover;
       background-position: center bottom;
     }

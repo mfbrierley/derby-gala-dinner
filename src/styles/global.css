@@ -26,6 +26,9 @@
   --gutter: calc(188 * var(--u));
   --gutter-wide: calc(121 * var(--u));
 
+  /* Height of the header (it sits over the top of the first section): top padding + logo. */
+  --header-h: calc(59 * var(--u) + max(96px, calc(163 * var(--u))) * 99 / 163);
+
   --text-body: max(16px, calc(24 * var(--u)));
   --text-label: max(20px, calc(35 * var(--u)));
   --text-nav: max(13px, calc(16 * var(--u)));
@@ -38,6 +41,7 @@
   :root {
     --gutter: 20px;
     --gutter-wide: 20px;
+    --header-h: 79px;
   }
 }
 
