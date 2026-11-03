@@ -19,7 +19,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] Availability ("1 remaining", "3 remaining", "Available") needs updating as packages sell. It's in the `packages` list at the top of `src/pages/book-a-table.astro`.
 
 ### Event details
-- [ ] The heading "Intinery" is a typo for "Itinerary". It's kept as-is until confirmed.
+- [x] "Intinery" heading corrected to "Itinerary".
 - [ ] Itinerary and Menu both say "Coming soon...".
 - [ ] The map in the Figma is a screenshot. The build uses a live Google map that only loads after cookies are accepted; until then the screenshot is shown dimmed behind the consent message.
 

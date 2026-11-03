@@ -31,7 +31,7 @@ import GalleryStrip from '../components/GalleryStrip.astro';
           <p class="details__big details__gap">All 6.00pm <br />Carriages 00:00</p>
         </div>
         <div>
-          <h2 class="label">Intinery</h2>
+          <h2 class="label">Itinerary</h2>
           <p class="details__big details__first">Coming soon...</p>
           <h2 class="label details__menu">Menu</h2>
           <p class="details__big details__first">Coming soon...</p>
@@ -52,10 +52,15 @@ import GalleryStrip from '../components/GalleryStrip.astro';
     background-position: 50.9% 100%;
   }
 
+  /* Both rows share the same two columns, so Itinerary and Menu line up with the map.
+     The map runs slightly past the content edge, as in the Figma. */
+  .details {
+    --cols: calc(641 * var(--u)) calc(742 * var(--u));
+  }
+
   .details__top {
     display: grid;
-    /* The map runs slightly past the content edge, as in the Figma. */
-    grid-template-columns: calc(641 * var(--u)) calc(742 * var(--u));
+    grid-template-columns: var(--cols);
   }
 
   .details__venue {
@@ -79,7 +84,7 @@ import GalleryStrip from '../components/GalleryStrip.astro';
 
   .details__bottom {
     display: grid;
-    grid-template-columns: calc(579 * var(--u)) 1fr;
+    grid-template-columns: var(--cols);
     margin-top: calc(176 * var(--u));
   }
 
