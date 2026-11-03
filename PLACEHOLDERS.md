@@ -7,7 +7,7 @@ the Figma, and open questions. Update it as items are resolved.
 ## Placeholders in the Figma (copied as-is)
 
 ### Home
-- [ ] "Derby Gala Dinner proceeds have contributed to supporting **X** families with Bridge the Gap." — needs the real number.
+- [x] Proceeds text (was "…supporting X families…") replaced with the Family support fund wording supplied by Matt.
 - [ ] Sir Bradley Wiggins' subtitle is "TV personality and passionate educator.", the same as Bassit Siddiqui's. Probably a copy-paste in the Figma.
 - [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
 - [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop. (It uses its own 3 photos in `src/components/GalleryStrip.astro`, separate from the gallery folder.)
