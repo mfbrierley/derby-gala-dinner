@@ -4,39 +4,72 @@ import PageHeader from '../components/PageHeader.astro';
 import ConsentMap from '../components/ConsentMap.astro';
 import BtgSpotlight from '../components/BtgSpotlight.astro';
 import GalleryStrip from '../components/GalleryStrip.astro';
+
+// From the "dgd - matt" Figma (times written with colons throughout, as agreed with Matt).
+const timings: { title: string; times: [string, string][] }[] = [
+  {
+    title: 'VIP',
+    times: [
+      ['17:30', 'Doors'],
+      ['17:30', 'Lounge access (Until 19:00)'],
+      ['19:00', 'Main event'],
+      ['00:00', 'Carriages - Midnight'],
+    ],
+  },
+  {
+    title: 'Evening Guests',
+    times: [
+      ['18:00', 'Doors'],
+      ['18:00', 'Welcome drinks (Until 19:00)'],
+      ['19:00', 'Main event'],
+      ['00:00', 'Carriages - Midnight'],
+    ],
+  },
+];
 ---
 
 <Base
   title="Event details"
   active="details"
-  description="Derby Gala Dinner 2027: 22/04/27 at Vaillant Live Derby, 2 Colyear St, Derby DE1 1LA. Timings, itinerary and menu."
+  description="Derby Gala Dinner 2027: 22/04/27 at Vaillant Live Derby, 2 Colyear St, Derby DE1 1LA. Timings for VIP and evening guests, and the menu."
 >
   <PageHeader title="Event details" />
 
   <section class="details bg-stripes">
     <div class="container">
-      <div class="details__top">
+      <div class="details__row details__top">
         <div class="details__venue">
           <h2 class="label">Date and Venue</h2>
-          <p class="details__big details__first"><time datetime="2027-04-22">22/04/27</time></p>
-          <p class="details__big details__gap">Vaillant Live Derby, <br />2 Colyear St, Derby DE1 1LA</p>
+          <p class="details__big details__date"><time datetime="2027-04-22">22/04/27</time></p>
+          <p class="details__address">Vaillant Live Derby, <br />2 Colyear St, Derby DE1 1LA</p>
         </div>
         <ConsentMap />
       </div>
 
-      <div class="details__bottom">
-        <div>
-          <h2 class="label">Timings</h2>
-          <p class="details__big details__first">Doors VIP 5.30pm</p>
-          <p class="details__big details__gap">All 6.00pm <br />Carriages 00:00</p>
-        </div>
-        <div>
-          <h2 class="label">Itinerary</h2>
-          <p class="details__big details__first">Coming soon...</p>
-          <h2 class="label details__menu">Menu</h2>
-          <p class="details__big details__first">Coming soon...</p>
-        </div>
+      <hr class="details__rule" />
+
+      <h2 class="label">Timings</h2>
+      <div class="details__row details__timings">
+        {
+          timings.map((group) => (
+            <div>
+              <h3 class="label gold">{group.title}</h3>
+              <ul class="details__times">
+                {group.times.map(([time, what]) => (
+                  <li>
+                    <time>{time}</time> - {what}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
       </div>
+
+      <hr class="details__rule" />
+
+      <h2 class="label">Menu</h2>
+      <p class="details__big details__soon">Coming soon...</p>
     </div>
   </section>
 
@@ -45,26 +78,25 @@ import GalleryStrip from '../components/GalleryStrip.astro';
 </Base>
 
 <style>
+  /*
+   * Figma "dgd - matt", Event details frame. Measurements are Figma px from the top of the
+   * striped section. Both rows share the same two columns, so "Evening Guests" lines up with the map.
+   */
   .details {
-    padding: calc(150 * var(--u)) 0 calc(171 * var(--u));
+    --cols: calc(641 * var(--u)) calc(742 * var(--u));
+    padding: calc(116 * var(--u)) 0 calc(182 * var(--u));
     /* Figma: stripes image at ~136% × 114% of the section, anchored to its bottom. */
     background-size: 135.6% 113.9%;
     background-position: 50.9% 100%;
   }
 
-  /* Both rows share the same two columns, so Itinerary and Menu line up with the map.
-     The map runs slightly past the content edge, as in the Figma. */
-  .details {
-    --cols: calc(641 * var(--u)) calc(742 * var(--u));
-  }
-
-  .details__top {
+  .details__row {
     display: grid;
     grid-template-columns: var(--cols);
   }
 
   .details__venue {
-    padding-top: calc(24 * var(--u));
+    padding-top: calc(81 * var(--u));
   }
 
   .details__big {
@@ -74,22 +106,38 @@ import GalleryStrip from '../components/GalleryStrip.astro';
     color: var(--gold);
   }
 
-  .details__first {
-    margin-top: calc(33 * var(--u));
+  .details__date {
+    margin-top: calc(28 * var(--u));
   }
 
-  .details__gap {
-    margin-top: 1.31em;
+  .details__address {
+    margin-top: calc(20 * var(--u));
   }
 
-  .details__bottom {
-    display: grid;
-    grid-template-columns: var(--cols);
-    margin-top: calc(176 * var(--u));
+  /* Fine gold lines between the sections; they run slightly past the text edge, as in the Figma. */
+  .details__rule {
+    width: calc(1394 * var(--u));
+    max-width: calc(100% + 11 * var(--u));
+    height: max(1px, calc(2 * var(--u)));
+    margin: calc(43 * var(--u)) 0 calc(42 * var(--u)) calc(-11 * var(--u));
+    border: 0;
+    background: var(--gold);
   }
 
-  .details__menu {
-    margin-top: calc(124 * var(--u));
+  .details__timings {
+    margin-top: calc(35 * var(--u));
+  }
+
+  .details__times {
+    margin-top: calc(41 * var(--u));
+  }
+
+  .details__timings + .details__rule {
+    margin-top: calc(68 * var(--u));
+  }
+
+  .details__soon {
+    margin-top: calc(16 * var(--u));
   }
 
   @media (max-width: 899px) {
@@ -99,8 +147,7 @@ import GalleryStrip from '../components/GalleryStrip.astro';
       background-position: center bottom;
     }
 
-    .details__top,
-    .details__bottom {
+    .details__row {
       grid-template-columns: 1fr;
       row-gap: 32px;
     }
@@ -109,17 +156,32 @@ import GalleryStrip from '../components/GalleryStrip.astro';
       padding-top: 0;
     }
 
-    .details__first {
+    .details__date {
       margin-top: 8px;
     }
 
-    .details__bottom {
-      margin-top: 48px;
-      row-gap: 40px;
+    .details__address {
+      margin-top: 12px;
     }
 
-    .details__menu {
-      margin-top: 40px;
+    .details__rule,
+    .details__timings + .details__rule {
+      width: auto;
+      max-width: none;
+      height: 1px;
+      margin: 40px 0;
+    }
+
+    .details__timings {
+      margin-top: 20px;
+    }
+
+    .details__times {
+      margin-top: 10px;
+    }
+
+    .details__soon {
+      margin-top: 8px;
     }
   }
 </style>

@@ -12,6 +12,9 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
 - [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop. (It uses its own 3 photos in `src/components/GalleryStrip.astro`, separate from the gallery folder.)
 
+### Table photos
+- [x] The Evening Table and VIP Table photos are the two from the green note in the "dgd - matt" Figma, everywhere they appear: the home page cards, the Book a table page and the booking pop-up. On the tall home page cards the photos are cropped around the guests.
+
 ### Book a table
 - [x] White "Tables" and "Sponsors" headings added above the two gold intros, from the "dgd - matt" Figma. The Figma's gap under each heading differs slightly (20px and 6px); the build uses the same gap for both.
 - [ ] Price formatting differs between the cards: "£2,500 +VAT" and "£3,500 + vat".
@@ -20,8 +23,9 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] Availability ("1 remaining", "3 remaining", "Available") needs updating as packages sell. It's in the `packages` list at the top of `src/pages/book-a-table.astro`.
 
 ### Event details
-- [x] "Intinery" heading corrected to "Itinerary".
-- [ ] Itinerary and Menu both say "Coming soon...".
+- [x] Top section updated to the "dgd - matt" Figma: Date and Venue (address in white), gold lines between sections, Timings for VIP and Evening Guests, and Menu. Itinerary has been removed, as in the Figma.
+- [x] Times are written with colons throughout (17:30, 18:00), as agreed with Matt; the Figma mixes "17.30" and "19:00".
+- [ ] Menu still says "Coming soon...".
 - [ ] The map in the Figma is a screenshot. The build uses a live Google map that only loads after cookies are accepted; until then the screenshot is shown dimmed behind the consent message.
 
 ### Your hosts
