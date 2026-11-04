@@ -14,7 +14,8 @@ import sponsorHeadline from '../assets/images/sponsor-headline.jpg';
 import sponsorSupporting from '../assets/images/sponsor-supporting.jpg';
 import sponsorDrinks from '../assets/images/sponsor-drinks.jpg';
 import sponsorLounge from '../assets/images/sponsor-lounge.jpg';
-import { SPONSORS, PRODUCTION_CREDIT } from '../data/sponsors';
+import ProductionCredit from '../components/ProductionCredit.astro';
+import { HEADLINE_SPONSOR } from '../data/sponsors';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (path: string) => `${base}${path}`;
@@ -41,25 +42,17 @@ const sponsors = [
       </div>
 
       <div class="hero__sponsors">
-        <p class="sponsor-rule sponsor-rule--gold"><span>{SPONSORS.headline.label}</span></p>
+        <p class="sponsor-rule sponsor-rule--gold"><span>Headline sponsor</span></p>
         <img
-          class="hero__logo hero__logo--headline"
-          src={SPONSORS.headline.logo}
-          width={SPONSORS.headline.width}
-          height={SPONSORS.headline.height}
-          alt={SPONSORS.headline.name}
-          style={`--w: ${SPONSORS.headline.heroWidth}`}
+          class="hero__logo"
+          src={HEADLINE_SPONSOR.logo}
+          width={HEADLINE_SPONSOR.width}
+          height={HEADLINE_SPONSOR.height}
+          alt={HEADLINE_SPONSOR.name}
         />
-        <p class="sponsor-rule sponsor-rule--white"><span>{SPONSORS.supporting.label}</span></p>
-        <img
-          class="hero__logo hero__logo--supporting"
-          src={SPONSORS.supporting.logo}
-          width={SPONSORS.supporting.width}
-          height={SPONSORS.supporting.height}
-          alt={SPONSORS.supporting.name}
-          style={`--w: ${SPONSORS.supporting.heroWidth}`}
-        />
-        <p class="hero__production">{PRODUCTION_CREDIT}</p>
+        <div class="hero__production">
+          <ProductionCredit />
+        </div>
       </div>
     </div>
   </section>
@@ -257,7 +250,7 @@ const sponsors = [
     margin-top: calc(24 * var(--u));
   }
 
-  /* Sponsors: small letter-spaced labels between fine lines, then the logo. */
+  /* Headline sponsor (label between fine gold lines, then the logo), then "A Volt7 production". */
   .hero__sponsors {
     display: flex;
     flex-direction: column;
@@ -267,63 +260,19 @@ const sponsors = [
     margin-top: calc(40 * var(--u));
   }
 
-  .sponsor-rule {
-    display: flex;
-    align-items: center;
-    gap: calc(21 * var(--u));
-    width: 100%;
-    font-family: var(--font-sans);
+  .hero__sponsors .sponsor-rule {
     font-size: max(10px, calc(15 * var(--u) * var(--type-scale)));
-    line-height: 1;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--white);
-    white-space: nowrap;
-  }
-
-  /* cancel the letter-spacing after the last letter so the label sits centred between the lines */
-  .sponsor-rule span {
-    margin-right: -0.4em;
-  }
-
-  .sponsor-rule::before,
-  .sponsor-rule::after {
-    content: '';
-    flex: 1;
-    height: max(1px, calc(2 * var(--u)));
-    background: var(--rule-color);
-  }
-
-  .sponsor-rule--gold {
-    --rule-color: var(--gold);
-  }
-
-  .sponsor-rule--white {
-    --rule-color: var(--white);
   }
 
   .hero__logo {
-    width: calc(var(--w) * var(--u));
+    width: calc(203 * var(--u));
     height: auto;
-  }
-
-  .hero__logo--headline {
-    margin: calc(28 * var(--u)) 0 calc(33 * var(--u));
-  }
-
-  .hero__logo--supporting {
-    margin: calc(30 * var(--u)) 0 calc(40 * var(--u));
+    margin-top: calc(28 * var(--u));
   }
 
   .hero__production {
-    font-family: var(--font-sans);
+    margin-top: calc(88 * var(--u));
     font-size: max(12px, calc(20 * var(--u) * var(--type-scale)));
-    line-height: 1;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--white);
-    /* trailing letter-spacing */
-    margin-right: -0.4em;
   }
 
   /* ---------- It's time to make a difference ---------- */
@@ -548,35 +497,18 @@ const sponsors = [
       margin-top: 26px;
     }
 
-    .sponsor-rule {
-      gap: 12px;
+    .hero__sponsors .sponsor-rule {
       font-size: 11px;
-      letter-spacing: 0.3em;
     }
 
-    .sponsor-rule span {
-      margin-right: -0.3em;
-    }
-
-    .sponsor-rule::before,
-    .sponsor-rule::after {
-      height: 1px;
-    }
-
-    .hero__logo--headline {
+    .hero__logo {
       width: 140px;
-      margin: 14px 0 18px;
-    }
-
-    .hero__logo--supporting {
-      width: 132px;
-      margin: 14px 0 22px;
+      margin-top: 14px;
     }
 
     .hero__production {
+      margin-top: 28px;
       font-size: 13px;
-      letter-spacing: 0.3em;
-      margin-right: -0.3em;
     }
 
     .difference {

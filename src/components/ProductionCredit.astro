@@ -1,0 +1,35 @@
+---
+import { PRODUCER } from '../data/sponsors';
+---
+
+<!-- "A [Volt7 logo] production". Takes its size from the surrounding font size. -->
+<p class="credit">
+  <span>A</span>
+  <img src={PRODUCER.logo} width={PRODUCER.width} height={PRODUCER.height} alt={PRODUCER.name} />
+  <span>production</span>
+</p>
+
+<style>
+  .credit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9em;
+    font-family: var(--font-sans);
+    line-height: 1;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--white);
+    white-space: nowrap;
+  }
+
+  /* cancel the letter-spacing after the last letter of each word, so the gaps match */
+  .credit span {
+    margin-right: -0.4em;
+  }
+
+  /* Figma: a 91 x 21 logo beside 20px text */
+  .credit img {
+    width: auto;
+    height: 1.05em;
+  }
+</style>

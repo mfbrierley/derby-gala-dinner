@@ -259,6 +259,58 @@ textarea {
   color: var(--brown);
 }
 
+/* ---------- Sponsor labels: letter-spaced text between two fine lines (hero and footer) ---------- */
+
+.sponsor-rule {
+  display: flex;
+  align-items: center;
+  gap: calc(21 * var(--u));
+  width: 100%;
+  font-family: var(--font-sans);
+  line-height: 1;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--white);
+  white-space: nowrap;
+}
+
+/* cancel the letter-spacing after the last letter so the label sits centred between the lines */
+.sponsor-rule span {
+  margin-right: -0.4em;
+}
+
+.sponsor-rule::before,
+.sponsor-rule::after {
+  content: '';
+  flex: 1;
+  height: max(1px, calc(2 * var(--u)));
+  background: var(--rule-color, var(--gold));
+}
+
+.sponsor-rule--gold {
+  --rule-color: var(--gold);
+}
+
+.sponsor-rule--white {
+  --rule-color: var(--white);
+}
+
+@media (max-width: 899px) {
+  .sponsor-rule {
+    gap: 12px;
+    letter-spacing: 0.3em;
+  }
+
+  .sponsor-rule span {
+    margin-right: -0.3em;
+  }
+
+  .sponsor-rule::before,
+  .sponsor-rule::after {
+    height: 1px;
+  }
+}
+
 /* ---------- Buttons ---------- */
 
 .btn {

@@ -34,8 +34,9 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] Gallery page: the Bridge the Gap spotlight and the gold "See how…" photo strip have been removed (Matt). The page now goes straight from the photo grid to the footer.
 
 ### Sponsors (hero and footer, from the "dgd - matt" Figma)
-- [ ] Logos and labels come from the Figma: Headline sponsor = Stratstone Land Rover Derby, Supporting sponsor = Enigma Seven, plus "A Volt7 production". They're set in one place, `src/data/sponsors.ts`, which feeds both the home hero and the footer. The logos don't link anywhere (Matt).
-- [ ] The Enigma Seven logo is exported from the footer version in the Figma (the hero one is the same artwork, drawn slightly smaller).
+- [ ] Logos and labels come from the Figma: Headline sponsor = Stratstone Land Rover Derby; Supporting sponsors = Enigma Seven and Volt7; plus "A [Volt7 logo] production". They're set in one place, `src/data/sponsors.ts`, which feeds both the home hero and the footer. The logos don't link anywhere (Matt).
+- [ ] The hero shows the headline sponsor only; the footer shows both rows.
+- [ ] **More supporting sponsors are coming.** The Figma leaves a gap under them for now; the build closes it (the space under the logos matches the space at the top of the footer). Add each new sponsor to `SUPPORTING_SPONSORS` in `src/data/sponsors.ts` and the row grows.
 
 ### Not built
 - [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). Not linked from anywhere in the Figma nav.
@@ -65,8 +66,8 @@ the Figma, and open questions. Update it as items are resolved.
 
 ## Design decisions to confirm with Will
 
-- [ ] The new footer (sponsors plus the black Volt7 bar) is used on every page (Matt). It no longer has the "Fundraising for Bridge the Gap" lockup, as in the new Figma.
-- [x] The "Fundraising for Bridge the Gap" lockup has been removed from the header and the phone menu on every page (Matt).
+- [ ] The footer from the latest "dgd - matt" Figma is used on every page (Matt): logo, nav, gold divider and "Fundraising for Bridge the Gap" along the top, then the sponsors, then the black Volt7 bar.
+- [x] The "Fundraising for Bridge the Gap" lockup has been removed from the header and the phone menu on every page (Matt). It now appears in the footer only.
 - [ ] The header from the Home / Book a table frames is used on every page, including Your hosts and Gallery (those frames still have the old TICKETS / ABOUT / CONTACT header) and Event details (that frame leaves out the YOUR HOSTS / 2026 GALLERY links). The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
 - [ ] In the nav, bold means the current page. On Home, BOOK A TABLE is bold, as in the Figma.
 - [ ] YOUR HOSTS and 2026 GALLERY appear as a dropdown under EVENT DETAILS on hover.

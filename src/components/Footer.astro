@@ -1,6 +1,10 @@
 ---
 import logo from '../assets/svg/logo-dgd.svg?url';
-import { SPONSORS, PRODUCTION_CREDIT } from '../data/sponsors';
+import fundraisingFor from '../assets/svg/fundraising-for.svg?url';
+import btgLogo from '../assets/images/btg-logo.png';
+import ProductionCredit from './ProductionCredit.astro';
+import { BTG_URL } from '../config';
+import { HEADLINE_SPONSOR, SUPPORTING_SPONSORS } from '../data/sponsors';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (path: string) => `${base}${path}`;
@@ -8,7 +12,7 @@ const href = (path: string) => `${base}${path}`;
 
 <footer class="site-footer">
   <div class="site-footer__main bg-stripes">
-    <div class="site-footer__inner">
+    <div class="site-footer__top">
       <a class="site-footer__logo" href={href('/')}>
         <img src={logo} width="163" height="99" alt="Derby Gala Dinner" />
       </a>
@@ -24,35 +28,47 @@ const href = (path: string) => `${base}${path}`;
         </ul>
       </nav>
 
-      <div class="site-footer__sponsors">
-        <div class="footer-sponsor footer-sponsor--headline">
-          <p class="footer-sponsor__label">{SPONSORS.headline.label}</p>
-          <img
-            class="footer-sponsor__logo"
-            src={SPONSORS.headline.logo}
-            width={SPONSORS.headline.width}
-            height={SPONSORS.headline.height}
-            alt={SPONSORS.headline.name}
-            loading="lazy"
-          />
-        </div>
-        <div class="footer-sponsor footer-sponsor--supporting">
-          <p class="footer-sponsor__label">{SPONSORS.supporting.label}</p>
-          <img
-            class="footer-sponsor__logo"
-            src={SPONSORS.supporting.logo}
-            width={SPONSORS.supporting.width}
-            height={SPONSORS.supporting.height}
-            alt={SPONSORS.supporting.name}
-            loading="lazy"
-          />
-        </div>
-      </div>
+      <span class="site-footer__divider" aria-hidden="true"></span>
+
+      <a class="site-footer__fundraising" href={BTG_URL} target="_blank" rel="noopener">
+        <img class="site-footer__fundraising-text" src={fundraisingFor} width="267" height="13" alt="Fundraising for" />
+        <img class="site-footer__fundraising-logo" src={btgLogo.src} width="70" height="69" alt="Bridge the Gap" />
+      </a>
+    </div>
+
+    <div class="site-footer__sponsors">
+      <p class="sponsor-rule sponsor-rule--gold"><span>Headline sponsor</span></p>
+      <img
+        class="site-footer__headline-logo"
+        src={HEADLINE_SPONSOR.logo}
+        width={HEADLINE_SPONSOR.width}
+        height={HEADLINE_SPONSOR.height}
+        alt={HEADLINE_SPONSOR.name}
+        loading="lazy"
+      />
+
+      <p class="sponsor-rule sponsor-rule--white"><span>Supporting sponsors</span></p>
+      <ul class="site-footer__supporting">
+        {
+          SUPPORTING_SPONSORS.map((sponsor) => (
+            <li>
+              <img
+                src={sponsor.logo}
+                width={sponsor.width}
+                height={sponsor.height}
+                alt={sponsor.name}
+                loading="lazy"
+                style={`--w: ${sponsor.footerWidth}`}
+              />
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </div>
 
   <div class="site-footer__bar">
-    <p class="site-footer__production">{PRODUCTION_CREDIT}</p>
+    <ProductionCredit />
     <!-- Not in the Figma: legal links needed for the privacy policy and cookie choices. -->
     <ul class="site-footer__legal">
       <li><a href={href('/privacy-policy/')}>Privacy policy</a></li>
@@ -62,22 +78,25 @@ const href = (path: string) => `${base}${path}`;
 </footer>
 
 <style>
-  /* Figma: 329px of stripes, then a 51px black bar with the production credit. */
+  /*
+   * Figma ("dgd - matt", home frame): logo, nav, a gold divider and "Fundraising for Bridge the
+   * Gap" along the top; then the headline sponsor and the supporting sponsors, each under a
+   * label between fine lines; then a 51px black bar with "A Volt7 production".
+   * The Figma leaves a large gap under the supporting sponsors for sponsors still to come;
+   * here the space below them matches the space at the top.
+   */
   .site-footer__main {
-    display: flex;
-    align-items: center;
-    min-height: calc(329 * var(--u));
-    padding: calc(40 * var(--u)) 0;
-    /* Figma crops the stripes image to its bottom edge, scaled to 194.83% of the footer box. */
-    background-size: 194.83% 194.83%;
+    padding: calc(69 * var(--u)) calc(166 * var(--u) + var(--edge)) calc(84 * var(--u)) calc(128 * var(--u) + var(--edge));
+    /* Figma crops the stripes image to its bottom edge. */
+    background-size: cover;
     background-position: 42% 100%;
   }
 
-  .site-footer__inner {
+  /* ---------- Top row ---------- */
+
+  .site-footer__top {
     display: flex;
     align-items: center;
-    width: 100%;
-    padding: 0 calc(101 * var(--u) + var(--edge)) 0 calc(128 * var(--u) + var(--edge));
   }
 
   .site-footer__logo img {
@@ -106,60 +125,73 @@ const href = (path: string) => `${base}${path}`;
     font-weight: 700;
   }
 
-  /* ---------- Sponsors: a fine vertical line before each (gold for headline, white for supporting) ---------- */
-
-  .site-footer__sponsors {
-    display: flex;
-    margin-left: calc(89 * var(--u));
-  }
-
-  .footer-sponsor {
-    position: relative;
-    min-height: calc(121 * var(--u));
-  }
-
-  .footer-sponsor::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
+  .site-footer__divider {
+    align-self: stretch;
     width: max(1px, calc(2 * var(--u)));
-    background: var(--rule-color);
+    min-height: calc(121 * var(--u));
+    margin-left: calc(90 * var(--u));
+    background: var(--gold);
   }
 
-  .footer-sponsor--headline {
-    --rule-color: var(--gold);
-    padding-left: calc(62 * var(--u));
+  .site-footer__fundraising {
+    display: flex;
+    align-items: center;
+    gap: calc(21 * var(--u));
+    align-self: flex-start;
+    margin-top: calc(15 * var(--u));
+    margin-left: auto;
   }
 
-  .footer-sponsor--supporting {
-    --rule-color: var(--white);
-    margin-left: calc(71 * var(--u));
-    padding-left: calc(44 * var(--u));
-  }
-
-  .footer-sponsor__label {
-    font-size: max(10px, calc(15 * var(--u) * var(--type-scale)));
-    line-height: 1;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--white);
-    white-space: nowrap;
-  }
-
-  .footer-sponsor__logo {
-    width: calc(203 * var(--u));
-    min-width: 120px;
+  .site-footer__fundraising-text {
+    width: max(170px, calc(267 * var(--u)));
     height: auto;
   }
 
-  .footer-sponsor--headline .footer-sponsor__logo {
-    margin-top: calc(18 * var(--u));
+  .site-footer__fundraising-logo {
+    width: max(44px, calc(70 * var(--u)));
+    height: auto;
   }
 
-  .footer-sponsor--supporting .footer-sponsor__logo {
-    margin-top: calc(28 * var(--u));
+  /* ---------- Sponsors ---------- */
+
+  .site-footer__sponsors {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: calc(76 * var(--u));
+  }
+
+  .site-footer__sponsors .sponsor-rule {
+    gap: 0;
+    font-size: max(11px, calc(18 * var(--u) * var(--type-scale)));
+  }
+
+  /* Both labels sit in the same width, so the lines either side line up, as in the Figma. */
+  .site-footer__sponsors .sponsor-rule span {
+    min-width: calc(390 * var(--u));
+    margin-right: 0;
+    padding: 0 calc(20 * var(--u)) 0 calc(20 * var(--u) + 0.4em);
+    text-align: center;
+  }
+
+  .site-footer__headline-logo {
+    width: max(160px, calc(321 * var(--u)));
+    height: auto;
+    margin: calc(51 * var(--u)) 0 calc(75 * var(--u));
+  }
+
+  .site-footer__supporting {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: calc(30 * var(--u)) calc(64 * var(--u));
+    margin-top: calc(43 * var(--u));
+  }
+
+  .site-footer__supporting img {
+    width: calc(var(--w) * var(--u));
+    height: auto;
   }
 
   /* ---------- Black bar ---------- */
@@ -172,16 +204,7 @@ const href = (path: string) => `${base}${path}`;
     min-height: max(40px, calc(51 * var(--u)));
     padding: 0 calc(101 * var(--u) + var(--edge)) 0 calc(128 * var(--u) + var(--edge));
     background: #000;
-  }
-
-  .site-footer__production {
     font-size: max(12px, calc(20 * var(--u) * var(--type-scale)));
-    line-height: 1;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--white);
-    /* trailing letter-spacing */
-    margin-right: -0.4em;
   }
 
   .site-footer__legal {
@@ -226,18 +249,18 @@ const href = (path: string) => `${base}${path}`;
     }
   }
 
+  /* ---------- Phones ---------- */
+
   @media (max-width: 899px) {
     .site-footer__main {
-      padding: 48px var(--gutter) 40px;
-      background-size: cover;
+      padding: 48px var(--gutter) 44px;
       background-position: center bottom;
     }
 
-    .site-footer__inner {
+    .site-footer__top {
       flex-direction: column;
       align-items: flex-start;
-      gap: 32px;
-      padding: 0;
+      gap: 28px;
     }
 
     .site-footer__nav {
@@ -249,44 +272,55 @@ const href = (path: string) => `${base}${path}`;
       line-height: 1.8;
     }
 
+    .site-footer__divider {
+      display: none;
+    }
+
+    .site-footer__fundraising {
+      gap: 14px;
+      margin: 0;
+    }
+
+    .site-footer__fundraising-text {
+      width: 190px;
+    }
+
+    .site-footer__fundraising-logo {
+      width: 52px;
+    }
+
     .site-footer__sponsors {
-      flex-direction: column;
-      gap: 28px;
-      margin-left: 0;
+      margin-top: 44px;
     }
 
-    .footer-sponsor {
-      min-height: 0;
-      padding: 0 0 0 18px;
-    }
-
-    .footer-sponsor--supporting {
-      margin-left: 0;
-    }
-
-    .footer-sponsor__label {
+    .site-footer__sponsors .sponsor-rule {
       font-size: 11px;
-      letter-spacing: 0.3em;
     }
 
-    .footer-sponsor__logo,
-    .footer-sponsor--headline .footer-sponsor__logo,
-    .footer-sponsor--supporting .footer-sponsor__logo {
-      width: 150px;
+    .site-footer__sponsors .sponsor-rule span {
       min-width: 0;
-      margin-top: 14px;
+      padding: 0 0 0 0.3em;
+    }
+
+    .site-footer__headline-logo {
+      width: 180px;
+      margin: 24px 0 36px;
+    }
+
+    .site-footer__supporting {
+      gap: 20px 36px;
+      margin-top: 24px;
+    }
+
+    .site-footer__supporting img {
+      width: calc(var(--w) * 0.55px);
     }
 
     .site-footer__bar {
       flex-direction: column;
       gap: 12px;
       padding: 16px var(--gutter);
-    }
-
-    .site-footer__production {
       font-size: 13px;
-      letter-spacing: 0.3em;
-      margin-right: -0.3em;
     }
 
     .site-footer__legal {
