@@ -251,11 +251,34 @@ textarea {
  */
 .bg-bars {
   --bars-h: max(200px, calc(450 * var(--u)));
+  --bars-w: max(100%, calc(var(--bars-h) * 6.4));
+  /* Optional fade drawn over the top band (sections with photos on the left set this). */
+  --bars-fade: none;
   background-color: var(--black);
-  background-image: var(--bars-top), var(--bars-bottom);
+  background-image: var(--bars-fade), var(--bars-top), var(--bars-bottom);
   background-repeat: no-repeat;
-  background-size: max(100%, calc(var(--bars-h) * 6.4)) auto;
-  background-position: 50% 0, 50% 100%;
+  background-size: 100% var(--bars-h), var(--bars-w) auto, var(--bars-w) auto;
+  background-position: 0 0, 50% 0, 50% 100%;
+}
+
+/*
+ * Sections whose first rows are host photos on a dark backdrop box (home, Your hosts): the top
+ * band fades to black on the left, so the box sits on plain black and its edges don't cut into
+ * the bars. Solid black to just past the boxes, bars fully visible from the start of the text.
+ */
+.bg-bars--fade-left {
+  --bars-fade: linear-gradient(
+    to right,
+    var(--black) calc(var(--edge) + 640 * var(--u)),
+    rgb(8 8 8 / 0) calc(var(--edge) + 1000 * var(--u))
+  );
+}
+
+@media (max-width: 899px) {
+  /* Phones: the photo boxes span most of the width, so only the right-hand edge keeps its bars. */
+  .bg-bars--fade-left {
+    --bars-fade: linear-gradient(to right, var(--black) 72%, rgb(8 8 8 / 0) 100%);
+  }
 }
 
 
