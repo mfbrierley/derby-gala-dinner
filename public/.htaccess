@@ -5,6 +5,9 @@
 Options -Indexes
 DirectoryIndex index.html
 
+# The home page background video.
+AddType video/mp4 .mp4
+
 # Custom 404 page (written by Astro as /404.html).
 ErrorDocument 404 /404.html
 

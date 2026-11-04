@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import HostRow from '../components/HostRow.astro';
 import BtgSpotlight from '../components/BtgSpotlight.astro';
@@ -15,6 +15,8 @@ import sponsorSupporting from '../assets/images/sponsor-supporting.jpg';
 import sponsorDrinks from '../assets/images/sponsor-drinks.jpg';
 import sponsorLounge from '../assets/images/sponsor-lounge.jpg';
 import ProductionCredit from '../components/ProductionCredit.astro';
+import heroVideo from '../assets/video/hero-bars.mp4?url';
+import heroPosterSrc from '../assets/images/hero-bars-poster.jpg';
 import { HEADLINE_SPONSOR } from '../data/sponsors';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -27,11 +29,38 @@ const sponsors = [
   { title: 'Welcome drink sponsor', image: sponsorDrinks, position: '56% 50%', alt: 'Champagne being poured into rows of glasses' },
   { title: 'VIP lounge sponsor', image: sponsorLounge, position: '74% 56%', alt: 'Guests raising a toast in the VIP lounge' },
 ];
+
+// Hero video poster (first frame of the video), as WebP.
+const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'webp', quality: 80 });
 ---
 
 <Base active="home">
   <!-- Hero -->
-  <section class="hero bg-stripes">
+  <section class="hero">
+    <!--
+      Background: "Gala Bars Final" video (from the 06.Backgrounds Drive folder), re-encoded to 4.6 MB
+      at visually lossless quality. The poster is its first frame, shown until it plays, if it can't,
+      and for visitors who ask for reduced motion. The script below starts it (and only then is the
+      video downloaded, so visitors who never play it don't download it).
+    -->
+    <video
+      class="hero__video"
+      muted
+      loop
+      playsinline
+      preload="none"
+      poster={heroPoster.src}
+      aria-hidden="true"
+      tabindex="-1"
+      disablepictureinpicture
+      data-hero-video
+    >
+      <source src={heroVideo} type="video/mp4" />
+    </video>
+    <button class="hero__motion is-paused" type="button" aria-label="Play background animation" data-hero-motion>
+      <span aria-hidden="true"></span>
+    </button>
+
     <div class="hero__inner">
       <p class="hero__date">22/04/27</p>
       <h1 class="display display--xl hero__title">TABLES NOW AVAILABLE.</h1>
@@ -206,11 +235,67 @@ const sponsors = [
     justify-content: center;
     min-height: 100vh;
     min-height: 100svh;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     padding: calc(var(--header-h) + 24px) var(--gutter) max(28px, calc(64 * var(--u)));
-    /* Stripes anchored to the bottom, at the Figma's 119% width, but always tall enough to cover. */
-    background-size: max(119.04%, 178svh) auto;
-    background-position: 51.7% 100%;
+    background: var(--black);
     text-align: center;
+  }
+
+  /* The video fills the hero behind the text; its gold bars run along the top and bottom edges. */
+  .hero__video {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  /* Pause / play for the background animation (needed for anything that moves for over 5 seconds). */
+  .hero__motion {
+    position: absolute;
+    right: calc(var(--gutter) - 12px);
+    bottom: max(16px, calc(24 * var(--u)));
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: var(--white);
+    opacity: 0.75;
+    cursor: pointer;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+
+  .hero__motion:hover,
+  .hero__motion:focus-visible {
+    opacity: 1;
+    border-color: var(--white);
+  }
+
+  /* Pause icon: two bars. */
+  .hero__motion span {
+    width: 10px;
+    height: 12px;
+    border-left: 3px solid currentColor;
+    border-right: 3px solid currentColor;
+  }
+
+  /* Play icon: a triangle. */
+  .hero__motion.is-paused span {
+    width: 0;
+    height: 0;
+    margin-left: 3px;
+    border-style: solid;
+    border-width: 7px 0 7px 11px;
+    border-color: transparent transparent transparent currentColor;
   }
 
   .hero__inner {
@@ -469,8 +554,11 @@ const sponsors = [
   @media (max-width: 899px) {
     .hero {
       padding: calc(var(--header-h) + 12px) var(--gutter) 28px;
-      background-size: cover;
-      background-position: center bottom;
+    }
+
+    .hero__motion {
+      right: 12px;
+      bottom: 12px;
     }
 
     .hero__inner {
@@ -603,3 +691,48 @@ const sponsors = [
     }
   }
 </style>
+
+<script>
+  // Hero background video: plays unless the visitor prefers reduced motion or has paused it before.
+  const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-hero-motion]');
+
+  if (video && toggle) {
+    const KEY = 'dgd-hero-motion';
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem(KEY);
+    } catch {}
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const show = (playing: boolean) => {
+      toggle.classList.toggle('is-paused', !playing);
+      toggle.setAttribute('aria-label', playing ? 'Pause background animation' : 'Play background animation');
+    };
+
+    const play = () => {
+      video.preload = 'auto';
+      return video
+        .play()
+        .then(() => show(true))
+        .catch(() => show(false)); // e.g. blocked by a battery saver: the poster stays
+    };
+
+    const pause = () => {
+      video.pause();
+      show(false);
+    };
+
+    if (saved ? saved === 'playing' : !reduceMotion) play();
+    else pause();
+
+    toggle.addEventListener('click', () => {
+      const willPlay = video.paused;
+      if (willPlay) play();
+      else pause();
+      try {
+        localStorage.setItem(KEY, willPlay ? 'playing' : 'paused');
+      } catch {}
+    });
+  }
+</script>

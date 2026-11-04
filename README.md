@@ -45,6 +45,7 @@ uploaded into `/new-private/` shows no images. To use a different test folder, c
 | `src/pages/` | One file per page (`index.astro` is the home page) |
 | `src/layouts/Base.astro` | Page shell: `<head>`, fonts, header, footer, pop-ups, cookie banner |
 | `src/components/` | Header, footer, enquiry/contact pop-up, cookie banner and shared sections |
+| `src/assets/video/hero-bars.mp4` | Home hero background video (the poster is `src/assets/images/hero-bars-poster.jpg`, its first frame) |
 | `src/data/sponsors.ts` | Sponsor names, labels and logos (shown in the home hero and the footer) |
 | `src/styles/global.css` | Colours, fonts, buttons and the sizing system (see the comment at the top). `--type-scale` makes all text bigger or smaller (1 = Figma sizes) |
 | `src/assets/` | Images and SVGs from the Figma. Astro resizes the photos and converts them to WebP at build time |

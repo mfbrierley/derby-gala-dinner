@@ -12,6 +12,11 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
 - [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop. (It uses its own 3 photos in `src/components/GalleryStrip.astro`, separate from the gallery folder.)
 
+### Home hero background
+- [x] The hero background is now the "Gala Bars Final 1920x1080" video from the 06.Backgrounds Drive folder (Matt). Re-encoded from 22 MB to 4.6 MB at visually lossless quality (PSNR 52 dB on the bars), no sound, loops seamlessly. Its first frame is the still image shown while it loads.
+- [ ] **Not in the Figma:** a small pause / play button in the bottom-right corner of the hero. Moving content that runs for more than 5 seconds needs a way to stop it (accessibility guidelines). The visitor's choice is remembered.
+- [ ] Visitors whose device asks for reduced motion see the still image (and the video isn't downloaded) unless they press play.
+
 ### Table photos
 - [x] The Evening Table and VIP Table photos are the two from the green note in the "dgd - matt" Figma, everywhere they appear: the home page cards, the Book a table page and the booking pop-up. On the tall home page cards the photos are cropped around the guests.
 
