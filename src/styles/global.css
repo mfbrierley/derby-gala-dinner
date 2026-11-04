@@ -47,7 +47,7 @@
   --text-nav: max(13px, calc(16 * var(--u) * var(--type-scale)));
   --btn-height: max(46px, calc(58 * var(--u)));
 
-  /* --stripes (the gold stripes background) is set in Base.astro: a 2400px or 4000px version depending on the screen. */
+  /* --bars-top / --bars-bottom (the gold bars background) are set in Base.astro: 2560px or 3840px wide depending on the screen. */
 }
 
 @media (max-width: 899px) {
@@ -244,25 +244,18 @@ textarea {
 }
 
 /*
- * Gold stripes background, framed exactly as in the Figma:
- * - width: a fixed size at the Figma's scale (--stripes-w, in Figma px), so the stripes are as
- *   thin as in the design and don't grow on wide screens (never narrower than the page, though);
- * - height (--stripes-h) and vertical position (--stripes-y): by default a share of the section's
- *   height with the bottom of the image (the glowing ends of the stripes) at the bottom; sections
- *   with their own Figma frame use that frame's exact size and position instead;
- * - centred, nudged by --stripes-dx (Figma px).
- * Phones use the same framing, so they also get thin stripes on mostly black.
+ * Gold bars background (the black body sections): a faded band of bars along the very top and
+ * the very bottom, plain black in between however long the section is. The bands keep their own
+ * proportions: --bars-h tall (about 400px on a laptop, so the bars reach about 350px in; never
+ * under 200px), and wide enough to cover the section. The footer uses the bottom band only.
  */
-.bg-stripes {
-  --stripes-w: 2343;
-  --stripes-h: 113.91%;
-  --stripes-y: 100%;
-  --stripes-dx: -6;
+.bg-bars {
+  --bars-h: max(200px, calc(450 * var(--u)));
   background-color: var(--black);
-  background-image: var(--stripes);
+  background-image: var(--bars-top), var(--bars-bottom);
   background-repeat: no-repeat;
-  background-size: max(calc(var(--stripes-w) * var(--u)), 100%) var(--stripes-h);
-  background-position: calc(50% + var(--stripes-dx) * var(--u)) var(--stripes-y);
+  background-size: max(100%, calc(var(--bars-h) * 6.4)) auto;
+  background-position: 50% 0, 50% 100%;
 }
 
 

@@ -11,7 +11,7 @@ const href = (path: string) => `${base}${path}`;
 ---
 
 <footer class="site-footer">
-  <div class="site-footer__main bg-stripes">
+  <div class="site-footer__main bg-bars">
     <div class="site-footer__top">
       <a class="site-footer__logo" href={href('/')}>
         <img src={logo} width="163" height="99" alt="Derby Gala Dinner" />
@@ -87,10 +87,9 @@ const href = (path: string) => `${base}${path}`;
    */
   .site-footer__main {
     padding: calc(69 * var(--u)) calc(166 * var(--u) + var(--edge)) calc(84 * var(--u)) calc(128 * var(--u) + var(--edge));
-    /* Figma: the stripes are drawn much wider here (4008px, 195% of the footer's height), right of centre. */
-    --stripes-w: 4008;
-    --stripes-h: 194.83%;
-    --stripes-dx: 163;
+    /* Bottom band of bars only (the top of the footer stays plain black). */
+    background-image: var(--bars-bottom);
+    background-position: 50% 100%;
   }
 
   /* ---------- Top row ---------- */

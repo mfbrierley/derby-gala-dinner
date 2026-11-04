@@ -5,8 +5,10 @@ import type { NavKey } from '../types';
 import Footer from '../components/Footer.astro';
 import EnquiryModal from '../components/EnquiryModal.astro';
 import CookieBanner from '../components/CookieBanner.astro';
-import { getImage } from 'astro:assets';
-import stripesSrc from '../assets/images/stripes-bg.png';
+import barsTop from '../assets/images/bars/bars-top-2560.webp?url';
+import barsTopLarge from '../assets/images/bars/bars-top-3840.webp?url';
+import barsBottom from '../assets/images/bars/bars-bottom-2560.webp?url';
+import barsBottomLarge from '../assets/images/bars/bars-bottom-3840.webp?url';
 import { SITE_NAME, TYPEKIT_CSS } from '../config';
 
 interface Props {
@@ -32,15 +34,16 @@ const noindex = pageNoindex || Boolean(process.env.VERCEL) || Boolean(process.en
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 /*
- * Gold stripes background used on most sections, made from Will's 4000 x 2250 original.
- * Long sections stretch it (as in the Figma), so it's served large and at high quality:
- * 2400px wide for phones and standard screens, the full 4000px for Retina and very wide screens.
+ * Gold bars background for the black body sections: a faded band of bars along the very top and
+ * the very bottom of each section, black in between. Cut from the "Bars 01" still (3840 x 2160)
+ * in the 06.Backgrounds Drive folder: rows 0-600 and 1560-2160, at half strength and transparent
+ * where there are no bars, saved as WebP (quality 75, transparency quality 60) in
+ * src/assets/images/bars/. 2560px wide for phones and standard screens, 3840px for Retina and very
+ * wide screens.
  */
-const stripesStandard = await getImage({ src: stripesSrc, width: 2400, format: 'webp', quality: 90 });
-const stripesLarge = await getImage({ src: stripesSrc, width: 4000, format: 'webp', quality: 90 });
-const STRIPES_LARGE_MEDIA = '(min-width: 900px) and (min-resolution: 1.5dppx), (min-width: 900px) and (-webkit-min-device-pixel-ratio: 1.5), (min-width: 1800px)';
-const STRIPES_STANDARD_MEDIA = '(max-width: 899px), (max-width: 1799px) and (max-resolution: 1.49dppx)';
-const stripesCss = `:root{--stripes:url(${stripesStandard.src})}@media ${STRIPES_LARGE_MEDIA}{:root{--stripes:url(${stripesLarge.src})}}`;
+const BARS_LARGE_MEDIA = '(min-width: 900px) and (min-resolution: 1.5dppx), (min-width: 900px) and (-webkit-min-device-pixel-ratio: 1.5), (min-width: 1800px)';
+const BARS_STANDARD_MEDIA = '(max-width: 899px), (max-width: 1799px) and (max-resolution: 1.49dppx)';
+const barsCss = `:root{--bars-top:url(${barsTop});--bars-bottom:url(${barsBottom})}@media ${BARS_LARGE_MEDIA}{:root{--bars-top:url(${barsTopLarge});--bars-bottom:url(${barsBottomLarge})}}`;
 ---
 
 <!doctype html>
@@ -62,9 +65,10 @@ const stripesCss = `:root{--stripes:url(${stripesStandard.src})}@media ${STRIPES
 
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
 
-    <link rel="preload" as="image" href={stripesStandard.src} media={STRIPES_STANDARD_MEDIA} />
-    <link rel="preload" as="image" href={stripesLarge.src} media={STRIPES_LARGE_MEDIA} />
-    <style is:inline set:html={stripesCss} />
+    <!-- The top band shows near the top of most pages, so it's fetched early. -->
+    <link rel="preload" as="image" href={barsTop} media={BARS_STANDARD_MEDIA} />
+    <link rel="preload" as="image" href={barsTopLarge} media={BARS_LARGE_MEDIA} />
+    <style is:inline set:html={barsCss} />
 
     <link rel="preconnect" href="https://use.typekit.net" crossorigin />
     <link rel="preconnect" href="https://p.typekit.net" crossorigin />

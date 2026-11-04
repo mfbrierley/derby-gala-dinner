@@ -35,7 +35,7 @@ const timings: { title: string; times: [string, string][] }[] = [
 >
   <PageHeader title="Event details" />
 
-  <section class="details bg-stripes">
+  <section class="details bg-bars">
     <div class="container">
       <div class="details__row details__top">
         <div class="details__venue">
@@ -83,9 +83,6 @@ const timings: { title: string; times: [string, string][] }[] = [
    * striped section. Both rows share the same two columns, so "Evening Guests" lines up with the map.
    */
   .details {
-    /* Figma frame: stripes drawn 2343 x 1547 from 189px above the section. */
-    --stripes-h: calc(1547 * var(--u));
-    --stripes-y: calc(-189 * var(--u));
     --cols: calc(641 * var(--u)) calc(742 * var(--u));
     padding: calc(116 * var(--u)) 0 calc(182 * var(--u));
   }
