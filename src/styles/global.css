@@ -243,10 +243,17 @@ textarea {
   padding-inline: var(--gutter-wide);
 }
 
+/*
+ * Gold stripes background. Always at its own proportions (never stretched): scaled up just enough
+ * to cover the section, centred, with the bottom edge of the image (the glowing ends of the
+ * stripes) at the bottom of the section. The footer frames it differently, as in the Figma.
+ */
 .bg-stripes {
   background-color: var(--black);
   background-image: var(--stripes);
   background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 100%;
 }
 
 .bg-white {

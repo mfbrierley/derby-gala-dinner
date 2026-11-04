@@ -85,9 +85,6 @@ const timings: { title: string; times: [string, string][] }[] = [
   .details {
     --cols: calc(641 * var(--u)) calc(742 * var(--u));
     padding: calc(116 * var(--u)) 0 calc(182 * var(--u));
-    /* Figma: stripes image at ~136% × 114% of the section, anchored to its bottom. */
-    background-size: 135.6% 113.9%;
-    background-position: 50.9% 100%;
   }
 
   .details__row {
@@ -143,8 +140,6 @@ const timings: { title: string; times: [string, string][] }[] = [
   @media (max-width: 899px) {
     .details {
       padding: 48px 0 72px;
-      background-size: cover;
-      background-position: center bottom;
     }
 
     .details__row {

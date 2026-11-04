@@ -82,9 +82,6 @@ const photos = await Promise.all(
 <style>
   .gallery {
     padding: calc(106 * var(--u)) 0 calc(88 * var(--u));
-    /* Stripes image anchored to the bottom of the section, as in the Figma. */
-    background-size: 135.6% 113.9%;
-    background-position: 50.9% 100%;
   }
 
   .gallery__grid {
@@ -232,7 +229,6 @@ const photos = await Promise.all(
   @media (max-width: 899px) {
     .gallery {
       padding: 32px 0 56px;
-      background-size: cover;
     }
 
     .gallery__grid {

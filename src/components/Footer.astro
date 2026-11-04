@@ -87,9 +87,12 @@ const href = (path: string) => `${base}${path}`;
    */
   .site-footer__main {
     padding: calc(69 * var(--u)) calc(166 * var(--u) + var(--edge)) calc(84 * var(--u)) calc(128 * var(--u) + var(--edge));
-    /* Figma crops the stripes image to its bottom edge. */
-    background-size: cover;
-    background-position: 42% 100%;
+    /*
+     * As in the Figma: the stripes image zoomed in (232% of the page width, its own proportions,
+     * not stretched) and pinned to the bottom edge, so the glowing ends of the stripes show.
+     */
+    background-size: 232% auto;
+    background-position: 42.8% 100%;
   }
 
   /* ---------- Top row ---------- */
@@ -254,7 +257,9 @@ const href = (path: string) => `${base}${path}`;
   @media (max-width: 899px) {
     .site-footer__main {
       padding: 48px var(--gutter) 44px;
-      background-position: center bottom;
+      /* Phones: the footer is tall and narrow, so scale the image to its height instead (still not stretched). */
+      background-size: auto 100%;
+      background-position: 42.8% 100%;
     }
 
     .site-footer__top {
