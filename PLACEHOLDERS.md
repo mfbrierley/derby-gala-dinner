@@ -13,6 +13,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop. (It uses its own 3 photos in `src/components/GalleryStrip.astro`, separate from the gallery folder.)
 
 ### Book a table
+- [x] White "Tables" and "Sponsors" headings added above the two gold intros, from the "dgd - matt" Figma. The Figma's gap under each heading differs slightly (20px and 6px); the build uses the same gap for both.
 - [ ] Price formatting differs between the cards: "£2,500 +VAT" and "£3,500 + vat".
 - [ ] The tile says "Welcome drinks sponsor" but the heading beside it says "Welcome drink sponsor".
 - [ ] Mixed spelling: "event program" (Welcome drink and VIP lounge) vs "event programme" (Headline and Supporting).

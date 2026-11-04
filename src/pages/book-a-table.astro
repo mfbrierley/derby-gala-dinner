@@ -126,6 +126,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
   <section class="tables-page bg-stripes">
     <div class="container">
       <div class="lede-block">
+        <h2 class="label section-label">Tables</h2>
         <p class="lede">The 2027 edition of Derby Gala Dinner promises <br />to be bigger and better than ever before.</p>
         <p class="lede-body lede-body--narrow">
           More glamorous and more entertaining. The people and businesses of Derby coming together to show a commitment to the time to
@@ -145,7 +146,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
           />
         </div>
         <div class="package-card__body">
-          <h2 class="display display--lg">EVENING TABLE</h2>
+          <h3 class="display display--lg">EVENING TABLE</h3>
           <div class="package-card__text">
             <p>What’s included?</p>
             <ul class="bullets bullets--bold">
@@ -173,7 +174,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
           />
         </div>
         <div class="package-card__body">
-          <h2 class="display display--lg gold">VIP TABLE</h2>
+          <h3 class="display display--lg gold">VIP TABLE</h3>
           <div class="package-card__text">
             <p>What’s included?</p>
             <p class="package-card__gap">Evening Table package, plus;</p>
@@ -192,6 +193,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
       <!-- Sponsorship -->
       <div class="lede-block lede-block--sponsors" id="sponsorship">
+        <h2 class="label section-label">Sponsors</h2>
         <p class="lede">
           Sponsors enjoy a premium position throughout every phase of the event and it is because of their involvement this
           event is able to have such an impact.
@@ -202,7 +204,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
         </p>
       </div>
 
-      <h2 class="label sponsors-label">Sponsor Packages</h2>
+      <h3 class="label sponsors-label">Sponsor Packages</h3>
 
       <ul class="sponsor-rows">
         {
@@ -218,14 +220,14 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
                   loading="lazy"
                   style={cropStyle(p.crop)}
                 />
-                <h3 class="display display--lg sponsor-row__title">
+                <h4 class="display display--lg sponsor-row__title">
                   {p.title.map((line, i) => (
                     <>
                       {i > 0 && <br />}
                       {line}
                     </>
                   ))}
-                </h3>
+                </h4>
               </div>
               <div class:list={['sponsor-row__text', { 'sponsor-row__text--wide': p.wide }]}>
                 {p.heading ? (
@@ -258,7 +260,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
 <style>
   .tables-page {
-    padding: calc(112 * var(--u)) 0 calc(103 * var(--u));
+    padding: calc(52 * var(--u)) 0 calc(103 * var(--u));
     /* Figma: stripes image at ~136% × 131% of the section, centred. */
     background-size: 135.6% 131.3%;
     background-position: 50.9% 51%;
@@ -290,7 +292,16 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
   }
 
   .lede-block--sponsors {
-    margin-top: calc(172 * var(--u));
+    margin-top: calc(112 * var(--u));
+  }
+
+  /* White "Tables" / "Sponsors" headings above each lede (Figma "dgd - matt"). */
+  .section-label {
+    color: var(--white);
+  }
+
+  .section-label + .lede {
+    margin-top: calc(14 * var(--u));
   }
 
   /* ---------- Bulleted lists ---------- */
@@ -499,7 +510,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
   @media (max-width: 899px) {
     .tables-page {
-      padding: 48px 0 72px;
+      padding: 40px 0 72px;
       background-size: auto 100%;
       background-position: center top;
     }
@@ -520,7 +531,11 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
     }
 
     .lede-block--sponsors {
-      margin-top: 72px;
+      margin-top: 64px;
+    }
+
+    .section-label + .lede {
+      margin-top: 8px;
     }
 
     .package-card {
@@ -569,7 +584,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
       padding: 0 20px;
     }
 
-    .package-card__body h2 {
+    .package-card__body h3 {
       font-size: calc(56px * var(--type-scale));
     }
 
