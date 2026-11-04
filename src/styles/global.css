@@ -244,17 +244,27 @@ textarea {
 }
 
 /*
- * Gold stripes background. Always at its own proportions (never stretched): scaled up just enough
- * to cover the section, centred, with the bottom edge of the image (the glowing ends of the
- * stripes) at the bottom of the section. The footer frames it differently, as in the Figma.
+ * Gold stripes background, framed exactly as in the Figma:
+ * - width: a fixed size at the Figma's scale (--stripes-w, in Figma px), so the stripes are as
+ *   thin as in the design and don't grow on wide screens (never narrower than the page, though);
+ * - height (--stripes-h) and vertical position (--stripes-y): by default a share of the section's
+ *   height with the bottom of the image (the glowing ends of the stripes) at the bottom; sections
+ *   with their own Figma frame use that frame's exact size and position instead;
+ * - centred, nudged by --stripes-dx (Figma px).
+ * Phones use the same framing, so they also get thin stripes on mostly black.
  */
 .bg-stripes {
+  --stripes-w: 2343;
+  --stripes-h: 113.91%;
+  --stripes-y: 100%;
+  --stripes-dx: -6;
   background-color: var(--black);
   background-image: var(--stripes);
   background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 50% 100%;
+  background-size: max(calc(var(--stripes-w) * var(--u)), 100%) var(--stripes-h);
+  background-position: calc(50% + var(--stripes-dx) * var(--u)) var(--stripes-y);
 }
+
 
 .bg-white {
   background: var(--white);

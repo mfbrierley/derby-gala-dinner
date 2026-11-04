@@ -260,6 +260,10 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
 <style>
   .tables-page {
+    /* Figma frame: stripes drawn 2343 x 6820 from 833px above the section; the bottom glow ends
+       up below the section, under the photo strip, so thin stripes run down both sides. */
+    --stripes-h: calc(6820 * var(--u));
+    --stripes-y: calc(-833 * var(--u));
     padding: calc(52 * var(--u)) 0 calc(103 * var(--u));
   }
 

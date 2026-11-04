@@ -398,6 +398,10 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
   /* ---------- Dark section ---------- */
 
   .evening {
+    /* Figma frame: stripes drawn 2825 x 6231, starting 1733px above the section. */
+    --stripes-w: 2825;
+    --stripes-h: calc(6231 * var(--u));
+    --stripes-y: calc(-1733 * var(--u));
     padding: calc(103 * var(--u)) 0 calc(146 * var(--u));
   }
 
