@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 import EnquiryModal from '../components/EnquiryModal.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import { getImage } from 'astro:assets';
-import stripesSrc from '../assets/images/stripes-bg.jpg';
+import stripesSrc from '../assets/images/stripes-bg.png';
 import { SITE_NAME, TYPEKIT_CSS } from '../config';
 
 interface Props {
@@ -31,10 +31,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const noindex = pageNoindex || Boolean(process.env.VERCEL) || Boolean(process.env.NOINDEX);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-// Gold stripes background used on most sections: a smaller file for phones.
-const stripesSmall = await getImage({ src: stripesSrc, width: 1200, format: 'webp', quality: 72 });
-const stripesLarge = await getImage({ src: stripesSrc, width: 2400, format: 'webp', quality: 72 });
-const stripesCss = `:root{--stripes:url(${stripesLarge.src})}@media (max-width:899px){:root{--stripes:url(${stripesSmall.src})}}`;
+/*
+ * Gold stripes background used on most sections, made from Will's 4000 x 2250 original.
+ * Long sections stretch it (as in the Figma), so it's served large and at high quality:
+ * 2400px wide for phones and standard screens, the full 4000px for Retina and very wide screens.
+ */
+const stripesStandard = await getImage({ src: stripesSrc, width: 2400, format: 'webp', quality: 90 });
+const stripesLarge = await getImage({ src: stripesSrc, width: 4000, format: 'webp', quality: 90 });
+const STRIPES_LARGE_MEDIA = '(min-width: 900px) and (min-resolution: 1.5dppx), (min-width: 900px) and (-webkit-min-device-pixel-ratio: 1.5), (min-width: 1800px)';
+const STRIPES_STANDARD_MEDIA = '(max-width: 899px), (max-width: 1799px) and (max-resolution: 1.49dppx)';
+const stripesCss = `:root{--stripes:url(${stripesStandard.src})}@media ${STRIPES_LARGE_MEDIA}{:root{--stripes:url(${stripesLarge.src})}}`;
 ---
 
 <!doctype html>
@@ -56,8 +62,8 @@ const stripesCss = `:root{--stripes:url(${stripesLarge.src})}@media (max-width:8
 
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
 
-    <link rel="preload" as="image" href={stripesSmall.src} media="(max-width: 899px)" />
-    <link rel="preload" as="image" href={stripesLarge.src} media="(min-width: 900px)" />
+    <link rel="preload" as="image" href={stripesStandard.src} media={STRIPES_STANDARD_MEDIA} />
+    <link rel="preload" as="image" href={stripesLarge.src} media={STRIPES_LARGE_MEDIA} />
     <style is:inline set:html={stripesCss} />
 
     <link rel="preconnect" href="https://use.typekit.net" crossorigin />

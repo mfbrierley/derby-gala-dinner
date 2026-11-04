@@ -71,7 +71,19 @@ const mediaStyle = [
 
 <div class:list={['host', `host--${variant}`]} style={`--text-offset: ${textOffset}`}>
   <div class="host__media" style={mediaStyle}>
-    {backdrop && <img class="host__backdrop" src={backdropImg.src} width="399" height="427" alt="" loading="lazy" />}
+    {
+      backdrop && (
+        <Image
+          class="host__backdrop"
+          src={backdropImg}
+          widths={[400, 800, 1197]}
+          sizes="(max-width: 899px) 75vw, 23vw"
+          alt=""
+          loading="lazy"
+          quality={90}
+        />
+      )
+    }
     <Image
       class:list={['host__img', { 'host__img--flip': flip }]}
       src={image}
@@ -124,7 +136,7 @@ const mediaStyle = [
     height: calc(var(--box-h) * var(--u));
   }
 
-  .host__backdrop {
+  .host__media :global(.host__backdrop) {
     position: absolute;
     left: 0;
     bottom: 0;

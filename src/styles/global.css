@@ -47,7 +47,7 @@
   --text-nav: max(13px, calc(16 * var(--u) * var(--type-scale)));
   --btn-height: max(46px, calc(58 * var(--u)));
 
-  /* --stripes (the gold stripes background) is set in Base.astro, so phones get a smaller file. */
+  /* --stripes (the gold stripes background) is set in Base.astro: a 2400px or 4000px version depending on the screen. */
 }
 
 @media (max-width: 899px) {
