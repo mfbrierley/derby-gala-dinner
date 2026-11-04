@@ -1,17 +1,12 @@
 ---
 import logo from '../assets/svg/logo-dgd.svg?url';
-import fundraisingFor from '../assets/svg/fundraising-for-header.svg?url';
-import btgLogo from '../assets/images/btg-logo.png';
-import { BTG_URL } from '../config';
 import type { NavKey } from '../types';
 
 interface Props {
   active?: NavKey;
-  /** Show the "Fundraising for Bridge the Gap" lock-up (the Event Details frame omits it). */
-  showFundraising?: boolean;
 }
 
-const { active = 'none', showFundraising = true } = Astro.props;
+const { active = 'none' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (path: string) => `${base}${path}`;
 
@@ -24,15 +19,6 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
     <a class="site-header__logo" href={href('/')}>
       <img src={logo} width="163" height="99" alt="Derby Gala Dinner" />
     </a>
-
-    {
-      showFundraising && (
-        <a class="fundraising fundraising--header" href={BTG_URL} target="_blank" rel="noopener">
-          <img class="fundraising__text" src={fundraisingFor} width="267" height="13" alt="Fundraising for" />
-          <img class="fundraising__logo" src={btgLogo.src} width="69" height="69" alt="Bridge the Gap" />
-        </a>
-      )
-    }
 
     <nav class="site-nav" aria-label="Main">
       <ul class="site-nav__list">
@@ -66,10 +52,6 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
         <li><a href="#contact" data-open-contact>CONTACT</a></li>
       </ul>
     </nav>
-    <a class="fundraising fundraising--menu" href={BTG_URL} target="_blank" rel="noopener">
-      <img class="fundraising__text" src={fundraisingFor} width="267" height="13" alt="Fundraising for" />
-      <img class="fundraising__logo" src={btgLogo.src} width="69" height="69" alt="Bridge the Gap" />
-    </a>
   </div>
 </header>
 
@@ -89,40 +71,6 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
   .site-header__logo img {
     width: max(96px, calc(163 * var(--u)));
     height: auto;
-  }
-
-  .fundraising {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-  }
-
-  .fundraising--header {
-    gap: calc(21 * var(--u));
-    margin-top: calc(-3 * var(--u));
-    margin-left: calc(167 * var(--u));
-  }
-
-  .fundraising--header .fundraising__text {
-    width: calc(267 * var(--u));
-    height: auto;
-  }
-
-  .fundraising--header .fundraising__logo {
-    width: calc(69 * var(--u));
-    min-width: 44px;
-    height: auto;
-  }
-
-  /* Narrow desktops: drop the "Fundraising for" wording so the lock-up doesn't run into the nav. */
-  @media (min-width: 900px) and (max-width: 1099px) {
-    .fundraising--header {
-      margin-left: calc(80 * var(--u));
-    }
-
-    .fundraising--header .fundraising__text {
-      display: none;
-    }
   }
 
   .site-nav {
@@ -193,7 +141,6 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
       padding: 20px var(--gutter) 0;
     }
 
-    .fundraising--header,
     .site-nav {
       display: none;
     }
@@ -287,21 +234,6 @@ const isBold = (key: NavKey) => active === key || (active === 'home' && key === 
       padding-left: 20px;
       font-size: calc(32px * var(--type-scale));
       color: var(--gold);
-    }
-
-    .fundraising--menu {
-      gap: 14px;
-      margin-top: 40px;
-    }
-
-    .fundraising--menu .fundraising__text {
-      width: 200px;
-      height: auto;
-    }
-
-    .fundraising--menu .fundraising__logo {
-      width: 56px;
-      height: auto;
     }
   }
 </style>

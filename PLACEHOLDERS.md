@@ -65,8 +65,9 @@ the Figma, and open questions. Update it as items are resolved.
 
 ## Design decisions to confirm with Will
 
-- [ ] The new footer (sponsors plus the black Volt7 bar) is used on every page (Matt). It no longer has the "Fundraising for Bridge the Gap" lockup, as in the new Figma; the header still has it.
-- [ ] The header from the Home / Book a table frames is used on every page, including Your hosts and Gallery (those frames still have the old TICKETS / ABOUT / CONTACT header) and Event details (that frame leaves out "Fundraising for Bridge the Gap" and the YOUR HOSTS / 2026 GALLERY links). The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
+- [ ] The new footer (sponsors plus the black Volt7 bar) is used on every page (Matt). It no longer has the "Fundraising for Bridge the Gap" lockup, as in the new Figma.
+- [x] The "Fundraising for Bridge the Gap" lockup has been removed from the header and the phone menu on every page (Matt).
+- [ ] The header from the Home / Book a table frames is used on every page, including Your hosts and Gallery (those frames still have the old TICKETS / ABOUT / CONTACT header) and Event details (that frame leaves out the YOUR HOSTS / 2026 GALLERY links). The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
 - [ ] In the nav, bold means the current page. On Home, BOOK A TABLE is bold, as in the Figma.
 - [ ] YOUR HOSTS and 2026 GALLERY appear as a dropdown under EVENT DETAILS on hover.
 - [ ] The home hero's "Book a table" opens the Reserve a table form. "Sponsor the event" and the "Find out more" buttons go to the Book a table page.

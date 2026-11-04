@@ -13,7 +13,6 @@ interface Props {
   title?: string;
   description?: string;
   active?: NavKey;
-  showFundraising?: boolean;
   /** Keep this page out of search engines (e.g. the 404 page). */
   noindex?: boolean;
 }
@@ -22,7 +21,6 @@ const {
   title,
   description = 'Derby Gala Dinner: a premium black tie evening of entertainment in the service of Bridge the Gap. 22/04/27, Vaillant Live Derby.',
   active = 'none',
-  showFundraising = true,
   noindex: pageNoindex = false,
 } = Astro.props;
 
@@ -78,7 +76,7 @@ const stripesCss = `:root{--stripes:url(${stripesLarge.src})}@media (max-width:8
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header active={active} showFundraising={showFundraising} />
+    <Header active={active} />
     <main id="main">
       <slot />
     </main>
