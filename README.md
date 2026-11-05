@@ -22,12 +22,12 @@ Deploys are automatic, through GitHub Actions (`.github/workflows/`):
 
 | What | When | Goes to |
 |---|---|---|
-| **Deploy test copy** | Every push to `main` (or run it by hand) | `/new-private/` - derbygaladinner.co.uk/new-private/, hidden from search engines |
-| **Deploy live site** | Only when you run it: GitHub > **Actions** > **Deploy live site** > **Run workflow** | `/` - derbygaladinner.co.uk |
+| **Deploy test copy** | Every push to `main` (or run it by hand) | `/derbygaladinner/new-private` - derbygaladinner.co.uk/new-private/, hidden from search engines |
+| **Deploy live site** | Only when you run it: GitHub > **Actions** > **Deploy live site** > **Run workflow** | `/derbygaladinner` - derbygaladinner.co.uk |
 
 Each run builds the site and uploads only what changed (`scripts/deploy-sftp.sh`): new photos,
 scripts and styles first, then the pages, then it removes files the new pages no longer use. It
-never touches anything outside its folder, so a live deploy leaves `/new-private/` alone. A run
+never touches anything outside its folder, and a live deploy leaves the `new-private` folder inside it alone. A run
 takes a couple of minutes; you can watch it, and see any errors, on the Actions tab.
 
 ### One-time setup: the IONOS login
@@ -45,8 +45,16 @@ On GitHub: the repository > **Settings** > **Secrets and variables** > **Actions
 Secrets are encrypted: nobody can read them back, including in the workflow logs. Until they're
 added, the test deploy finishes with a warning and uploads nothing.
 
-If the folders on the server ever differ from `/` and `/new-private`, add repository **variables**
-(same page, Variables tab) `IONOS_LIVE_DIR` and/or `IONOS_TEST_DIR`.
+The domain points to the `derbygaladinner` folder of the web space, so the folders are set with
+two repository **variables** (same page, **Variables** tab):
+
+| Variable name | Value |
+|---|---|
+| `IONOS_LIVE_DIR` | `/derbygaladinner` |
+| `IONOS_TEST_DIR` | `/derbygaladinner/new-private` |
+
+Without them the workflows fall back to `/` and `/new-private` at the top of the web space,
+which is outside the domain's folder.
 
 ### The two builds
 
@@ -64,7 +72,7 @@ To use a different test folder, change `BASE_PATH=/new-private` in `package.json
 The same upload script can run on a Mac (`brew install lftp` first), after the matching build:
 
 ```bash
-IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD='...' scripts/deploy-sftp.sh /new-private
+IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD='...' scripts/deploy-sftp.sh /derbygaladinner/new-private
 ```
 
 Or with an SFTP app: upload the contents of `dist/` except `_astro`, overwriting; then the
