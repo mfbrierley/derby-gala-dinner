@@ -38,7 +38,8 @@ the Figma, and open questions. Update it as items are resolved.
 - [ ] The map in the Figma is a screenshot. The build uses a live Google map that only loads after cookies are accepted; until then the screenshot is shown dimmed behind the consent message.
 
 ### Your hosts
-- [ ] Sir Bradley Wiggins and The Distractions bios are lorem ipsum.
+- [x] Sir Bradley Wiggins bio supplied by Matt.
+- [ ] The Distractions bio is still lorem ipsum.
 - [ ] Spelling: the heading says "BASSIT SIDDIQUI" but his bio says "Baasit" (twice). Which is right?
 - [x] Sir Bradley Wiggins' subtitle updated to match the home page.
 
