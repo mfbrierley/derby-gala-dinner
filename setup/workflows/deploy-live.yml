@@ -1,0 +1,62 @@
+# Live site: run by hand from the Actions tab (Deploy live site > Run workflow). Builds the site for
+# derbygaladinner.co.uk (the web space root) and uploads what changed. Only runs from main.
+# Needs the repository secrets IONOS_SFTP_HOST, IONOS_SFTP_USER and IONOS_SFTP_PASSWORD
+# (see "Deploying" in README.md).
+
+name: Deploy live site
+
+on:
+  workflow_dispatch:
+
+# Never two live uploads at once; a second run waits for the first.
+concurrency:
+  group: deploy-live
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      IONOS_SFTP_HOST: ${{ secrets.IONOS_SFTP_HOST }}
+      IONOS_SFTP_USER: ${{ secrets.IONOS_SFTP_USER }}
+      IONOS_SFTP_PASSWORD: ${{ secrets.IONOS_SFTP_PASSWORD }}
+      REMOTE_DIR: ${{ vars.IONOS_LIVE_DIR || '/' }}
+    steps:
+      - name: Check the IONOS login is set up
+        run: |
+          if [ -z "$IONOS_SFTP_HOST" ] || [ -z "$IONOS_SFTP_USER" ] || [ -z "$IONOS_SFTP_PASSWORD" ]; then
+            echo "::error::Add the IONOS_SFTP_HOST, IONOS_SFTP_USER and IONOS_SFTP_PASSWORD secrets (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # Astro keeps the resized photos here; reusing them turns a few-minute build into seconds.
+      - name: Reuse resized images from earlier builds
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.astro
+          key: astro-${{ runner.os }}-${{ hashFiles('src/assets/**', 'package-lock.json') }}
+          restore-keys: astro-${{ runner.os }}-
+
+      - name: Build the live site
+        run: npm run build
+
+      - name: Install the upload tool (lftp)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Upload what changed to ${{ env.REMOTE_DIR }}
+        run: scripts/deploy-sftp.sh "$REMOTE_DIR"

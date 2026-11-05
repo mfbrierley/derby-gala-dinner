@@ -18,29 +18,59 @@ npm run preview   # serves dist/ locally to check the build
 
 ## Deploying to IONOS
 
-There are two builds, depending on where the files are going:
+Deploys are automatic, through GitHub Actions (`.github/workflows/`):
 
-| Command | Upload the contents of `dist/` to | Notes |
+| What | When | Goes to |
 |---|---|---|
-| `npm run build:test` | `/new-private/` | Test copy at derbygaladinner.co.uk/new-private/, hidden from search engines |
+| **Deploy test copy** | Every push to `main` (or run it by hand) | `/new-private/` - derbygaladinner.co.uk/new-private/, hidden from search engines |
+| **Deploy live site** | Only when you run it: GitHub > **Actions** > **Deploy live site** > **Run workflow** | `/` - derbygaladinner.co.uk |
+
+Each run builds the site and uploads only what changed (`scripts/deploy-sftp.sh`): new photos,
+scripts and styles first, then the pages, then it removes files the new pages no longer use. It
+never touches anything outside its folder, so a live deploy leaves `/new-private/` alone. A run
+takes a couple of minutes; you can watch it, and see any errors, on the Actions tab.
+
+### One-time setup: the IONOS login
+
+On GitHub: the repository > **Settings** > **Secrets and variables** > **Actions** >
+**New repository secret**. Add three, with the values from IONOS (Hosting > your package >
+**SFTP & SSH**):
+
+| Secret name | Value |
+|---|---|
+| `IONOS_SFTP_HOST` | The server, e.g. `access-5012345678.webspace-host.com` (no `sftp://`) |
+| `IONOS_SFTP_USER` | The SFTP user name |
+| `IONOS_SFTP_PASSWORD` | That user's password |
+
+Secrets are encrypted: nobody can read them back, including in the workflow logs. Until they're
+added, the test deploy finishes with a warning and uploads nothing.
+
+If the folders on the server ever differ from `/` and `/new-private`, add repository **variables**
+(same page, Variables tab) `IONOS_LIVE_DIR` and/or `IONOS_TEST_DIR`.
+
+### The two builds
+
+| Command | For | Notes |
+|---|---|---|
+| `npm run build:test` | `/new-private/` | Every link and image path starts `/new-private/`; pages say `noindex` |
 | `npm run build` | `/` (the root) | The live site |
 
-The build has to match the folder: every image and link path starts with it, so a root build
-uploaded into `/new-private/` shows no images. To use a different test folder, change
-`BASE_PATH=/new-private` in `package.json`.
+The build has to match the folder: a root build uploaded into `/new-private/` shows no images.
+To use a different test folder, change `BASE_PATH=/new-private` in `package.json` (and set
+`IONOS_TEST_DIR`).
 
-1. Run the build for where you're uploading.
-2. Connect to the IONOS web space with your SFTP client and open that directory.
-3. Upload **the contents of `dist/` except the `_astro` folder** (not the `dist` folder itself),
-   overwriting what's there. These are the pages and settings, a few MB.
-   - Make sure `.htaccess` is uploaded too. Macs and SFTP clients hide files starting with a dot
-     (in Finder, Cmd + Shift + . shows them).
-4. Upload the **`_astro` folder** into the same place. When your SFTP client asks about files that
-   already exist, choose **Skip** (and "always" / "apply to all"). Every file in `_astro` is named
-   after its contents, so a file with the same name is the same file; only new or changed ones go
-   up. The first upload is about 245 MB (mostly gallery photos); after that, usually only a few MB.
-   - Old, unused files build up in `_astro` on the server. They do no harm. To clear them out now
-     and then, delete `_astro` on the server and upload it in full.
+### Uploading by hand (if ever needed)
+
+The same upload script can run on a Mac (`brew install lftp` first), after the matching build:
+
+```bash
+IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD='...' scripts/deploy-sftp.sh /new-private
+```
+
+Or with an SFTP app: upload the contents of `dist/` except `_astro`, overwriting; then the
+`_astro` folder, choosing **Skip** for files that already exist (every file there is named after
+its contents, so the same name means the same file). Make sure `.htaccess` goes up too: Macs and
+SFTP apps hide files starting with a dot (in Finder, Cmd + Shift + . shows them).
 
 `.htaccess` forces HTTPS, redirects `www.` to the bare domain, serves the custom 404 page and sets caching.
 
