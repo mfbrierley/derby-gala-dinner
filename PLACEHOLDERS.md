@@ -39,7 +39,7 @@ the Figma, and open questions. Update it as items are resolved.
 
 ### Your hosts
 - [x] Sir Bradley Wiggins bio supplied by Matt.
-- [ ] The Distractions bio is still lorem ipsum.
+- [x] The Distractions bio supplied by Matt.
 - [ ] Spelling: the heading says "BASSIT SIDDIQUI" but his bio says "Baasit" (twice). Which is right?
 - [x] Sir Bradley Wiggins' subtitle updated to match the home page.
 
