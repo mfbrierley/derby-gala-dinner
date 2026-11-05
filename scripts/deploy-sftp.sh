@@ -3,7 +3,7 @@
 # Upload the built site (dist/) to the IONOS web space over SFTP, sending only what changed.
 # Used by the GitHub Actions workflows in .github/workflows/; can also be run by hand:
 #
-#   IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD=... scripts/deploy-sftp.sh /new-private
+#   IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD=... scripts/deploy-sftp.sh /derbygaladinner/new-private
 #
 # How it decides what to send:
 # - dist/_astro/ holds the images, video, scripts and styles. Every file there is named after its
@@ -12,7 +12,8 @@
 # - Order matters: new _astro files go up first, then the pages that use them, and only then are
 #   _astro files the new pages no longer use removed. A visitor never gets a page whose files
 #   aren't there yet.
-# Nothing outside the target folder is touched (e.g. a live upload to / leaves /new-private/ alone).
+# Nothing outside the target folder is touched, and the only folder allowed is the test copy's
+# (see the safety check below).
 
 set -euo pipefail
 
@@ -31,6 +32,18 @@ fi
 SITE_DIR="${REMOTE_DIR%/}"
 SITE_DIR="${SITE_DIR:-/}"
 ASSETS_DIR="${SITE_DIR%/}/_astro"
+
+# Safety: the web space also holds the current derbygaladinner.co.uk site (in /derbygaladinner),
+# which must not be touched. Only the test copy's folder may be written to; anything else is
+# refused before connecting. When the new site launches, set DEPLOY_ALLOWED_DIR to the live
+# folder for that run (and update .github/workflows/deploy-live.yml to pass it).
+ALLOWED_DIR="${DEPLOY_ALLOWED_DIR:-/derbygaladinner/new-private}"
+ALLOWED_DIR="${ALLOWED_DIR%/}"
+if [ "$SITE_DIR" != "${ALLOWED_DIR:-/}" ]; then
+  echo "Refusing to upload to ${SITE_DIR}: only ${ALLOWED_DIR} may be written to (the rest of the web space" >&2
+  echo "holds the current live site). Nothing was uploaded." >&2
+  exit 1
+fi
 
 echo "Uploading dist/ to ${IONOS_SFTP_HOST}:${SITE_DIR}"
 

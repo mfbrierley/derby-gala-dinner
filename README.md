@@ -23,7 +23,13 @@ Deploys are automatic, through GitHub Actions (`.github/workflows/`):
 | What | When | Goes to |
 |---|---|---|
 | **Deploy test copy** | Every push to `main` (or run it by hand) | `/derbygaladinner/new-private` - derbygaladinner.co.uk/new-private/, hidden from search engines |
-| **Deploy live site** | Only when you run it: GitHub > **Actions** > **Deploy live site** > **Run workflow** | `/derbygaladinner` - derbygaladinner.co.uk |
+| **Deploy live site** | **Blocked for now** (see below) | `/derbygaladinner` - derbygaladinner.co.uk |
+
+> **The current derbygaladinner.co.uk site lives in `/derbygaladinner` on the same web space and
+> must not be touched.** `scripts/deploy-sftp.sh` refuses to write anywhere except
+> `/derbygaladinner/new-private`, whatever folder it's given, so "Deploy live site" fails safely
+> (nothing uploaded) until launch. At launch: back up the old site, then update
+> `deploy-live.yml` to set `DEPLOY_ALLOWED_DIR: /derbygaladinner` for its upload step.
 
 Each run builds the site and uploads only what changed (`scripts/deploy-sftp.sh`): new photos,
 scripts and styles first, then the pages, then it removes files the new pages no longer use. It
@@ -50,11 +56,11 @@ two repository **variables** (same page, **Variables** tab):
 
 | Variable name | Value |
 |---|---|
-| `IONOS_LIVE_DIR` | `/derbygaladinner` |
 | `IONOS_TEST_DIR` | `/derbygaladinner/new-private` |
+| `IONOS_LIVE_DIR` | `/derbygaladinner` (only needed at launch) |
 
-Without them the workflows fall back to `/` and `/new-private` at the top of the web space,
-which is outside the domain's folder.
+Without `IONOS_TEST_DIR` the test workflow falls back to `/new-private` at the top of the web
+space, which the script refuses, so the run fails without uploading anything.
 
 ### The two builds
 
