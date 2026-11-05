@@ -31,10 +31,16 @@ uploaded into `/new-private/` shows no images. To use a different test folder, c
 
 1. Run the build for where you're uploading.
 2. Connect to the IONOS web space with your SFTP client and open that directory.
-3. Upload **the contents of `dist/`** (not the `dist` folder itself), replacing what's there.
+3. Upload **the contents of `dist/` except the `_astro` folder** (not the `dist` folder itself),
+   overwriting what's there. These are the pages and settings, a few MB.
    - Make sure `.htaccess` is uploaded too. Macs and SFTP clients hide files starting with a dot
      (in Finder, Cmd + Shift + . shows them).
-   - Delete the old `_astro/` folder on the server first. Its file names change on every build.
+4. Upload the **`_astro` folder** into the same place. When your SFTP client asks about files that
+   already exist, choose **Skip** (and "always" / "apply to all"). Every file in `_astro` is named
+   after its contents, so a file with the same name is the same file; only new or changed ones go
+   up. The first upload is about 245 MB (mostly gallery photos); after that, usually only a few MB.
+   - Old, unused files build up in `_astro` on the server. They do no harm. To clear them out now
+     and then, delete `_astro` on the server and upload it in full.
 
 `.htaccess` forces HTTPS, redirects `www.` to the bare domain, serves the custom 404 page and sets caching.
 

@@ -43,8 +43,10 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] Sir Bradley Wiggins' subtitle updated to match the home page.
 
 ### 2026 gallery
-- [ ] **Needs the real 2026 photos.** The Figma grid repeats the same 3 photos (24 tiles), and the build does the same for now. Add the photos to `src/assets/gallery/` and set `PREVIEW_REPEAT` to `1` in `src/pages/gallery.astro` (see the README in that folder).
-- [ ] Photo descriptions are generic ("Derby Gala Dinner 2026, photo 5 of 24"). Fine for a gallery, but they could be more specific.
+- [x] The real 2026 photos are in: 516 photos (shrunk to 2400px wide by Matt before adding), each shown once.
+- [ ] Order: filename order. The photos have no "date taken" information, so they can't be sorted by time; the `AVI…` camera's photos come first, then the `_DSC…` camera's.
+- [ ] The page is long with 516 photos (about 170 rows on a laptop). Photos load as you scroll. A "Show more" button could shorten it.
+- [ ] Photo descriptions are generic ("Derby Gala Dinner 2026, photo 5 of 516"). Fine for a gallery, but they could be more specific.
 - [x] Gallery page: the Bridge the Gap spotlight and the gold "See how…" photo strip have been removed (Matt). The page now goes straight from the photo grid to the footer.
 
 ### Sponsors (hero and footer, from the "dgd - matt" Figma)

@@ -6,24 +6,19 @@ import PageHeader from '../components/PageHeader.astro';
 import chevron from '../assets/svg/icon-chevron.svg?url';
 
 /**
- * Every image in src/assets/gallery/ appears here in filename order (see the README there).
- * The Figma grid has 24 tiles made from the same 3 photos; until the real 2026 photos are added
- * the 3 placeholders are repeated to fill it. Set PREVIEW_REPEAT to 1 once the real photos are in.
+ * Every image in src/assets/gallery/ appears here once, in filename order (see the README there).
  */
-const PREVIEW_REPEAT = 8;
-
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/gallery/*.{jpg,jpeg,png,webp}', { eager: true });
-const sources = Object.keys(files)
+const list = Object.keys(files)
   .sort()
   .map((path) => files[path].default);
-
-const list = Array.from({ length: PREVIEW_REPEAT }, () => sources).flat();
 const total = list.length;
 
 // Full-size versions for the viewer (srcset so phones don't download the largest file).
 const photos = await Promise.all(
   list.map(async (src, i) => {
-    const large = await getImage({ src, widths: [960, 1600, 2400], format: 'webp' });
+    // 970px is the same file as the grid's largest size, so it isn't made twice.
+    const large = await getImage({ src, widths: [970, 1600, 2400], format: 'webp' });
     return {
       src,
       alt: `Derby Gala Dinner 2026, photo ${i + 1} of ${total}`,

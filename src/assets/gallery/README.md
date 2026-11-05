@@ -7,6 +7,9 @@ Every image in this folder appears on the 2026 Gallery page, in filename order.
 - Originals can be any size. Around 2400px wide is plenty; the build makes small
   versions for the grid and larger ones for the full-size viewer.
 
-While there are only the three placeholder photos from the Figma, the page repeats
-them to fill the 24-tile grid in the design. Set `PREVIEW_REPEAT` to `1` in
-`src/pages/gallery.astro` once the real photos are here.
+Shrink large originals to 2400px wide before adding them (bigger is never shown, and
+keeps the project small). On a Mac, from the project folder:
+
+    find "/path/to/originals" -iname '*.jp*g' -exec sips -Z 2400 -s formatOptions 85 {} --out src/assets/gallery \;
+
+The first build after adding lots of photos takes a few minutes; after that they're cached.
