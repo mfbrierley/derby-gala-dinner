@@ -18,7 +18,10 @@ interface Props {
   alt: string;
   /** Figma media box height in px (width is always 546). */
   boxHeight: number;
-  /** Photo placement inside the media box, in Figma px. */
+  /**
+   * Photo placement inside the 546px media box, in Figma px. Set so the visible part of the photo
+   * ends at the right-hand end of the gold line (546), keeping the gap to the text the same.
+   */
   imgLeft: number;
   imgWidth: number;
   /** Show the stripes backdrop behind a cut-out photo. */
@@ -109,15 +112,19 @@ const mediaStyle = [
 </div>
 
 <style>
+  /*
+   * The same gap between photo and text on every row, home page and Your hosts alike. Each photo
+   * is placed so the visible part of it ends exactly where its gold line ends (see the page's
+   * imgLeft / imgWidth), so this gap is the real space between photo and text.
+   */
   .host {
     display: grid;
     grid-template-columns: calc(546 * var(--u)) 1fr;
-    column-gap: calc(77 * var(--u));
+    column-gap: calc(96 * var(--u));
     align-items: center;
   }
 
   .host--detail {
-    column-gap: calc(38 * var(--u));
     align-items: start;
   }
 
