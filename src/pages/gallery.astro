@@ -274,16 +274,68 @@ const photos = await Promise.all(
     let index = 0;
     let opener: HTMLElement | null = null;
 
+    const n = items.length;
+    const wrap = (i: number) => (i + n) % n;
+
+    // How wide the photo is drawn in the viewer, so the browser picks the right file size
+    // (the viewer fits the photo inside the screen, less room for the arrows and counter).
+    const viewerSizes = (item: HTMLElement) => {
+      const thumb = item.querySelector('img');
+      const ratio = thumb ? Number(thumb.getAttribute('width')) / Number(thumb.getAttribute('height')) || 1.5 : 1.5;
+      const phone = window.innerWidth < 900;
+      const maxW = window.innerWidth - (phone ? 0 : 160);
+      const maxH = window.innerHeight - (phone ? 160 : 120);
+      return `${Math.ceil(Math.min(maxW, maxH * ratio))}px`;
+    };
+
+    // Full-size photos, downloaded and decoded ahead of time. Kept for the last few photos only.
+    const ready = new Map<number, Promise<HTMLImageElement>>();
+    const preload = (i: number, priority: 'high' | 'low' = 'low') => {
+      const k = wrap(i);
+      const cached = ready.get(k);
+      if (cached) return cached;
+      const item = items[k];
+      // Also fetch the grid's small copy now (it's lazy-loaded otherwise), as a stand-in.
+      const thumb = item.querySelector('img');
+      if (thumb && thumb.loading === 'lazy') thumb.loading = 'eager';
+      const pre = new Image();
+      pre.decoding = 'async';
+      pre.fetchPriority = priority; // the photo on screen goes first; photos fetched ahead wait
+      pre.sizes = viewerSizes(item);
+      pre.srcset = item.dataset.largeSrcset ?? '';
+      pre.src = item.dataset.largeSrc ?? '';
+      const promise = pre.decode().catch(() => undefined).then(() => pre);
+      ready.set(k, promise);
+      if (ready.size > 12) ready.delete(ready.keys().next().value!);
+      return promise;
+    };
+
     const show = (i: number) => {
-      index = (i + items.length) % items.length;
+      index = wrap(i);
+      const current = index;
       const item = items[index];
       const thumb = item.querySelector('img');
-      img.removeAttribute('src');
-      img.srcset = item.dataset.largeSrcset ?? '';
-      img.sizes = '100vw';
-      img.src = item.dataset.largeSrc ?? '';
       img.alt = thumb?.alt ?? '';
-      count.textContent = `${index + 1} / ${items.length}`;
+      count.textContent = `${index + 1} / ${n}`;
+
+      const pending = preload(index, 'high');
+      // Until the full-size photo is ready, show the grid's copy (already downloaded) rather than a blank.
+      if (thumb?.currentSrc && thumb.complete) {
+        img.removeAttribute('srcset');
+        img.removeAttribute('sizes');
+        img.src = thumb.currentSrc;
+      }
+      pending.then((pre) => {
+        if (index !== current) return; // moved on before it arrived
+        img.sizes = pre.sizes;
+        img.srcset = pre.srcset;
+        img.src = pre.src;
+      });
+
+      // Get the neighbours ready, so the next press of an arrow is instant.
+      preload(index + 1);
+      preload(index + 2);
+      preload(index - 1);
     };
 
     const open = (i: number, from: HTMLElement) => {
