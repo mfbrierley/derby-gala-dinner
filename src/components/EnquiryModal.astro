@@ -69,7 +69,7 @@ const sponsorshipTypes: Pick[] = [
 const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 ---
 
-<dialog class="modal" id={id} aria-labelledby={`${id}-title`} data-variant={variant}>
+<dialog class="modal" id={id} aria-labelledby={`${id}-title`} aria-modal="true" data-variant={variant}>
   <div class="modal__panel">
     <button class="modal__x" type="button" data-close aria-label="Close">X</button>
 
@@ -271,20 +271,25 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     margin: 0;
     padding: clamp(8px, 1.2vh, 16px);
     border: 0;
-    background: transparent;
     color: var(--white);
     overflow-y: auto;
+    /*
+     * Opened with show(), not showModal() (see openModal), so it covers the page itself: fixed,
+     * full screen, with the darkened, blurred page showing through as the backdrop. hCaptcha's
+     * puzzle (z-index 2000000000) still opens above it.
+     */
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.72);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
   }
 
   .modal[open] {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-  }
-
-  .modal::backdrop {
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: blur(4px);
   }
 
   .modal__panel {
@@ -834,6 +839,45 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 
   const lockScroll = (locked: boolean) => document.body.classList.toggle('is-locked', locked);
 
+  /*
+   * The pop-ups open with show(), not showModal(). showModal() puts a pop-up in the browser's top
+   * layer, above everything else on the page, including hCaptcha's puzzle, which hCaptcha always
+   * adds to the page itself: the puzzle would open hidden behind the form and ticking the box
+   * would seem to do nothing. Instead the pop-up covers the page (see .modal), and the rest of the
+   * page is made inert (not clickable, focusable or read out) while it's open, as showModal()
+   * would. hCaptcha's own elements are left alone so its puzzle stays usable.
+   */
+  const isCaptcha = (el: Element) => !!el.querySelector('iframe[src*="hcaptcha.com"]');
+  let inerted: HTMLElement[] = [];
+  const setPageInert = (dialog: HTMLElement, on: boolean) => {
+    if (!on) {
+      inerted.forEach((el) => (el.inert = false));
+      inerted = [];
+      return;
+    }
+    // Every sibling of the pop-up and of each element it sits in, up to <body>.
+    for (let node: HTMLElement = dialog; node.parentElement; node = node.parentElement) {
+      for (const sibling of Array.from(node.parentElement.children)) {
+        if (sibling === node || !(sibling instanceof HTMLElement) || sibling.inert) continue;
+        if (sibling.tagName === 'SCRIPT' || sibling.tagName === 'STYLE' || isCaptcha(sibling)) continue;
+        sibling.inert = true;
+        inerted.push(sibling);
+      }
+      if (node.parentElement === document.body) break;
+    }
+  };
+  let returnFocusTo: HTMLElement | null = null;
+
+  // Esc closes the open pop-up (showModal() did this by itself).
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    const open = document.querySelector<HTMLDialogElement>('dialog.modal[open]');
+    if (open) {
+      event.preventDefault();
+      open.close();
+    }
+  });
+
   const showView = (dialog: HTMLDialogElement, view: 'form' | 'thanks') => {
     dialog.querySelectorAll<HTMLElement>('[data-view]').forEach((el) => {
       el.hidden = el.dataset.view !== view;
@@ -921,7 +965,10 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
       });
     }
 
-    dialog.showModal();
+    returnFocusTo = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialog.show();
+    setPageInert(dialog, true);
+    dialog.querySelector<HTMLElement>('.modal__x')?.focus();
     dialog.style.removeProperty('--fit');
     fitToScreen(dialog);
     lockScroll(true);
@@ -959,7 +1006,12 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     // Re-fit when the content changes height (hCaptcha box appearing, error messages, thank-you view).
     dialog.querySelectorAll('[data-view]').forEach((view) => fitObserver.observe(view));
 
-    dialog.addEventListener('close', () => lockScroll(false));
+    dialog.addEventListener('close', () => {
+      lockScroll(false);
+      setPageInert(dialog, false);
+      returnFocusTo?.focus();
+      returnFocusTo = null;
+    });
 
     // Close on backdrop click.
     dialog.addEventListener('click', (event) => {
