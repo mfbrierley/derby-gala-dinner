@@ -52,8 +52,8 @@ the Figma, and open questions. Update it as items are resolved.
 
 ### Sponsors (hero and footer, from the "dgd - matt" Figma)
 - [ ] Logos and labels come from the Figma: Headline sponsor = Stratstone Land Rover Derby; Supporting sponsors = Enigma Seven and Volt7; plus "A [Volt7 logo] production". They're set in one place, `src/data/sponsors.ts`, which feeds both the home hero and the footer. The logos don't link anywhere (Matt).
-- [ ] The hero shows the headline sponsor only; the footer shows both rows.
-- [ ] **More supporting sponsors are coming.** The Figma leaves a gap under them for now; the build closes it (the space under the logos matches the space at the top of the footer). Add each new sponsor to `SUPPORTING_SPONSORS` in `src/data/sponsors.ts` and the row grows.
+- [ ] The hero shows the headline sponsor and, under it, the supporting sponsors without Volt7 (so Enigma Seven for now), because "A Volt7 production" is the next line down, as in the Figma. The footer shows both rows in full.
+- [ ] **More supporting sponsors are coming.** The Figma leaves a gap under them for now; the build closes it (the space under the logos matches the space at the top of the footer). Add each new sponsor to `SUPPORTING_SPONSORS` in `src/data/sponsors.ts` and the rows in the hero and the footer grow. The hero fills the screen with one supporting sponsor; with several more it will get taller than the screen on small laptops and phones, so its spacing will want another look then.
 
 ### Not built
 - [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). Not linked from anywhere in the Figma nav.

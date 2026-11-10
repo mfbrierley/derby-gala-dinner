@@ -17,7 +17,7 @@ import sponsorLounge from '../assets/images/sponsor-lounge.jpg';
 import ProductionCredit from '../components/ProductionCredit.astro';
 import heroVideo from '../assets/video/hero-bars.mp4?url';
 import heroPosterSrc from '../assets/images/hero-bars-poster.jpg';
-import { HEADLINE_SPONSOR } from '../data/sponsors';
+import { HEADLINE_SPONSOR, SUPPORTING_SPONSORS, PRODUCER } from '../data/sponsors';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (path: string) => `${base}${path}`;
@@ -29,6 +29,10 @@ const sponsors = [
   { title: 'Welcome drink sponsor', image: sponsorDrinks, position: '56% 50%', alt: 'Champagne being poured into rows of glasses' },
   { title: 'VIP lounge sponsor', image: sponsorLounge, position: '74% 56%', alt: 'Guests raising a toast in the VIP lounge' },
 ];
+
+// Supporting sponsors for the hero. Volt7 is left out here: it's credited on the line below
+// ("A Volt7 production"), as in the Figma.
+const heroSupporting = SUPPORTING_SPONSORS.filter((sponsor) => sponsor.name !== PRODUCER.name);
 
 // Hero video poster (first frame of the video), as WebP.
 const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'webp', quality: 80 });
@@ -76,6 +80,28 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
           height={HEADLINE_SPONSOR.height}
           alt={HEADLINE_SPONSOR.name}
         />
+        {
+          heroSupporting.length > 0 && (
+            <>
+              <p class="sponsor-rule sponsor-rule--white hero__supporting-rule">
+                <span>Supporting sponsors</span>
+              </p>
+              <ul class="hero__supporting">
+                {heroSupporting.map((sponsor) => (
+                  <li>
+                    <img
+                      src={sponsor.logo}
+                      width={sponsor.width}
+                      height={sponsor.height}
+                      alt={sponsor.name}
+                      style={`--w: ${sponsor.footerWidth}`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
         <div class="hero__production">
           <ProductionCredit />
         </div>
@@ -288,7 +314,10 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     margin-top: calc(24 * var(--u));
   }
 
-  /* Headline sponsor (label between fine gold lines, then the logo), then "A Volt7 production". */
+  /*
+   * Headline sponsor (label between fine gold lines, then the logo), the supporting sponsors
+   * (label between fine white lines, then their logos), then "A Volt7 production".
+   */
   .hero__sponsors {
     display: flex;
     flex-direction: column;
@@ -308,8 +337,27 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     margin-top: calc(28 * var(--u));
   }
 
+  .hero__supporting-rule {
+    margin-top: calc(32 * var(--u));
+  }
+
+  .hero__supporting {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: calc(20 * var(--u)) calc(64 * var(--u));
+    margin-top: calc(36 * var(--u));
+  }
+
+  .hero__supporting img {
+    display: block;
+    width: calc(var(--w) * var(--u));
+    height: auto;
+  }
+
   .hero__production {
-    margin-top: calc(88 * var(--u));
+    margin-top: calc(48 * var(--u));
     font-size: max(12px, calc(20 * var(--u) * var(--type-scale)));
   }
 
@@ -539,8 +587,22 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       margin-top: 14px;
     }
 
+    .hero__supporting-rule {
+      margin-top: 20px;
+    }
+
+    .hero__supporting {
+      gap: 14px 32px;
+      margin-top: 16px;
+    }
+
+    /* same proportion as the headline logo (203 in the Figma, 140px here) */
+    .hero__supporting img {
+      width: calc(var(--w) * 0.69px);
+    }
+
     .hero__production {
-      margin-top: 28px;
+      margin-top: 24px;
       font-size: 13px;
     }
 
