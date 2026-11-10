@@ -134,6 +134,12 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
         </p>
       </div>
 
+      <!-- Considering sponsorship? The whole box links down to the sponsor packages. -->
+      <a class="sponsor-note" href="#sponsorship">
+        <span class="sponsor-note__title">Considering sponsorship?</span>
+        <span class="sponsor-note__text">All sponsor packages include a table for 10 guests.</span>
+      </a>
+
       <!-- Evening Table -->
       <article class="package-card package-card--evening" id="evening-table">
         <div class="package-card__media">
@@ -190,6 +196,13 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
         </div>
         <a class="btn btn--gold package-card__btn" href="#vip-table" data-open-booking="VIP Table">Book a table</a>
       </article>
+
+      <!-- Donate a seat -->
+      <div class="donate" id="donate-a-seat">
+        <h2 class="display display--lg gold donate__title"><span>Donate a seat</span></h2>
+        <p class="donate__text">Would you like to donate a table or seat? Please enquire</p>
+        <a class="btn btn--gold donate__btn" href="#donate-a-seat" data-open-booking="">Book a table</a>
+      </div>
 
       <!-- Sponsorship -->
       <div class="lede-block lede-block--sponsors" id="sponsorship">
@@ -289,7 +302,66 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
   }
 
   .lede-block--sponsors {
-    margin-top: calc(112 * var(--u));
+    margin-top: calc(132 * var(--u));
+  }
+
+  /* ---------- "Considering sponsorship?" box ---------- */
+
+  .sponsor-note {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: calc(74 * var(--u));
+    padding: calc(28 * var(--u)) 20px calc(40 * var(--u));
+    border: 3px solid var(--gold);
+    background: var(--black);
+    color: var(--white);
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .sponsor-note__title {
+    font-family: var(--font-serif);
+    font-size: calc(max(22px, calc(44 * var(--u))) * var(--type-scale));
+    line-height: 1.31;
+    color: var(--gold);
+  }
+
+  .sponsor-note + .package-card {
+    margin-top: calc(108 * var(--u));
+  }
+
+  /* ---------- Donate a seat: heading between two fine gold lines, a line of text, a button ---------- */
+
+  .donate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: calc(130 * var(--u));
+    text-align: center;
+  }
+
+  .donate__title {
+    display: flex;
+    align-items: center;
+    gap: calc(42 * var(--u));
+    width: 100%;
+  }
+
+  .donate__title::before,
+  .donate__title::after {
+    content: '';
+    flex: 1;
+    height: max(1px, calc(2 * var(--u)));
+    background: var(--gold);
+  }
+
+  .donate__text {
+    margin-top: calc(31 * var(--u));
+  }
+
+  .donate__btn {
+    margin-top: calc(32 * var(--u));
   }
 
   /* White "Tables" / "Sponsors" headings above each lede (Figma "dgd - matt"). */
@@ -527,6 +599,32 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
     .lede-block--sponsors {
       margin-top: 64px;
+    }
+
+    .sponsor-note {
+      margin-top: 32px;
+      padding: 20px 16px 24px;
+    }
+
+    .sponsor-note + .package-card {
+      margin-top: 32px;
+    }
+
+    .donate {
+      margin-top: 56px;
+    }
+
+    .donate__title {
+      gap: 14px;
+      font-size: calc(48px * var(--type-scale));
+    }
+
+    .donate__text {
+      margin-top: 16px;
+    }
+
+    .donate__btn {
+      margin-top: 20px;
     }
 
     .section-label + .lede {
