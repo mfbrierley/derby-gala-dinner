@@ -8,7 +8,7 @@ the Figma, and open questions. Update it as items are resolved.
 
 ### Home
 - [x] Proceeds text (was "…supporting X families…") replaced with the Family support fund wording supplied by Matt.
-- [x] Sir Bradley Wiggins' subtitle is now "Olympic gold medallist and first British Tour de France winner." (was a copy of Bassit's).
+- [x] Sir Bradley Wiggins' subtitle is now "Olympic gold medallist and first British Tour de France winner." (was a copy of Baasit's).
 - [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
 - [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop. (It uses its own 3 photos in `src/components/GalleryStrip.astro`, separate from the gallery folder.)
 
@@ -40,7 +40,7 @@ the Figma, and open questions. Update it as items are resolved.
 ### Your hosts
 - [x] Sir Bradley Wiggins bio supplied by Matt.
 - [x] The Distractions bio supplied by Matt.
-- [ ] Spelling: the heading says "BASSIT SIDDIQUI" but his bio says "Baasit" (twice). Which is right?
+- [x] Spelling: it's "Baasit Siddiqui" (Matt). The Figma heading says "BASSIT"; the site now says Baasit everywhere.
 - [x] Sir Bradley Wiggins' subtitle updated to match the home page.
 
 ### 2026 gallery
