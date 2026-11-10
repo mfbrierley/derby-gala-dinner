@@ -153,13 +153,10 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
         subtitle="Gala house band for the night"
         image={distractions}
         alt="The Distractions performing on stage"
-        boxHeight={496}
+        boxHeight={437}
         imgLeft={0}
-        imgWidth={621.5}
-        backdrop={false}
-        flip
-        objectPosition="left center"
-        edgeFade={[0.14, 0.1]}
+        imgWidth={546}
+        edgeFade={[0.06, 0]}
       />
     </div>
 
@@ -409,11 +406,6 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     display: grid;
     row-gap: calc(41 * var(--u));
     padding: 0 calc(110 * var(--u) + var(--edge)) 0 calc(129 * var(--u) + var(--edge));
-  }
-
-  /* The guest's photo is shorter than the others, so its stripes rise above it: room for them. */
-  .hosts > :global(:nth-child(2)) {
-    margin-top: calc(60 * var(--u));
   }
 
   .hosts > :global(:nth-child(3)) {
