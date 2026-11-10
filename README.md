@@ -124,7 +124,7 @@ SFTP apps hide files starting with a dot (in Finder, Cmd + Shift + . shows them)
 | `src/data/sponsors.ts` | Sponsor names, labels and logos (shown in the home hero and the footer) |
 | `src/styles/global.css` | Colours, fonts, buttons and the sizing system (see the comment at the top). `--type-scale` makes all text bigger or smaller (1 = Figma sizes) |
 | `src/assets/` | Images and SVGs from the Figma. Astro resizes the photos and converts them to WebP at build time |
-| `src/config.ts` | Adobe Fonts project, Web3Forms key, hCaptcha key, Bridge the Gap link |
+| `src/config.ts` | Adobe Fonts project, Web3Forms key, hCaptcha key, Bridge The Gap link |
 | `public/` | Copied as-is: `.htaccess`, `favicon.svg`, `robots.txt` |
 | `src/assets/gallery/` | Photos for the 2026 Gallery page (filename order; see the README there) |
 | `PLACEHOLDERS.md` | Placeholder copy, unapproved copy and open questions |

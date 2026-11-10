@@ -22,12 +22,13 @@ import { HEADLINE_SPONSOR, SUPPORTING_SPONSORS, PRODUCER } from '../data/sponsor
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (path: string) => `${base}${path}`;
 
-// Object positions reproduce the crops in the Figma frame.
+// Object positions reproduce the crops in the Figma frame. Each tile links to its package on the
+// Book a table page (`anchor` is that package's id there).
 const sponsors = [
-  { title: 'Headline sponsor', image: sponsorHeadline, position: '36% 50%', alt: 'A Land Rover Defender on display at the 2026 gala' },
-  { title: 'Supporting sponsor', image: sponsorSupporting, position: '0% 50%', alt: 'Guests at a sponsor gin bar' },
-  { title: 'Welcome drink sponsor', image: sponsorDrinks, position: '56% 50%', alt: 'Champagne being poured into rows of glasses' },
-  { title: 'VIP lounge sponsor', image: sponsorLounge, position: '74% 56%', alt: 'Guests raising a toast in the VIP lounge' },
+  { title: 'Headline sponsor', anchor: 'headline', image: sponsorHeadline, position: '36% 50%', alt: 'A Land Rover Defender on display at the 2026 gala' },
+  { title: 'Supporting sponsor', anchor: 'supporting', image: sponsorSupporting, position: '0% 50%', alt: 'Guests at a sponsor gin bar' },
+  { title: 'Welcome drink sponsor', anchor: 'welcome-drinks', image: sponsorDrinks, position: '56% 50%', alt: 'Champagne being poured into rows of glasses' },
+  { title: 'VIP lounge sponsor', anchor: 'vip-lounge', image: sponsorLounge, position: '74% 56%', alt: 'Guests raising a toast in the VIP lounge' },
 ];
 
 // Supporting sponsors for the hero. Volt7 is left out here: it's credited on the line below
@@ -167,7 +168,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       <p class="intro__lede">Please join us for a premium black tie evening of entertainment.</p>
       <p class="intro__body">
         Gather together in decadent surroundings, in the presence of celebrity guests and incredible entertainment in the
-        service of Bridge the Gap, the organisation that is on a mission to ensure every child feels hope.
+        service of Bridge The Gap, the organisation that is on a mission to ensure every child feels hope.
       </p>
     </div>
 
@@ -212,17 +213,19 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       <ul class="sponsors__grid">
         {
           sponsors.map((s) => (
-            <li class="sponsor-tile">
-              <Image
-                class="sponsor-tile__img"
-                src={s.image}
-                alt={s.alt}
-                widths={[480, 720, 1000, 1328]}
-                sizes="(max-width: 899px) 90vw, 39vw"
-                loading="lazy"
-                style={`object-position: ${s.position}`}
-              />
-              <h3 class="display display--lg sponsor-tile__title">{s.title}</h3>
+            <li>
+              <a class="sponsor-tile" href={href(`/book-a-table/#${s.anchor}`)}>
+                <Image
+                  class="sponsor-tile__img"
+                  src={s.image}
+                  alt={s.alt}
+                  widths={[480, 720, 1000, 1328]}
+                  sizes="(max-width: 899px) 90vw, 39vw"
+                  loading="lazy"
+                  style={`object-position: ${s.position}`}
+                />
+                <h3 class="display display--lg sponsor-tile__title">{s.title}</h3>
+              </a>
             </li>
           ))
         }
@@ -527,6 +530,8 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     padding: 0 calc(42 * var(--u)) calc(40 * var(--u));
     overflow: hidden;
     isolation: isolate;
+    color: inherit;
+    text-decoration: none;
   }
 
   .sponsor-tile :global(.sponsor-tile__img) {
@@ -536,6 +541,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.4s ease;
   }
 
   .sponsor-tile::after {
@@ -544,6 +550,32 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     inset: 40% 0 0;
     z-index: -1;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
+  }
+
+  /* Each tile is a link: a gold border on hover, the same line as a chosen tile in the enquiry form. */
+  .sponsor-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border: max(2px, calc(3 * var(--u))) solid transparent;
+    pointer-events: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .sponsor-tile:hover::before,
+  .sponsor-tile:focus-visible::before {
+    border-color: var(--gold);
+  }
+
+  .sponsor-tile:hover :global(.sponsor-tile__img) {
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sponsor-tile:hover :global(.sponsor-tile__img) {
+      transform: none;
+    }
   }
 
   .sponsors__cta {
