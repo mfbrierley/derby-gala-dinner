@@ -3,16 +3,23 @@
 # Upload the built site (dist/) to the IONOS web space over SFTP, sending only what changed.
 # Used by the GitHub Actions workflows in .github/workflows/; can also be run by hand:
 #
-#   IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD=... scripts/deploy-sftp.sh /derbygaladinner/new-private
+#   IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD=... scripts/deploy-sftp.sh /new-private
 #
 # THE WEB SPACE IS SHARED WITH OTHER CLIENTS' SITES (one folder each at the top level). This script
-# must never write to, or delete from, anything outside the Derby Gala Dinner folders. Four
-# independent checks, all made before anything is written:
+# must never write to, or delete from, anything outside the Derby Gala Dinner folders.
 #
+# The login it's given must be the restricted SFTP account IONOS limits to the derbygaladinner
+# folder: that account sees the folder as "/" (live site) with the test copy in "/new-private".
+# The server itself stops that account reaching anything else. On top of that, all checked before
+# anything is written:
+#
+#   0. The login's top folder ("/") must hold the .dgd-deploy-live permission file, i.e. it really
+#      is the Derby Gala Dinner folder. A login that sees the whole web space (all clients' folders
+#      at its top) has no such file there, so it's refused, for live and test deploys alike.
 #   1. Fixed folders. The only folders this script will ever upload to are listed below
 #      (LIVE_DIR, TEST_DIR). They're written into this file, not taken from settings, so no
 #      workflow variable or secret can point it anywhere else. Anything else is refused before
-#      connecting. Paths may only contain a-z, 0-9, "-" and "/".
+#      connecting.
 #   2. The build must match the folder. A test build (npm run build:test: noindex, links under
 #      /new-private/) can only go to TEST_DIR, a live build (npm run build) only to LIVE_DIR.
 #   3. A permission file placed by hand. The target folder must already contain an empty file
@@ -35,8 +42,8 @@
 set -euo pipefail
 
 # ---- 1. Fixed folders (the only places this script will ever write) ----------------------------
-LIVE_DIR="/derbygaladinner"
-TEST_DIR="/derbygaladinner/new-private"
+LIVE_DIR="/"
+TEST_DIR="/new-private"
 LIVE_MARKER=".dgd-deploy-live"
 TEST_MARKER=".dgd-deploy-test"
 
@@ -53,13 +60,12 @@ REMOTE_DIR="$1"
 : "${IONOS_SFTP_PASSWORD:?IONOS_SFTP_PASSWORD is not set}"
 PORT="${IONOS_SFTP_PORT:-22}"
 
+# Exact matches only (a trailing slash on the test folder is fine).
 case "$REMOTE_DIR" in
-  *[!a-z0-9/-]*) refuse "the folder '${REMOTE_DIR}' contains characters other than a-z, 0-9, - and /." ;;
+  "$LIVE_DIR") SITE_DIR="$LIVE_DIR" ;;
+  "$TEST_DIR" | "$TEST_DIR/") SITE_DIR="$TEST_DIR" ;;
+  *) refuse "'${REMOTE_DIR}' isn't one of the two folders this script may write to: ${LIVE_DIR} (live) or ${TEST_DIR} (test), as seen by the restricted Derby Gala Dinner login." ;;
 esac
-SITE_DIR="${REMOTE_DIR%/}" # one trailing slash allowed: /derbygaladinner/ = /derbygaladinner
-if [ "$SITE_DIR" != "$LIVE_DIR" ] && [ "$SITE_DIR" != "$TEST_DIR" ]; then
-  refuse "'${REMOTE_DIR}' isn't one of the two folders this script may write to: ${LIVE_DIR} (live) or ${TEST_DIR} (test)."
-fi
 
 # ---- 2. The build must match the folder -------------------------------------------------------
 [ -f dist/index.html ] && [ -d dist/_astro ] ||
@@ -71,8 +77,7 @@ elif ! grep -q 'name="robots" content="noindex' dist/index.html && ! grep -q 'ne
 else
   refuse "can't tell whether dist/ is a live or a test build (it has some signs of each). Rebuild."
 fi
-if [ "$BUILD" = "live" ]; then WANT_DIR="$LIVE_DIR"; MARKER="$LIVE_MARKER"; OTHER_MARKER="$TEST_MARKER"
-else WANT_DIR="$TEST_DIR"; MARKER="$TEST_MARKER"; OTHER_MARKER="$LIVE_MARKER"; fi
+if [ "$BUILD" = "live" ]; then WANT_DIR="$LIVE_DIR"; else WANT_DIR="$TEST_DIR"; fi
 [ "$SITE_DIR" = "$WANT_DIR" ] ||
   refuse "dist/ is a ${BUILD} build, which only goes to ${WANT_DIR}, not ${SITE_DIR}."
 
@@ -95,28 +100,45 @@ set net:reconnect-interval-base 5
 set net:timeout 60
 set sftp:auto-confirm yes"
 
-# ---- 3. Permission file, checked over a read-only connection ----------------------------------
-echo "Checking ${SITE_DIR} on ${IONOS_SFTP_HOST} (read-only) for its ${MARKER} file"
-if ! LISTING=$(lftp <<EOF 2>&1
+# ---- 0 + 3. Permission files, checked over a read-only connection -----------------------------
+# Lists the login's top folder and the target folder (names only), changing nothing.
+read_listing() {
+  lftp <<EOF 2>&1
 ${LFTP_SETTINGS}
 open --env-password -u "${IONOS_SFTP_USER}" -p ${PORT} sftp://${IONOS_SFTP_HOST}
-cd "${SITE_DIR}"
+cd "$1"
 cls -1a
 bye
 EOF
-); then
-  echo "$LISTING" >&2
-  refuse "couldn't read ${SITE_DIR} (wrong login, or the folder doesn't exist)."
-fi
-has() { printf '%s\n' "$LISTING" | grep -qxF -- "$1"; }
-has "$MARKER" ||
-  refuse "${SITE_DIR} has no ${MARKER} file, so it isn't marked as the ${BUILD} folder. Create that empty file there by hand (see README > Deploying) if this really is the right folder."
-if has "$OTHER_MARKER"; then
-  refuse "${SITE_DIR} has both ${MARKER} and ${OTHER_MARKER}; a folder can only be one or the other."
-fi
-echo "OK: ${SITE_DIR} is marked as the ${BUILD} folder. Uploading the ${BUILD} build."
+}
+has() { printf '%s\n' "$1" | grep -qxF -- "$2"; }
 
-ASSETS_DIR="${SITE_DIR}/_astro"
+echo "Checking the login's top folder on ${IONOS_SFTP_HOST} (read-only) for ${LIVE_MARKER}"
+if ! ROOT_LISTING=$(read_listing "$LIVE_DIR"); then
+  echo "$ROOT_LISTING" >&2
+  refuse "couldn't read the login's top folder (wrong login or password?)."
+fi
+has "$ROOT_LISTING" "$LIVE_MARKER" ||
+  refuse "the login's top folder has no ${LIVE_MARKER} file, so it isn't the Derby Gala Dinner folder. GitHub must use the SFTP account IONOS restricts to the derbygaladinner folder, and that folder needs the empty ${LIVE_MARKER} file (see README > Deploying)."
+if has "$ROOT_LISTING" "$TEST_MARKER"; then
+  refuse "the login's top folder has both ${LIVE_MARKER} and ${TEST_MARKER}; it can only be the live folder."
+fi
+
+if [ "$BUILD" = "test" ]; then
+  echo "Checking ${TEST_DIR} (read-only) for ${TEST_MARKER}"
+  if ! TEST_LISTING=$(read_listing "$TEST_DIR"); then
+    echo "$TEST_LISTING" >&2
+    refuse "couldn't read ${TEST_DIR} (does the folder exist?)."
+  fi
+  has "$TEST_LISTING" "$TEST_MARKER" ||
+    refuse "${TEST_DIR} has no ${TEST_MARKER} file, so it isn't marked as the test folder. Create that empty file there by hand (see README > Deploying) if this really is the right folder."
+  if has "$TEST_LISTING" "$LIVE_MARKER"; then
+    refuse "${TEST_DIR} has both ${TEST_MARKER} and ${LIVE_MARKER}; it can only be the test folder."
+  fi
+fi
+echo "OK: this is the Derby Gala Dinner login and ${SITE_DIR} is marked as the ${BUILD} folder. Uploading the ${BUILD} build."
+
+ASSETS_DIR="${SITE_DIR%/}/_astro"
 
 # The pages and settings (everything outside _astro, ~1 MB) are always uploaded in full, so a
 # changed page can never be skipped as "the same". Every name is checked before it's used.
