@@ -42,6 +42,10 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] The Distractions bio supplied by Matt.
 - [x] Spelling: it's "Baasit Siddiqui" (Matt). The Figma heading says "BASSIT"; the site now says Baasit everywhere.
 - [x] Sir Bradley Wiggins' subtitle updated to match the home page.
+- [x] Sir Bradley Wiggins' photo is the new one from Matt (smiling, helmet and sunglasses), on the home page and Your hosts. The file supplied is 670px wide where he appears, which is a little soft on high-resolution screens; a larger original would be sharper.
+- [x] Host photo stripes (home and Your hosts): redrawn to match Matt's Figma screenshot. Wider stripes, brightest behind the photo and fading to black in every direction, so there is no cropped edge. They are now a drawing (`src/assets/svg/host-stripes.svg`) rather than the old stripes picture, which had hard edges.
+- [ ] The Distractions: their photo is a full rectangle, not a cut-out, so no stripes can show behind it. Its cropped left and right edges now fade into the black instead. A cut-out of the band would let it have the stripes like the other two.
+- [ ] The guest's photo is shorter than the old one, so there is a slightly bigger gap above it on the home page (room for the stripes, which rise above the helmet as in the Figma screenshot).
 
 ### 2026 gallery
 - [x] The real 2026 photos are in: 516 photos (shrunk to 2400px wide by Matt before adding), each shown once.

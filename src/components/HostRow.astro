@@ -2,11 +2,13 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import goldLine from '../assets/svg/gold-line.svg?url';
-import backdropImg from '../assets/images/host-backdrop.png';
+import stripes from '../assets/svg/host-stripes.svg?url';
 
 /**
  * One host / guest / band row: photo on the left (with the gold stripes backdrop and
  * gold underline from the Figma), label + name + subtitle on the right.
+ * Nothing in the photo box has a hard cropped edge except along the gold line: the stripes fade
+ * out to black on every side, and a photo that is cropped at its sides can fade there too.
  * Media geometry comes from the Figma frame and is expressed as percentages of the
  * 546px-wide media box so it scales on smaller screens.
  */
@@ -30,6 +32,12 @@ interface Props {
   flip?: boolean;
   objectPosition?: string;
   /**
+   * Fade the photo's cropped side edges into the black: how far in from each side of the visible
+   * photo the fade runs, as a fraction of its width (0.1 = a tenth). For photos that are a
+   * rectangle cut off at the sides rather than a cut-out. `[left, right]` as seen on the page.
+   */
+  edgeFade?: [number, number];
+  /**
    * `summary` (home page): text centred against the photo.
    * `detail` (Your hosts page): text starts `textOffset` px below the top of the photo, sits
    * closer to it, and the bio (slot) follows underneath.
@@ -52,6 +60,7 @@ const {
   backdrop = true,
   flip = false,
   objectPosition = 'center',
+  edgeFade,
   variant = 'summary',
   textOffset = 47,
   headingLevel = 3,
@@ -67,26 +76,34 @@ const mediaStyle = [
   `--box-h: ${boxHeight}`,
   `--img-left: ${pct(imgLeft, W)}`,
   `--img-w: ${pct(imgWidth, W)}`,
-  `--backdrop-h: ${pct(427, boxHeight)}`,
+  `--backdrop-h: ${pct(510, boxHeight)}`,
   `--object-position: ${objectPosition}`,
 ].join('; ');
+
+/*
+ * The fade is a mask on the <img>. The visible photo runs from imgLeft to the end of the gold
+ * line (546), which isn't the whole <img> box when the file has empty space at its sides, so
+ * the stops are worked out as percentages of the box. A mirrored photo is masked before it is
+ * mirrored, so its stops are mirrored too.
+ */
+let imgMask: string | undefined;
+if (edgeFade) {
+  const [fadeLeft, fadeRight] = edgeFade;
+  const visible = W - imgLeft;
+  const at = (px: number) => `${((flip ? imgWidth - px : px) / imgWidth * 100).toFixed(2)}%`;
+  const stops = [
+    `transparent ${at(0)}`,
+    `#000 ${at(visible * fadeLeft)}`,
+    `#000 ${at(visible * (1 - fadeRight))}`,
+    `transparent ${at(visible)}`,
+  ];
+  imgMask = `linear-gradient(to right, ${(flip ? stops.reverse() : stops).join(', ')})`;
+}
 ---
 
 <div class:list={['host', `host--${variant}`]} style={`--text-offset: ${textOffset}`}>
   <div class="host__media" style={mediaStyle}>
-    {
-      backdrop && (
-        <Image
-          class="host__backdrop"
-          src={backdropImg}
-          widths={[400, 800, 1197]}
-          sizes="(max-width: 899px) 75vw, 23vw"
-          alt=""
-          loading="lazy"
-          quality={90}
-        />
-      )
-    }
+    {backdrop && <img class="host__backdrop" src={stripes} width="500" height="510" alt="" loading="lazy" />}
     <Image
       class:list={['host__img', { 'host__img--flip': flip }]}
       src={image}
@@ -94,6 +111,7 @@ const mediaStyle = [
       widths={[480, 720, 1000]}
       sizes="(max-width: 899px) 90vw, 40vw"
       loading="lazy"
+      style={imgMask && `-webkit-mask-image: ${imgMask}; mask-image: ${imgMask}`}
     />
     <img class="host__line" src={goldLine} width="546" height="4" alt="" />
   </div>
@@ -143,13 +161,28 @@ const mediaStyle = [
     height: calc(var(--box-h) * var(--u));
   }
 
-  .host__media :global(.host__backdrop) {
+  /*
+   * The stripes (host-stripes.svg): 500 x 510 in the Figma's px, sitting on the gold line and
+   * starting 30 to its left. They are brightest behind the photo and fade to nothing well inside
+   * the image on every side, so they melt into the black with no cropped edge.
+   */
+  .host__backdrop {
     position: absolute;
-    left: 0;
+    left: -5.495%;
     bottom: 0;
-    width: 73.077%;
+    width: 91.575%;
+    max-width: none;
     height: var(--backdrop-h);
-    object-fit: cover;
+  }
+
+  /*
+   * The stripes rise above shorter photos, towards the row above. Photos, gold lines and text
+   * are all lifted one level, so stripes always sit behind every row's content, never over it.
+   */
+  .host__media :global(.host__img),
+  .host__line,
+  .host__text {
+    z-index: 1;
   }
 
   .host__media :global(.host__img) {
@@ -177,6 +210,7 @@ const mediaStyle = [
   }
 
   .host__text {
+    position: relative;
     padding-top: calc(30 * var(--u));
     max-width: calc(866 * var(--u));
   }
@@ -210,6 +244,11 @@ const mediaStyle = [
       height: auto;
       aspect-ratio: 546 / var(--box-h);
       overflow-x: clip;
+    }
+
+    /* the box clips at its sides here, so the stripes start at its edge */
+    .host__backdrop {
+      left: 0;
     }
 
     .host__text {

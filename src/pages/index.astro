@@ -142,10 +142,9 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
         subtitle="Olympic gold medallist and first British Tour de France winner"
         image={wiggins}
         alt="Sir Bradley Wiggins"
-        boxHeight={540}
-        imgLeft={112.2}
-        imgWidth={464}
-        objectPosition="center top"
+        boxHeight={410}
+        imgLeft={101.2}
+        imgWidth={444.8}
       />
       <HostRow
         label="Live music from"
@@ -159,6 +158,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
         backdrop={false}
         flip
         objectPosition="left center"
+        edgeFade={[0.14, 0.1]}
       />
     </div>
 
@@ -406,6 +406,11 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     display: grid;
     row-gap: calc(41 * var(--u));
     padding: 0 calc(110 * var(--u) + var(--edge)) 0 calc(129 * var(--u) + var(--edge));
+  }
+
+  /* The guest's photo is shorter than the others, so its stripes rise above it: room for them. */
+  .hosts > :global(:nth-child(2)) {
+    margin-top: calc(60 * var(--u));
   }
 
   .hosts > :global(:nth-child(3)) {
