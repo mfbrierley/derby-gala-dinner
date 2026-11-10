@@ -5,7 +5,7 @@ import HostRow from '../components/HostRow.astro';
 import BtgSpotlight from '../components/BtgSpotlight.astro';
 import GalleryStrip from '../components/GalleryStrip.astro';
 
-import bassit from '../assets/images/host-bassit.png';
+import baasit from '../assets/images/host-baasit.png';
 import wiggins from '../assets/images/host-wiggins.png';
 import distractions from '../assets/images/host-distractions.png';
 import tableEvening from '../assets/images/table-evening.jpg';
@@ -17,18 +17,23 @@ import sponsorLounge from '../assets/images/sponsor-lounge.jpg';
 import ProductionCredit from '../components/ProductionCredit.astro';
 import heroVideo from '../assets/video/hero-bars.mp4?url';
 import heroPosterSrc from '../assets/images/hero-bars-poster.jpg';
-import { HEADLINE_SPONSOR } from '../data/sponsors';
+import { HEADLINE_SPONSOR, SUPPORTING_SPONSORS, PRODUCER } from '../data/sponsors';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = (path: string) => `${base}${path}`;
 
-// Object positions reproduce the crops in the Figma frame.
+// Object positions reproduce the crops in the Figma frame. Each tile links to its package on the
+// Book a table page (`anchor` is that package's id there).
 const sponsors = [
-  { title: 'Headline sponsor', image: sponsorHeadline, position: '36% 50%', alt: 'A Land Rover Defender on display at the 2026 gala' },
-  { title: 'Supporting sponsor', image: sponsorSupporting, position: '0% 50%', alt: 'Guests at a sponsor gin bar' },
-  { title: 'Welcome drink sponsor', image: sponsorDrinks, position: '56% 50%', alt: 'Champagne being poured into rows of glasses' },
-  { title: 'VIP lounge sponsor', image: sponsorLounge, position: '74% 56%', alt: 'Guests raising a toast in the VIP lounge' },
+  { title: 'Headline sponsor', anchor: 'headline', image: sponsorHeadline, position: '36% 50%', alt: 'A Land Rover Defender on display at the 2026 gala' },
+  { title: 'Supporting sponsor', anchor: 'supporting', image: sponsorSupporting, position: '0% 50%', alt: 'Guests at a sponsor gin bar' },
+  { title: 'Welcome drink sponsor', anchor: 'welcome-drinks', image: sponsorDrinks, position: '56% 50%', alt: 'Champagne being poured into rows of glasses' },
+  { title: 'VIP lounge sponsor', anchor: 'vip-lounge', image: sponsorLounge, position: '74% 56%', alt: 'Guests raising a toast in the VIP lounge' },
 ];
+
+// Supporting sponsors for the hero. Volt7 is left out here: it's credited on the line below
+// ("A Volt7 production"), as in the Figma.
+const heroSupporting = SUPPORTING_SPONSORS.filter((sponsor) => sponsor.name !== PRODUCER.name);
 
 // Hero video poster (first frame of the video), as WebP.
 const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'webp', quality: 80 });
@@ -76,6 +81,28 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
           height={HEADLINE_SPONSOR.height}
           alt={HEADLINE_SPONSOR.name}
         />
+        {
+          heroSupporting.length > 0 && (
+            <>
+              <p class="sponsor-rule sponsor-rule--white hero__supporting-rule">
+                <span>Supporting sponsors</span>
+              </p>
+              <ul class="hero__supporting">
+                {heroSupporting.map((sponsor) => (
+                  <li>
+                    <img
+                      src={sponsor.logo}
+                      width={sponsor.width}
+                      height={sponsor.height}
+                      alt={sponsor.name}
+                      style={`--w: ${sponsor.footerWidth}`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
         <div class="hero__production">
           <ProductionCredit />
         </div>
@@ -102,10 +129,10 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     <div class="hosts">
       <HostRow
         label="Hosted by"
-        name="BASSIT SIDDIQUI"
+        name="BAASIT SIDDIQUI"
         subtitle="TV personality and passionate educator"
-        image={bassit}
-        alt="Bassit Siddiqui"
+        image={baasit}
+        alt="Baasit Siddiqui"
         boxHeight={467}
         imgLeft={120.7}
         imgWidth={468}
@@ -116,10 +143,9 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
         subtitle="Olympic gold medallist and first British Tour de France winner"
         image={wiggins}
         alt="Sir Bradley Wiggins"
-        boxHeight={540}
-        imgLeft={112.2}
-        imgWidth={464}
-        objectPosition="center top"
+        boxHeight={410}
+        imgLeft={101.2}
+        imgWidth={444.8}
       />
       <HostRow
         label="Live music from"
@@ -127,12 +153,10 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
         subtitle="Gala house band for the night"
         image={distractions}
         alt="The Distractions performing on stage"
-        boxHeight={496}
+        boxHeight={437}
         imgLeft={0}
-        imgWidth={621.5}
-        backdrop={false}
-        flip
-        objectPosition="left center"
+        imgWidth={546}
+        edgeFade={[0.06, 0]}
       />
     </div>
 
@@ -141,7 +165,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       <p class="intro__lede">Please join us for a premium black tie evening of entertainment.</p>
       <p class="intro__body">
         Gather together in decadent surroundings, in the presence of celebrity guests and incredible entertainment in the
-        service of Bridge the Gap, the organisation that is on a mission to ensure every child feels hope.
+        service of Bridge The Gap, the organisation that is on a mission to ensure every child feels hope.
       </p>
     </div>
 
@@ -186,17 +210,19 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       <ul class="sponsors__grid">
         {
           sponsors.map((s) => (
-            <li class="sponsor-tile">
-              <Image
-                class="sponsor-tile__img"
-                src={s.image}
-                alt={s.alt}
-                widths={[480, 720, 1000, 1328]}
-                sizes="(max-width: 899px) 90vw, 39vw"
-                loading="lazy"
-                style={`object-position: ${s.position}`}
-              />
-              <h3 class="display display--lg sponsor-tile__title">{s.title}</h3>
+            <li>
+              <a class="sponsor-tile" href={href(`/book-a-table/#${s.anchor}`)}>
+                <Image
+                  class="sponsor-tile__img"
+                  src={s.image}
+                  alt={s.alt}
+                  widths={[480, 720, 1000, 1328]}
+                  sizes="(max-width: 899px) 90vw, 39vw"
+                  loading="lazy"
+                  style={`object-position: ${s.position}`}
+                />
+                <h3 class="display display--lg sponsor-tile__title">{s.title}</h3>
+              </a>
             </li>
           ))
         }
@@ -288,7 +314,10 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     margin-top: calc(24 * var(--u));
   }
 
-  /* Headline sponsor (label between fine gold lines, then the logo), then "A Volt7 production". */
+  /*
+   * Headline sponsor (label between fine gold lines, then the logo), the supporting sponsors
+   * (label between fine white lines, then their logos), then "A Volt7 production".
+   */
   .hero__sponsors {
     display: flex;
     flex-direction: column;
@@ -308,8 +337,27 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     margin-top: calc(28 * var(--u));
   }
 
+  .hero__supporting-rule {
+    margin-top: calc(32 * var(--u));
+  }
+
+  .hero__supporting {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: calc(20 * var(--u)) calc(64 * var(--u));
+    margin-top: calc(36 * var(--u));
+  }
+
+  .hero__supporting img {
+    display: block;
+    width: calc(var(--w) * var(--u));
+    height: auto;
+  }
+
   .hero__production {
-    margin-top: calc(88 * var(--u));
+    margin-top: calc(48 * var(--u));
     font-size: max(12px, calc(20 * var(--u) * var(--type-scale)));
   }
 
@@ -474,6 +522,8 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     padding: 0 calc(42 * var(--u)) calc(40 * var(--u));
     overflow: hidden;
     isolation: isolate;
+    color: inherit;
+    text-decoration: none;
   }
 
   .sponsor-tile :global(.sponsor-tile__img) {
@@ -483,6 +533,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.4s ease;
   }
 
   .sponsor-tile::after {
@@ -491,6 +542,32 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     inset: 40% 0 0;
     z-index: -1;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
+  }
+
+  /* Each tile is a link: a gold border on hover, the same line as a chosen tile in the enquiry form. */
+  .sponsor-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border: max(2px, calc(3 * var(--u))) solid transparent;
+    pointer-events: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .sponsor-tile:hover::before,
+  .sponsor-tile:focus-visible::before {
+    border-color: var(--gold);
+  }
+
+  .sponsor-tile:hover :global(.sponsor-tile__img) {
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sponsor-tile:hover :global(.sponsor-tile__img) {
+      transform: none;
+    }
   }
 
   .sponsors__cta {
@@ -539,8 +616,22 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       margin-top: 14px;
     }
 
+    .hero__supporting-rule {
+      margin-top: 20px;
+    }
+
+    .hero__supporting {
+      gap: 14px 32px;
+      margin-top: 16px;
+    }
+
+    /* same proportion as the headline logo (203 in the Figma, 140px here) */
+    .hero__supporting img {
+      width: calc(var(--w) * 0.69px);
+    }
+
     .hero__production {
-      margin-top: 28px;
+      margin-top: 24px;
       font-size: 13px;
     }
 

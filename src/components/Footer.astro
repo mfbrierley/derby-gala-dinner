@@ -32,7 +32,7 @@ const href = (path: string) => `${base}${path}`;
 
       <a class="site-footer__fundraising" href={BTG_URL} target="_blank" rel="noopener">
         <img class="site-footer__fundraising-text" src={fundraisingFor} width="267" height="13" alt="Fundraising for" />
-        <img class="site-footer__fundraising-logo" src={btgLogo.src} width="70" height="69" alt="Bridge the Gap" />
+        <img class="site-footer__fundraising-logo" src={btgLogo.src} width="70" height="69" alt="Bridge The Gap" />
       </a>
     </div>
 
@@ -69,10 +69,9 @@ const href = (path: string) => `${base}${path}`;
 
   <div class="site-footer__bar">
     <ProductionCredit />
-    <!-- Not in the Figma: legal links needed for the privacy policy and cookie choices. -->
+    <!-- Not in the Figma: the legal link needed for the privacy policy. -->
     <ul class="site-footer__legal">
       <li><a href={href('/privacy-policy/')}>Privacy policy</a></li>
-      <li><button type="button" data-cookie-settings>Cookie settings</button></li>
     </ul>
   </div>
 </footer>
@@ -218,20 +217,13 @@ const href = (path: string) => `${base}${path}`;
     transform: translateY(-50%);
   }
 
-  .site-footer__legal a,
-  .site-footer__legal button {
-    padding: 0;
-    border: 0;
-    background: none;
+  .site-footer__legal a {
     color: rgba(255, 255, 255, 0.72);
-    font-size: inherit;
     text-decoration: underline;
     text-underline-offset: 3px;
-    cursor: pointer;
   }
 
-  .site-footer__legal a:hover,
-  .site-footer__legal button:hover {
+  .site-footer__legal a:hover {
     color: var(--white);
   }
 

@@ -118,13 +118,13 @@ SFTP apps hide files starting with a dot (in Finder, Cmd + Shift + . shows them)
 | Path | What |
 |---|---|
 | `src/pages/` | One file per page (`index.astro` is the home page) |
-| `src/layouts/Base.astro` | Page shell: `<head>`, fonts, header, footer, pop-ups, cookie banner |
-| `src/components/` | Header, footer, enquiry/contact pop-up, cookie banner and shared sections |
+| `src/layouts/Base.astro` | Page shell: `<head>`, fonts, header, footer, pop-ups |
+| `src/components/` | Header, footer, enquiry/contact pop-up and shared sections |
 | `src/assets/video/hero-bars.mp4` | Home hero background video (the poster is `src/assets/images/hero-bars-poster.jpg`, its first frame) |
 | `src/data/sponsors.ts` | Sponsor names, labels and logos (shown in the home hero and the footer) |
 | `src/styles/global.css` | Colours, fonts, buttons and the sizing system (see the comment at the top). `--type-scale` makes all text bigger or smaller (1 = Figma sizes) |
 | `src/assets/` | Images and SVGs from the Figma. Astro resizes the photos and converts them to WebP at build time |
-| `src/config.ts` | Adobe Fonts project, Web3Forms key, hCaptcha key, Bridge the Gap link |
+| `src/config.ts` | Adobe Fonts project, Web3Forms key, hCaptcha key, Bridge The Gap link |
 | `public/` | Copied as-is: `.htaccess`, `favicon.svg`, `robots.txt` |
 | `src/assets/gallery/` | Photos for the 2026 Gallery page (filename order; see the README there) |
 | `PLACEHOLDERS.md` | Placeholder copy, unapproved copy and open questions |
@@ -154,6 +154,6 @@ Buttons open the pop-ups with data attributes:
 
 ## Cookies
 
-The only non-essential cookies come from the live Google map on the event details page. It loads only after
-the visitor accepts in the cookie banner. The choice is kept in `localStorage` (`dgd-cookie-consent`); see
-`src/scripts/consent.ts`.
+The site sets no cookies of its own and has no cookie banner. The only cookies come from hCaptcha, which
+loads when an enquiry form is opened and needs them for its spam check. The venue map is a plain link to
+Google Maps ("View on maps" on the event details page), not an embedded map.

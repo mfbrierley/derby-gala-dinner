@@ -5,7 +5,7 @@ import HostRow from '../components/HostRow.astro';
 import BtgSpotlight from '../components/BtgSpotlight.astro';
 import GalleryStrip from '../components/GalleryStrip.astro';
 
-import bassit from '../assets/images/host-bassit.png';
+import baasit from '../assets/images/host-baasit.png';
 import wiggins from '../assets/images/host-wiggins.png';
 import distractions from '../assets/images/host-distractions.png';
 ---
@@ -13,7 +13,7 @@ import distractions from '../assets/images/host-distractions.png';
 <Base
   title="Your hosts for the evening"
   active="hosts"
-  description="Meet the hosts of the Derby Gala Dinner 2027: Bassit Siddiqui, special guest Sir Bradley Wiggins and the gala house band The Distractions."
+  description="Meet the hosts of the Derby Gala Dinner 2027: Baasit Siddiqui, special guest Sir Bradley Wiggins and the gala house band The Distractions."
 >
   <PageHeader title="Your hosts for the evening" />
 
@@ -29,10 +29,10 @@ import distractions from '../assets/images/host-distractions.png';
         headingLevel={2}
         textOffset={47}
         label="Hosted by"
-        name="BASSIT SIDDIQUI"
+        name="BAASIT SIDDIQUI"
         subtitle="TV personality and passionate educator"
-        image={bassit}
-        alt="Bassit Siddiqui"
+        image={baasit}
+        alt="Baasit Siddiqui"
         boxHeight={467}
         imgLeft={120.7}
         imgWidth={468}
@@ -54,20 +54,19 @@ import distractions from '../assets/images/host-distractions.png';
       <HostRow
         variant="detail"
         headingLevel={2}
-        textOffset={92}
+        textOffset={47}
         label="Special Guest"
         name="Sir Bradley Wiggins"
         subtitle="Olympic gold medallist and first British Tour de France winner"
         image={wiggins}
         alt="Sir Bradley Wiggins"
-        boxHeight={540}
-        imgLeft={112.2}
-        imgWidth={464}
-        objectPosition="center top"
+        boxHeight={410}
+        imgLeft={101.2}
+        imgWidth={444.8}
       >
         <p>
-          Bradley Wiggins is the first British cyclist to win the Tour de France and Britain’s most decorated Olympian, with
-          eight Olympic medals, five of which are gold. Perhaps his most memorable Olympic moment was winning gold on the
+          Bradley Wiggins is the first British cyclist to win the Tour de France and one of Britain’s most decorated Olympians,
+          with eight Olympic medals, five of which are gold. Perhaps his most memorable Olympic moment was winning gold on the
           streets of London in 2012, a few weeks after his grand tour victory, the same year that would see him win Sports
           Personality of the Year. Wiggins was Knighted in 2013 cementing his position as a household name in Britain far
           beyond that of his sport.
@@ -89,12 +88,10 @@ import distractions from '../assets/images/host-distractions.png';
         subtitle="Gala house band for the night"
         image={distractions}
         alt="The Distractions performing on stage"
-        boxHeight={496}
+        boxHeight={437}
         imgLeft={0}
-        imgWidth={621.5}
-        backdrop={false}
-        flip
-        objectPosition="left center"
+        imgWidth={546}
+        edgeFade={[0.06, 0]}
       >
         <p>
           The Distractions is a collective of experienced, vibrant and highly talented musicians from across the UK. Well

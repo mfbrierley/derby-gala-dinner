@@ -4,7 +4,7 @@ import PageHeader from '../components/PageHeader.astro';
 
 // DRAFT for the organiser to review. Items in [square brackets] need filling in
 // (also listed in PLACEHOLDERS.md). This is not legal advice.
-const updated = '3 November 2026';
+const updated = '10 November 2026';
 ---
 
 <Base title="Privacy policy" description="How Derby Gala Dinner collects and uses your personal information.">
@@ -21,7 +21,7 @@ const updated = '3 November 2026';
 
       <h2 class="label gold">Who we are</h2>
       <p>
-        Derby Gala Dinner is organised by VOLT7, 8 Mallard Way, Pride Park, Derby DE24 8GX, to raise funds for Bridge the Gap. We are
+        Derby Gala Dinner is organised by VOLT7, 8 Mallard Way, Pride Park, Derby DE24 8GX, to raise funds for Bridge The Gap. We are
         responsible for the personal information you give us through this website. If you have any questions about this policy
         or your information, email us at <a href="mailto:hello@volt7.agency">hello@volt7.agency</a>.
       </p>
@@ -31,7 +31,7 @@ const updated = '3 November 2026';
       <ul>
         <li>your name (and your title, if you give it)</li>
         <li>your email address, and your phone number if you give it</li>
-        <li>your company name, company address and VAT number, if you give them</li>
+        <li>your company name and company address, if you give them</li>
         <li>what you are enquiring about (the table type, or the types of sponsorship you are interested in)</li>
         <li>anything you write in the message box on the general enquiry form</li>
       </ul>
@@ -42,14 +42,18 @@ const updated = '3 November 2026';
         <li>to reply to your enquiry</li>
         <li>to arrange table bookings and sponsorship, including sending invoices</li>
         <li>if you book, to contact you about the event, such as menu choices and dietary requirements</li>
+        <li>to tell you about future Derby Gala Dinner events and promotions</li>
       </ul>
-      <p>We will not use your details for marketing unless you ask us to, and we never sell them.</p>
+      <p>
+        We never sell your details. If you would rather not hear from us about future events and promotions, email
+        <a href="mailto:hello@volt7.agency">hello@volt7.agency</a> and we will stop.
+      </p>
 
       <h2 class="label gold">Our legal basis</h2>
       <p>
         Under UK data protection law (UK GDPR), we use your information because you have asked us to take steps before
         entering into an agreement with you (a booking or sponsorship), and because we have a legitimate interest in
-        responding to enquiries about the event.
+        responding to enquiries about the event and in telling people who have enquired about future events.
       </p>
 
       <h2 class="label gold">Who we share it with</h2>
@@ -61,7 +65,6 @@ const updated = '3 November 2026';
           bot. It processes information such as your IP address and device details to do this.
         </li>
         <li><strong>Adobe Fonts</strong> provides the fonts used on the website.</li>
-        <li><strong>Google</strong> provides the map on the event details page, only if you accept cookies.</li>
         <li><strong>IONOS</strong> hosts the website.</li>
       </ul>
       <p>
@@ -88,24 +91,16 @@ const updated = '3 November 2026';
       </p>
 
       <h2 class="label gold" id="cookies">Cookies</h2>
-      <ul>
-        <li>
-          <strong>Your cookie choice.</strong> We remember whether you accepted or rejected cookies by saving that choice in your
-          browser. This is essential for the cookie banner to work.
-        </li>
-        <li>
-          <strong>Google Maps.</strong> The live map on the event details page is only loaded if you choose Accept. Google may then
-          set cookies; see
-          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>.
-        </li>
-        <li>
-          <strong>hCaptcha.</strong> When you open an enquiry form, hCaptcha loads to protect the form from spam. It may set
-          cookies that are needed for this security check.
-        </li>
-      </ul>
       <p>
-        We do not use analytics or advertising cookies. You can change your choice at any time using
-        <button type="button" class="policy__link" data-cookie-settings>Cookie settings</button>.
+        This website does not set any cookies of its own, and we do not use analytics or advertising cookies.
+      </p>
+      <p>
+        The one exception is <strong>hCaptcha</strong>. When you open an enquiry form, hCaptcha loads to protect the form from
+        spam. It may set cookies that are needed for this security check.
+      </p>
+      <p>
+        The "View on maps" link on the event details page opens Google Maps in a new tab. Google's own
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacy policy</a> applies there.
       </p>
 
       <h2 class="label gold">Changes to this policy</h2>
@@ -148,19 +143,9 @@ const updated = '3 November 2026';
     list-style: disc;
   }
 
-  .policy a,
-  .policy__link {
+  .policy a {
     color: var(--gold);
     text-underline-offset: 3px;
-  }
-
-  .policy__link {
-    padding: 0;
-    border: 0;
-    background: none;
-    font-size: inherit;
-    text-decoration: underline;
-    cursor: pointer;
   }
 
   @media (max-width: 899px) {

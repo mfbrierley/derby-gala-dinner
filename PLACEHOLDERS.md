@@ -8,7 +8,7 @@ the Figma, and open questions. Update it as items are resolved.
 
 ### Home
 - [x] Proceeds text (was "…supporting X families…") replaced with the Family support fund wording supplied by Matt.
-- [x] Sir Bradley Wiggins' subtitle is now "Olympic gold medallist and first British Tour de France winner." (was a copy of Bassit's).
+- [x] Sir Bradley Wiggins' subtitle is now "Olympic gold medallist and first British Tour de France winner." (was a copy of Baasit's).
 - [ ] "PLAY / This will be for a video once created." (below the footer in the Figma). **Not built yet**, waiting for the video.
 - [ ] The "See how the Derby Gala Dinner 2026 unfolded." strip only has 3 photos in the Figma. They loop. (It uses its own 3 photos in `src/components/GalleryStrip.astro`, separate from the gallery folder.)
 
@@ -35,25 +35,36 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] Top section updated to the "dgd - matt" Figma: Date and Venue (address in white), gold lines between sections, Timings for VIP and Evening Guests, and Menu. Itinerary has been removed, as in the Figma.
 - [x] Times are written with colons throughout (17:30, 18:00), as agreed with Matt; the Figma mixes "17.30" and "19:00".
 - [ ] Menu still says "Coming soon...".
-- [ ] The map in the Figma is a screenshot. The build uses a live Google map that only loads after cookies are accepted; until then the screenshot is shown dimmed behind the consent message.
+- [x] Event details: the "Date and Venue" box from the "dgd - matt" Figma is at the top of the page: date, Vaillant Live logo, address and a "View on maps" link on the left, the venue photo fading in from the right, in a white border. It replaces the old date, address and embedded Google map (Matt). "View on maps" opens Google Maps in a new tab.
+- [x] With the embedded map gone the site needs no cookie consent, so the cookie banner, the "Cookie settings" footer link and the cookie-choice wording in the privacy policy are removed (Matt). The privacy policy's Cookies section now only covers hCaptcha (the spam check on the forms) and the Google Maps link.
+- [x] Event details timings: "VIP" is now "VIP Guests" (Matt's green note in the Figma).
+- [ ] On phones the Date and Venue box puts the photo across the top and the details underneath (not in the Figma, which is laptop only).
 
 ### Your hosts
 - [x] Sir Bradley Wiggins bio supplied by Matt.
 - [x] The Distractions bio supplied by Matt.
-- [ ] Spelling: the heading says "BASSIT SIDDIQUI" but his bio says "Baasit" (twice). Which is right?
+- [x] Spelling: it's "Baasit Siddiqui" (Matt). The Figma heading says "BASSIT"; the site now says Baasit everywhere.
 - [x] Sir Bradley Wiggins' subtitle updated to match the home page.
+- [x] Sir Bradley Wiggins' photo is the new one from Matt (smiling, helmet and sunglasses), on the home page and Your hosts. The file supplied is 670px wide where he appears, which is a little soft on high-resolution screens; a larger original would be sharper.
+- [x] Host photo stripes (home and Your hosts): the Figma's stripes picture, in its Figma place, now fades out towards each of its edges so it melts into the black instead of stopping at a cropped edge (Matt). Same for all three rows.
+- [x] The Distractions: the photo is the transparent cut-out from Matt, so it now has the stripes behind it like the other two. Most of the stripes sit behind the two performers; they show between and above them. The small part of the jacket that runs off the left of the picture fades out.
 
 ### 2026 gallery
 - [x] The real 2026 photos are in: 516 photos (shrunk to 2400px wide by Matt before adding), each shown once.
 - [ ] Order: filename order. The photos have no "date taken" information, so they can't be sorted by time; the `AVI…` camera's photos come first, then the `_DSC…` camera's.
 - [ ] The page is long with 516 photos (about 170 rows on a laptop). Photos load as you scroll. A "Show more" button could shorten it.
 - [ ] Photo descriptions are generic ("Derby Gala Dinner 2026, photo 5 of 516"). Fine for a gallery, but they could be more specific.
-- [x] Gallery page: the Bridge the Gap spotlight and the gold "See how…" photo strip have been removed (Matt). The page now goes straight from the photo grid to the footer.
+- [x] Gallery page: the Bridge The Gap spotlight and the gold "See how…" photo strip have been removed (Matt). The page now goes straight from the photo grid to the footer.
 
 ### Sponsors (hero and footer, from the "dgd - matt" Figma)
 - [ ] Logos and labels come from the Figma: Headline sponsor = Stratstone Land Rover Derby; Supporting sponsors = Enigma Seven and Volt7; plus "A [Volt7 logo] production". They're set in one place, `src/data/sponsors.ts`, which feeds both the home hero and the footer. The logos don't link anywhere (Matt).
-- [ ] The hero shows the headline sponsor only; the footer shows both rows.
-- [ ] **More supporting sponsors are coming.** The Figma leaves a gap under them for now; the build closes it (the space under the logos matches the space at the top of the footer). Add each new sponsor to `SUPPORTING_SPONSORS` in `src/data/sponsors.ts` and the row grows.
+- [x] Home page "Sponsor Packages": the four tiles are links to their package on the Book a table page (Headline, Supporting, Welcome drinks, VIP lounge) and get a gold border on hover, the same line as a chosen tile in the enquiry form (Matt).
+- [x] The charity's name is written "Bridge The Gap" everywhere (Matt).
+- [x] Book a table: a gold-bordered "Considering sponsorship? All sponsor packages include a table for 10 guests." box sits between the intro and the Evening Table, from Matt's mockup. Not in the mockup: the whole box is a link down to the Sponsors section of the same page.
+- [x] Book a table: a "Donate a seat" section sits between the VIP Table and the Sponsors section, from Matt's mockup. Its "Book a table" button opens the table booking form with no table chosen.
+- [ ] The booking form has no "donate a seat or table" option, so someone donating has to say so in their message. Worth adding?
+- [ ] The hero shows the headline sponsor and, under it, the supporting sponsors without Volt7 (so Enigma Seven for now), because "A Volt7 production" is the next line down, as in the Figma. The footer shows both rows in full.
+- [ ] **More supporting sponsors are coming.** The Figma leaves a gap under them for now; the build closes it (the space under the logos matches the space at the top of the footer). Add each new sponsor to `SUPPORTING_SPONSORS` in `src/data/sponsors.ts` and the rows in the hero and the footer grow. The hero fills the screen with one supporting sponsor; with several more it will get taller than the screen on small laptops and phones, so its spacing will want another look then.
 
 ### Not built
 - [ ] Sponsors: the whole page is marked "THIS PAGE WILL COME LATER WHEN WE HAVE THE SPONSORS SORTED" (lorem ipsum, "xx"). Not linked from anywhere in the Figma nav.
@@ -69,22 +80,23 @@ the Figma, and open questions. Update it as items are resolved.
   - An extra, shorter "Other sponsorship" picture under the four in the mockup, because Other is in Matt's list and on the Book a table page.
   - Chosen: gold outline, gold name and a tick. The mockups show the gold outline for tables only.
   - Title list on the general contact form (Mr, Mrs, Ms, Miss, Mx, Dr).
-- [ ] **Cookie banner:** all copy.
-- [ ] **Map (before cookies are accepted):** "The live map is provided by Google, which sets cookies." with the buttons "Accept cookies and show map" and "Open in Google Maps".
+- [x] **Cookie banner and embedded map:** removed (Matt). See Event details below.
+- [x] **Enquiry forms (Matt, from the Figma notes):** the table booking form asks for a contact number instead of a VAT number (optional, like the VAT field was); each table type shows its price under its name (£2,500 + VAT, £3,500 + VAT, the same as the Book a table page); the line under Submit on all three forms now reads "We'll only use your details to respond to your enquiry and communicate for future events and promotions. See our privacy policy."
+- [ ] **Marketing wording needs checking.** The privacy policy used to say "We will not use your details for marketing unless you ask us to". It now says details are also used to tell people about future events and promotions, with a way to opt out by email, so it matches the forms. UK rules on marketing emails usually expect people to be given a clear choice at the point they hand over their details (for example a tick box), so this is worth checking with whoever signs off the policy.
 - [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
   - [x] Organiser name: VOLT7
   - [x] Organiser address: 8 Mallard Way, Pride Park, Derby DE24 8GX
   - [x] Privacy contact email: hello@volt7.agency
   - [ ] Retention periods: [12 months] for enquiries, [6 years] for invoices
-  - [ ] Confirm whether enquiry details are shared with Bridge the Gap (the draft says they aren't mentioned)
-- [ ] **Footer:** added "Privacy policy" and "Cookie settings" links (needed for the policy and the cookie banner). They sit on the right of the black "A Volt7 production" bar on wide screens and below it on narrower ones.
+  - [ ] Confirm whether enquiry details are shared with Bridge The Gap (the draft says they aren't mentioned)
+- [ ] **Footer:** added a "Privacy policy" link. It sits on the right of the black "A Volt7 production" bar on wide screens and below it on narrower ones. (The "Cookie settings" link went with the cookie banner.)
 - [ ] **404 page:** "Page not found", "Sorry, we couldn't find that page.", "Back to home".
 - [ ] **Image alt text and the site meta description.**
 
 ## Design decisions to confirm with Will
 
-- [ ] The footer from the latest "dgd - matt" Figma is used on every page (Matt): logo, nav, gold divider and "Fundraising for Bridge the Gap" along the top, then the sponsors, then the black Volt7 bar.
-- [x] The "Fundraising for Bridge the Gap" lockup has been removed from the header and the phone menu on every page (Matt). It now appears in the footer only.
+- [ ] The footer from the latest "dgd - matt" Figma is used on every page (Matt): logo, nav, gold divider and "Fundraising for Bridge The Gap" along the top, then the sponsors, then the black Volt7 bar.
+- [x] The "Fundraising for Bridge The Gap" lockup has been removed from the header and the phone menu on every page (Matt). It now appears in the footer only.
 - [ ] The header from the Home / Book a table frames is used on every page, including Your hosts and Gallery (those frames still have the old TICKETS / ABOUT / CONTACT header) and Event details (that frame leaves out the YOUR HOSTS / 2026 GALLERY links). The logo sits at the content edge (188px) as on 5 of the 6 frames; the Home frame has it further left (85px).
 - [ ] In the nav, bold means the current page. On Home, BOOK A TABLE is bold, as in the Figma.
 - [ ] YOUR HOSTS and 2026 GALLERY appear as a dropdown under EVENT DETAILS on hover.
@@ -110,8 +122,8 @@ Automated checks (axe-core, Lighthouse) pass apart from these, which all come fr
 
 ## Assets to request
 
-- [ ] **Bridge the Gap logo as SVG.** It's built from masked layers in the Figma, so it's exported as a 225px PNG and looks slightly soft on high-resolution screens.
-- [ ] **Bridge the Gap spotlight photo:** it's a screenshot (about 924px wide). An original would be sharper.
+- [ ] **Bridge The Gap logo as SVG.** It's built from masked layers in the Figma, so it's exported as a 225px PNG and looks slightly soft on high-resolution screens.
+- [ ] **Bridge The Gap spotlight photo:** it's a screenshot (about 924px wide). An original would be sharper.
 - (The other photos came out of the Figma at full resolution, so they're fine.)
 
 ## Setup to-dos

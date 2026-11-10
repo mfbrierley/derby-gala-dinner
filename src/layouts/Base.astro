@@ -4,7 +4,6 @@ import Header from '../components/Header.astro';
 import type { NavKey } from '../types';
 import Footer from '../components/Footer.astro';
 import EnquiryModal from '../components/EnquiryModal.astro';
-import CookieBanner from '../components/CookieBanner.astro';
 import barsTop from '../assets/images/bars/bars-top-2560.webp?url';
 import barsTopLarge from '../assets/images/bars/bars-top-3840.webp?url';
 import barsBottom from '../assets/images/bars/bars-bottom-2560.webp?url';
@@ -21,7 +20,7 @@ interface Props {
 
 const {
   title,
-  description = 'Derby Gala Dinner: a premium black tie evening of entertainment in the service of Bridge the Gap. 22/04/27, Vaillant Live Derby.',
+  description = 'Derby Gala Dinner: a premium black tie evening of entertainment in the service of Bridge The Gap. 22/04/27, Vaillant Live Derby.',
   active = 'none',
   noindex: pageNoindex = false,
 } = Astro.props;
@@ -94,7 +93,6 @@ const barsCss = `:root{--bars-top:url(${barsTop});--bars-bottom:url(${barsBottom
     <EnquiryModal variant="booking" />
     <EnquiryModal variant="sponsorship" />
     <EnquiryModal variant="contact" />
-    <CookieBanner />
     <script>
       // Links like /book-a-table/#sponsorship: the browser jumps to the section before the
       // Adobe fonts arrive, and the text above it changes height when they do. Re-align once loaded.

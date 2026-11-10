@@ -52,11 +52,12 @@ const copy = {
  * mockups in the "dgd - matt" Figma. `value` is what's emailed and what the opening button
  * pre-selects (data-open-booking / data-open-sponsorship). `position` is the photo crop from the Figma.
  */
-type Pick = { value: string; label: string; image: ImageMetadata; position?: string; wide?: boolean };
+type Pick = { value: string; label: string; image: ImageMetadata; position?: string; wide?: boolean; price?: string };
 
+// `price` is shown under the name; keep it the same as on the Book a table page.
 const tableTypes: Pick[] = [
-  { value: 'Evening Table', label: 'Evening table', image: tableEvening },
-  { value: 'VIP Table', label: 'VIP table', image: tableVip },
+  { value: 'Evening Table', label: 'Evening table', image: tableEvening, price: '£2,500 + VAT' },
+  { value: 'VIP Table', label: 'VIP table', image: tableVip, price: '£3,500 + VAT' },
 ];
 const sponsorshipTypes: Pick[] = [
   { value: 'Headline', label: 'Headline sponsor', image: sponsorHeadline, position: '50% 22%' },
@@ -103,8 +104,8 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
                   <span class="field__label">Your Company name</span>
                 </label>
                 <label class="field">
-                  <input name="VAT Number" type="text" placeholder=" " />
-                  <span class="field__label">VAT number (if applicable)</span>
+                  <input name="Contact Number" type="tel" placeholder=" " autocomplete="tel" />
+                  <span class="field__label">Your contact number</span>
                 </label>
               </div>
               <label class="field">
@@ -126,7 +127,10 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
                           loading="lazy"
                           style={t.position ? `object-position: ${t.position}` : undefined}
                         />
-                        <span class="pick__label display">{t.label}</span>
+                        <span class="pick__label display">
+                          {t.label}
+                          {t.price && <span class="pick__price">{t.price}</span>}
+                        </span>
                         <span class="pick__tick" aria-hidden="true" />
                       </label>
                     ))
@@ -239,7 +243,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
         <button class="btn btn--gold enquiry__submit" type="submit">Submit</button>
 
         <p class="enquiry__privacy">
-          We'll only use your details to respond to your enquiry. See our <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/privacy-policy/`}>privacy policy</a>.
+          We'll only use your details to respond to your enquiry and communicate for future events and promotions. See our <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/privacy-policy/`}>privacy policy</a>.
         </p>
       </form>
     </div>
@@ -639,6 +643,18 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     font-size: calc(max(26px, calc(67 * var(--u))) * var(--type-scale));
   }
 
+  /* The table's price, in plain text under its name. It stays white when the table is chosen. */
+  .pick__price {
+    display: block;
+    margin-top: calc(10 * var(--u));
+    font-family: var(--font-sans);
+    font-size: max(14px, calc(24 * var(--u) * var(--type-scale)));
+    font-weight: 400;
+    line-height: 1.2;
+    text-transform: none;
+    color: var(--white);
+  }
+
   .pick--wide .pick__label {
     top: 50%;
     bottom: auto;
@@ -787,6 +803,11 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 
     .pick--wide .pick__label {
       bottom: auto;
+    }
+
+    .pick__price {
+      margin-top: 4px;
+      font-size: 14px;
     }
   }
 </style>

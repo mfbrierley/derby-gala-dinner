@@ -14,7 +14,7 @@ export const HCAPTCHA_SITEKEY = '50b2fe65-b00b-4b9e-ad62-3ba471098be2';
 
 export const BTG_URL = 'https://www.wearebridgethegap.com/';
 
-// Venue, used for the map on the event details page.
+// Venue, used for the address and the "View on maps" link on the event details page.
 export const VENUE = {
   name: 'Vaillant Live Derby',
   address: '2 Colyear St, Derby DE1 1LA',

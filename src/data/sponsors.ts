@@ -3,12 +3,14 @@ import enigmaSeven from '../assets/sponsors/enigma-seven.svg?url';
 import volt7 from '../assets/sponsors/volt7.svg?url';
 
 /**
- * Sponsors, shown in the home page hero (headline only) and in the footer on every page.
+ * Sponsors, shown in the home page hero and in the footer on every page. The hero leaves Volt7
+ * out of its supporting sponsors, because "A Volt7 production" sits directly underneath.
  * Logos are white SVGs from the Figma. `width` / `height` are the SVG's own size; `footerWidth`
  * is how wide the logo is in the footer at the Figma's 1728px width (it scales with the page).
+ * Supporting sponsors are that same width in the hero.
  *
  * To add a supporting sponsor: put a white SVG logo in src/assets/sponsors/, import it here and
- * add an entry to SUPPORTING_SPONSORS. The footer row grows to fit.
+ * add an entry to SUPPORTING_SPONSORS. The hero and footer rows grow to fit.
  */
 export type Sponsor = { name: string; logo: string; width: number; height: number; footerWidth: number };
 
