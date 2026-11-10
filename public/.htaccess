@@ -5,6 +5,11 @@
 Options -Indexes
 DirectoryIndex index.html
 
+# Deploy permission files (see scripts/deploy-sftp.sh): never served to visitors.
+<FilesMatch "^\.dgd-deploy-">
+  Require all denied
+</FilesMatch>
+
 # The home page background video.
 AddType video/mp4 .mp4
 

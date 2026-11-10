@@ -18,49 +18,71 @@ npm run preview   # serves dist/ locally to check the build
 
 ## Deploying to IONOS
 
-Deploys are automatic, through GitHub Actions (`.github/workflows/`):
+Deploys run through GitHub Actions (`.github/workflows/`):
 
 | What | When | Goes to |
 |---|---|---|
 | **Deploy test copy** | Every push to `main` (or run it by hand) | `/derbygaladinner/new-private` - derbygaladinner.co.uk/new-private/, hidden from search engines |
-| **Deploy live site** | **Blocked for now** (see below) | `/derbygaladinner` - derbygaladinner.co.uk |
+| **Deploy live site** | When you run it: GitHub > **Actions** > **Deploy live site** > **Run workflow** | `/derbygaladinner` - derbygaladinner.co.uk |
 
-> **The current derbygaladinner.co.uk site lives in `/derbygaladinner` on the same web space and
-> must not be touched.** `scripts/deploy-sftp.sh` refuses to write anywhere except
-> `/derbygaladinner/new-private`, whatever folder it's given, so "Deploy live site" fails safely
-> (nothing uploaded) until launch. At launch: back up the old site, then update
-> `deploy-live.yml` to set `DEPLOY_ALLOWED_DIR: /derbygaladinner` for its upload step.
-
-Each run builds the site and uploads only what changed (`scripts/deploy-sftp.sh`): new photos,
-scripts and styles first, then the pages, then it removes files the new pages no longer use. It
-never touches anything outside its folder, and a live deploy leaves the `new-private` folder inside it alone. A run
+Each run builds the site and uploads it with `scripts/deploy-sftp.sh`: new photos, scripts and
+styles first, then the pages, then it removes `_astro` files the new pages no longer use. A run
 takes a couple of minutes; you can watch it, and see any errors, on the Actions tab.
 
-### One-time setup: the IONOS login
+### Other clients' sites share this web space
 
-On GitHub: the repository > **Settings** > **Secrets and variables** > **Actions** >
-**New repository secret**. Add three, with the values from IONOS (Hosting > your package >
-**SFTP & SSH**):
+The SFTP login can see VOLT7's other clients' folders, side by side with `derbygaladinner`. The
+deploy is built so it can't touch them:
+
+1. **Restricted SFTP login (IONOS).** GitHub has its own SFTP account, limited in IONOS to the
+   `derbygaladinner` folder, so the server itself refuses anything outside it, whatever the code
+   does. *(Set this up if it isn't: see below.)*
+2. **Two fixed folders.** The script only ever writes to `/derbygaladinner` (live) or
+   `/derbygaladinner/new-private` (test). They're written into the script, not taken from
+   settings; anything else is refused before connecting.
+3. **The build must match the folder.** A test build only goes to the test folder, a live build
+   only to the live folder.
+4. **Permission files placed by hand.** The script checks, read-only, that the target folder
+   contains an empty file called `.dgd-deploy-live` (live folder) or `.dgd-deploy-test` (test
+   folder) before writing anything. The deploy never creates them; they're blocked from the web by
+   `.htaccess`.
+5. **Build checks.** A broken or incomplete build is refused, so it can't clear out the site's
+   images.
+
+Inside the target folder it only ever deletes from `_astro`; everything else (the old site's
+leftovers, `new-private` inside the live folder) is left alone. This was tested against a copy of
+the web space with 15 client folders laid out like this one, in 33 right and wrong scenarios:
+nothing outside the target folder changed in any of them.
+
+### One-time setup
+
+**1. A restricted SFTP account for GitHub.** IONOS > Hosting > your package > **SFTP & SSH** >
+create a new account, and set its **Directory** to the `derbygaladinner` folder. Connect with it
+in Cyberduck once to check it can only see that folder, and note the folder path Cyberduck shows
+(if it's `/` rather than `/derbygaladinner`, the two fixed folders in `scripts/deploy-sftp.sh`
+need changing to match).
+
+**2. The login, as GitHub secrets.** The repository > **Settings** > **Secrets and variables** >
+**Actions** > **New repository secret**:
 
 | Secret name | Value |
 |---|---|
-| `IONOS_SFTP_HOST` | The server, e.g. `access-5012345678.webspace-host.com` (no `sftp://`) |
-| `IONOS_SFTP_USER` | The SFTP user name |
-| `IONOS_SFTP_PASSWORD` | That user's password |
+| `IONOS_SFTP_HOST` | The server, e.g. `access-5012345678.webspace-data.io` (no `sftp://`) |
+| `IONOS_SFTP_USER` | The restricted account's user name |
+| `IONOS_SFTP_PASSWORD` | Its password |
 
-Secrets are encrypted: nobody can read them back, including in the workflow logs. Until they're
-added, the test deploy finishes with a warning and uploads nothing.
+Secrets are encrypted: nobody can read them back, including in the workflow logs.
 
-The domain points to the `derbygaladinner` folder of the web space, so the folders are set with
-two repository **variables** (same page, **Variables** tab):
+**3. The folders, as GitHub variables** (same page, **Variables** tab):
 
 | Variable name | Value |
 |---|---|
 | `IONOS_TEST_DIR` | `/derbygaladinner/new-private` |
-| `IONOS_LIVE_DIR` | `/derbygaladinner` (only needed at launch) |
+| `IONOS_LIVE_DIR` | `/derbygaladinner` |
 
-Without `IONOS_TEST_DIR` the test workflow falls back to `/new-private` at the top of the web
-space, which the script refuses, so the run fails without uploading anything.
+**4. The permission files.** In Cyberduck (View > Show Hidden Files), File > New File: an empty
+file called `.dgd-deploy-live` in `/derbygaladinner`, and one called `.dgd-deploy-test` in
+`/derbygaladinner/new-private`. Without them every deploy is refused.
 
 ### The two builds
 
