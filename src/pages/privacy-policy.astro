@@ -4,7 +4,7 @@ import PageHeader from '../components/PageHeader.astro';
 
 // DRAFT for the organiser to review. Items in [square brackets] need filling in
 // (also listed in PLACEHOLDERS.md). This is not legal advice.
-const updated = '3 November 2026';
+const updated = '10 November 2026';
 ---
 
 <Base title="Privacy policy" description="How Derby Gala Dinner collects and uses your personal information.">
@@ -61,7 +61,6 @@ const updated = '3 November 2026';
           bot. It processes information such as your IP address and device details to do this.
         </li>
         <li><strong>Adobe Fonts</strong> provides the fonts used on the website.</li>
-        <li><strong>Google</strong> provides the map on the event details page, only if you accept cookies.</li>
         <li><strong>IONOS</strong> hosts the website.</li>
       </ul>
       <p>
@@ -88,24 +87,16 @@ const updated = '3 November 2026';
       </p>
 
       <h2 class="label gold" id="cookies">Cookies</h2>
-      <ul>
-        <li>
-          <strong>Your cookie choice.</strong> We remember whether you accepted or rejected cookies by saving that choice in your
-          browser. This is essential for the cookie banner to work.
-        </li>
-        <li>
-          <strong>Google Maps.</strong> The live map on the event details page is only loaded if you choose Accept. Google may then
-          set cookies; see
-          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>.
-        </li>
-        <li>
-          <strong>hCaptcha.</strong> When you open an enquiry form, hCaptcha loads to protect the form from spam. It may set
-          cookies that are needed for this security check.
-        </li>
-      </ul>
       <p>
-        We do not use analytics or advertising cookies. You can change your choice at any time using
-        <button type="button" class="policy__link" data-cookie-settings>Cookie settings</button>.
+        This website does not set any cookies of its own, and we do not use analytics or advertising cookies.
+      </p>
+      <p>
+        The one exception is <strong>hCaptcha</strong>. When you open an enquiry form, hCaptcha loads to protect the form from
+        spam. It may set cookies that are needed for this security check.
+      </p>
+      <p>
+        The "View on maps" link on the event details page opens Google Maps in a new tab. Google's own
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacy policy</a> applies there.
       </p>
 
       <h2 class="label gold">Changes to this policy</h2>
@@ -148,19 +139,9 @@ const updated = '3 November 2026';
     list-style: disc;
   }
 
-  .policy a,
-  .policy__link {
+  .policy a {
     color: var(--gold);
     text-underline-offset: 3px;
-  }
-
-  .policy__link {
-    padding: 0;
-    border: 0;
-    background: none;
-    font-size: inherit;
-    text-decoration: underline;
-    cursor: pointer;
   }
 
   @media (max-width: 899px) {

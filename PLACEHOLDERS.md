@@ -35,7 +35,10 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] Top section updated to the "dgd - matt" Figma: Date and Venue (address in white), gold lines between sections, Timings for VIP and Evening Guests, and Menu. Itinerary has been removed, as in the Figma.
 - [x] Times are written with colons throughout (17:30, 18:00), as agreed with Matt; the Figma mixes "17.30" and "19:00".
 - [ ] Menu still says "Coming soon...".
-- [ ] The map in the Figma is a screenshot. The build uses a live Google map that only loads after cookies are accepted; until then the screenshot is shown dimmed behind the consent message.
+- [x] Event details: the "Date and Venue" box from the "dgd - matt" Figma is at the top of the page: date, Vaillant Live logo, address and a "View on maps" link on the left, the venue photo fading in from the right, in a white border. It replaces the old date, address and embedded Google map (Matt). "View on maps" opens Google Maps in a new tab.
+- [x] With the embedded map gone the site needs no cookie consent, so the cookie banner, the "Cookie settings" footer link and the cookie-choice wording in the privacy policy are removed (Matt). The privacy policy's Cookies section now only covers hCaptcha (the spam check on the forms) and the Google Maps link.
+- [x] Event details timings: "VIP" is now "VIP Guests" (Matt's green note in the Figma).
+- [ ] On phones the Date and Venue box puts the photo across the top and the details underneath (not in the Figma, which is laptop only).
 
 ### Your hosts
 - [x] Sir Bradley Wiggins bio supplied by Matt.
@@ -77,15 +80,14 @@ the Figma, and open questions. Update it as items are resolved.
   - An extra, shorter "Other sponsorship" picture under the four in the mockup, because Other is in Matt's list and on the Book a table page.
   - Chosen: gold outline, gold name and a tick. The mockups show the gold outline for tables only.
   - Title list on the general contact form (Mr, Mrs, Ms, Miss, Mx, Dr).
-- [ ] **Cookie banner:** all copy.
-- [ ] **Map (before cookies are accepted):** "The live map is provided by Google, which sets cookies." with the buttons "Accept cookies and show map" and "Open in Google Maps".
+- [x] **Cookie banner and embedded map:** removed (Matt). See Event details below.
 - [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
   - [x] Organiser name: VOLT7
   - [x] Organiser address: 8 Mallard Way, Pride Park, Derby DE24 8GX
   - [x] Privacy contact email: hello@volt7.agency
   - [ ] Retention periods: [12 months] for enquiries, [6 years] for invoices
   - [ ] Confirm whether enquiry details are shared with Bridge The Gap (the draft says they aren't mentioned)
-- [ ] **Footer:** added "Privacy policy" and "Cookie settings" links (needed for the policy and the cookie banner). They sit on the right of the black "A Volt7 production" bar on wide screens and below it on narrower ones.
+- [ ] **Footer:** added a "Privacy policy" link. It sits on the right of the black "A Volt7 production" bar on wide screens and below it on narrower ones. (The "Cookie settings" link went with the cookie banner.)
 - [ ] **404 page:** "Page not found", "Sorry, we couldn't find that page.", "Back to home".
 - [ ] **Image alt text and the site meta description.**
 
