@@ -59,6 +59,7 @@ the Figma, and open questions. Update it as items are resolved.
 ### Sponsors (hero and footer, from the "dgd - matt" Figma)
 - [ ] Logos and labels come from the Figma: Headline sponsor = Stratstone Land Rover Derby; Supporting sponsors = Enigma Seven and Volt7; plus "A [Volt7 logo] production". They're set in one place, `src/data/sponsors.ts`, which feeds both the home hero and the footer. The logos don't link anywhere (Matt).
 - [x] Home page "Sponsor Packages": the four tiles are links to their package on the Book a table page (Headline, Supporting, Welcome drinks, VIP lounge) and get a gold border on hover, the same line as a chosen tile in the enquiry form (Matt).
+- [x] Home page "Book a table": the Evening Table and VIP Table cards zoom their photo slightly on hover, like the sponsor tiles, and the whole card is clickable, not only its button (Matt).
 - [x] The charity's name is written "Bridge The Gap" everywhere (Matt).
 - [x] Book a table: a gold-bordered "Considering sponsorship? All sponsor packages include a table for 10 guests." box sits between the intro and the Evening Table, from Matt's mockup. Not in the mockup: the whole box is a link down to the Sponsors section of the same page.
 - [x] Book a table: a "Donate a seat" section sits between the VIP Table and the Sponsors section, from Matt's mockup. Its "Book a table" button opens the table booking form with no table chosen.
