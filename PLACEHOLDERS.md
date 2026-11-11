@@ -83,6 +83,8 @@ the Figma, and open questions. Update it as items are resolved.
   - Title list on the general contact form (Mr, Mrs, Ms, Miss, Mx, Dr).
 - [x] **Cookie banner and embedded map:** removed (Matt). See Event details below.
 - [x] **Enquiry forms (Matt, from the Figma notes):** the table booking form asks for a contact number instead of a VAT number (optional, like the VAT field was); each table type shows its price under its name (£2,500 + VAT, £3,500 + VAT, the same as the Book a table page); the line under Submit on all three forms now reads "We'll only use your details to respond to your enquiry and communicate for future events and promotions. See our privacy policy."
+- [x] **How the forms send (Matt):** the three forms no longer use Web3Forms. They post to the site's own endpoint on the IONOS hosting, which sends the email through Resend from a Zap Digital address, with replies going to the enquirer. The spam check is Cloudflare Turnstile in place of hCaptcha. See README > Enquiry forms.
+- [ ] **Privacy policy:** now names Resend (and that Zap Digital manages the Resend account) and Cloudflare Turnstile in place of Web3Forms and hCaptcha, and mentions the scrambled record used to limit repeat enquiries. Needs checking with the rest of the policy.
 - [ ] **Marketing wording needs checking.** The privacy policy used to say "We will not use your details for marketing unless you ask us to". It now says details are also used to tell people about future events and promotions, with a way to opt out by email, so it matches the forms. UK rules on marketing emails usually expect people to be given a clear choice at the point they hand over their details (for example a tick box), so this is worth checking with whoever signs off the policy.
 - [ ] **Privacy policy page:** the whole page is a draft for the organiser to check (not legal advice). Needs:
   - [x] Organiser name: VOLT7
@@ -129,6 +131,6 @@ Automated checks (axe-core, Lighthouse) pass apart from these, which all come fr
 
 ## Setup to-dos
 
-- [x] Web3Forms dashboard: hCaptcha switched on.
-- [ ] Send a test enquiry from the preview to confirm submissions arrive (needs a person to tick the hCaptcha box).
+- [ ] Send a test enquiry from each form on the test copy (`/new-private/`) to confirm they arrive and that replying goes to the enquirer. The forms can't send from the Vercel previews (no PHP there).
+- [ ] Once the new forms are live: delete the old Web3Forms access key.
 - [ ] Adobe Fonts (Will's web project `hfo7qtb`): optionally set font-display to `swap`. No italics are used so far, so they could be removed from the project.

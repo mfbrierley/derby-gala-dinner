@@ -1,0 +1,86 @@
+# Test copy: every push to main builds the site for /new-private/ (hidden from search engines)
+# and uploads what changed to the IONOS web space. Can also be run by hand from the Actions tab.
+# Needs the repository secrets IONOS_SFTP_HOST, IONOS_SFTP_USER and IONOS_SFTP_PASSWORD
+# (see "Deploying" in README.md), and the enquiry form keys (see "Enquiry forms" in README.md). Until they're added, runs finish with a warning and upload nothing.
+
+name: Deploy test copy (/new-private/)
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md']
+  workflow_dispatch:
+
+# A newer push replaces a test deploy that's still running.
+concurrency:
+  group: deploy-test
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      IONOS_SFTP_HOST: ${{ secrets.IONOS_SFTP_HOST }}
+      IONOS_SFTP_USER: ${{ secrets.IONOS_SFTP_USER }}
+      IONOS_SFTP_PASSWORD: ${{ secrets.IONOS_SFTP_PASSWORD }}
+      REMOTE_DIR: ${{ vars.IONOS_TEST_DIR || '/new-private' }}
+    steps:
+      - name: Check the IONOS login is set up
+        id: check
+        run: |
+          if [ -n "$IONOS_SFTP_HOST" ] && [ -n "$IONOS_SFTP_USER" ] && [ -n "$IONOS_SFTP_PASSWORD" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Not uploading: add the IONOS_SFTP_HOST, IONOS_SFTP_USER and IONOS_SFTP_PASSWORD secrets (Settings > Secrets and variables > Actions)."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v5
+        if: steps.check.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v5
+        if: steps.check.outputs.ready == 'true'
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        if: steps.check.outputs.ready == 'true'
+        run: npm ci
+
+      # Astro keeps the resized photos here; reusing them turns a few-minute build into seconds.
+      - name: Reuse resized images from earlier builds
+        if: steps.check.outputs.ready == 'true'
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.astro
+          key: astro-${{ runner.os }}-${{ hashFiles('src/assets/**', 'package-lock.json') }}
+          restore-keys: astro-${{ runner.os }}-
+
+      - name: Build the test copy
+        if: steps.check.outputs.ready == 'true'
+        env:
+          # The public half of the forms' spam-check key pair (Cloudflare Turnstile).
+          PUBLIC_TURNSTILE_SITEKEY: ${{ vars.TURNSTILE_SITEKEY }}
+        run: npm run build:test
+
+      # The keys the enquiry forms need to send email, written into the build (never committed).
+      - name: Write the enquiry form settings
+        if: steps.check.outputs.ready == 'true'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+          ENQUIRY_TO: ${{ vars.ENQUIRY_TO }}
+        run: node scripts/write-form-config.mjs
+
+      - name: Install the upload tool (lftp)
+        if: steps.check.outputs.ready == 'true'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Upload what changed to ${{ env.REMOTE_DIR }}
+        if: steps.check.outputs.ready == 'true'
+        run: scripts/deploy-sftp.sh "$REMOTE_DIR"

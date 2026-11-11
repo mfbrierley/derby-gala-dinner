@@ -124,7 +124,9 @@ SFTP apps hide files starting with a dot (in Finder, Cmd + Shift + . shows them)
 | `src/data/sponsors.ts` | Sponsor names, labels and logos (shown in the home hero and the footer) |
 | `src/styles/global.css` | Colours, fonts, buttons and the sizing system (see the comment at the top). `--type-scale` makes all text bigger or smaller (1 = Figma sizes) |
 | `src/assets/` | Images and SVGs from the Figma. Astro resizes the photos and converts them to WebP at build time |
-| `src/config.ts` | Adobe Fonts project, Web3Forms key, hCaptcha key, Bridge The Gap link |
+| `src/config.ts` | Adobe Fonts project, enquiry form endpoint, spam-check site key, Bridge The Gap link |
+| `public/api/enquiry.php` | Receives the enquiry forms and emails them through Resend (see Enquiry forms) |
+| `enquiry.config.json` | The address the enquiry emails are sent from |
 | `public/` | Copied as-is: `.htaccess`, `favicon.svg`, `robots.txt` |
 | `src/assets/gallery/` | Photos for the 2026 Gallery page (filename order; see the README there) |
 | `PLACEHOLDERS.md` | Placeholder copy, unapproved copy and open questions |
@@ -135,11 +137,46 @@ Fonts come from Will's Adobe Fonts web project (`https://use.typekit.net/hfo7qtb
 `arteria-std-compress` (big headings), `larken` (gold serif lines and labels), `sofia-pro` (body text, nav, buttons).
 Adobe serves them; they can't be self-hosted. The site keeps working only while that Creative Cloud subscription is active.
 
-## Forms
+## Enquiry forms
 
-All three pop-ups (Reserve a table, Sponsorship enquiry and the general contact form) post to
-[Web3Forms](https://web3forms.com), which emails each submission to the address the access key belongs to.
-Spam protection: Web3Forms' own filtering, a hidden honeypot field, and hCaptcha (switch hCaptcha on in the Web3Forms dashboard).
+All three pop-ups (Reserve a table, Sponsorship enquiry and the general contact form) post to the
+site's own endpoint, `public/api/enquiry.php`, a single PHP file that runs on the IONOS web space.
+It checks the submission, then sends one email through [Resend](https://resend.com) with Reply-To
+set to the enquirer, so replying to the email writes back to them. The comment at the top of the
+file lists everything it checks.
+
+| Setting | Where | What |
+|---|---|---|
+| `RESEND_API_KEY` | GitHub secret | Resend API key (sending access only) |
+| `TURNSTILE_SECRET_KEY` | GitHub secret | Cloudflare Turnstile secret key |
+| `TURNSTILE_SITEKEY` | GitHub variable | Cloudflare Turnstile site key (the public half of the pair) |
+| `ENQUIRY_TO` | GitHub variable | Where enquiries are delivered. Several addresses: separate with commas |
+| `from` | `enquiry.config.json` | The sender. Must be on the domain verified in Resend |
+
+Secrets and variables are both under the repository's **Settings** > **Secrets and variables** >
+**Actions** (two tabs). To change who receives enquiries, edit `ENQUIRY_TO` and run the deploy again.
+
+After each build the deploy workflows run `scripts/write-form-config.mjs`, which writes the keys
+into `dist/api/config.php` beside the endpoint. That file is never in the repository, and
+`.htaccess` stops it being served. The upload is refused if it's missing, or if the build used
+Cloudflare's test key.
+
+Spam protection: the Turnstile check, a hidden field that only bots fill in, and limits on how many
+enquiries one visitor (5 in 15 minutes) and the whole site (60 a day) can send, so a flood can't
+use up the Resend allowance. Only the fields and choices listed in the PHP file are accepted, and
+the recipient can't be changed by anything a visitor sends.
+
+Checking it's alive: opening `/api/enquiry.php` in a browser shows `{"ok":true,"ready":true}`
+("ok": PHP is running; "ready": the settings file is in place).
+
+**The forms can't send from `npm run dev` or the Vercel previews**, because neither runs PHP. To try
+them on your own machine (needs PHP), with Cloudflare's always-passes test keys and your Resend key:
+
+```bash
+npm run build
+RESEND_API_KEY=re_... TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA ENQUIRY_TO=you@example.com node scripts/write-form-config.mjs
+php -S localhost:8080 -t dist
+```
 
 Buttons open the pop-ups with data attributes:
 
@@ -154,6 +191,6 @@ Buttons open the pop-ups with data attributes:
 
 ## Cookies
 
-The site sets no cookies of its own and has no cookie banner. The only cookies come from hCaptcha, which
-loads when an enquiry form is opened and needs them for its spam check. The venue map is a plain link to
+The site sets no cookies of its own and has no cookie banner. Cloudflare Turnstile loads when an enquiry
+form is opened and may store what it needs for its spam check. The venue map is a plain link to
 Google Maps ("View on maps" on the event details page), not an embedded map.
