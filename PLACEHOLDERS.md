@@ -50,7 +50,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] The Distractions: the photo is the transparent cut-out from Matt, so it now has the stripes behind it like the other two. Most of the stripes sit behind the two performers; they show between and above them. The small part of the jacket that runs off the left of the picture fades out.
 
 ### 2026 gallery
-- [ ] The gallery is cut down to the photos in the "dgd - matt" Figma, in the Figma's order (Matt). **The Figma has 8 photos, not 9:** the first slot of the third row is empty. The page shows the 8 (`AVI00204`, `_DSC9770`, `AVI00381`, `AVI00309`, `_DSC9934`, `AVI00543`, `_DSC9952`, `AVI00208`), so the last row has two photos and a space on the right until the ninth is chosen. On phones it's four rows of two.
+- [x] The gallery is cut down to 9 photos, in the order of the "dgd - matt" Figma (Matt): `AVI00204`, `_DSC9770`, `AVI00381`, `AVI00309`, `_DSC9934`, `AVI00543`, `AVI00502`, `_DSC9952`, `AVI00208`. `AVI00502` fills the slot the Figma leaves empty (first in the third row). On phones the photos are two to a row, so the ninth sits on its own in the last row.
 - [ ] `_DSC9952` (the guest with the microphone) is mirrored left to right, as it is in the Figma.
 - [x] All 516 photos are still in `src/assets/gallery/`, so a photo can be swapped without finding the originals again; only the ones listed in `src/pages/gallery.astro` are uploaded to the website. Each photo now has its own description for screen readers.
 - [ ] **Video above the photos** ("I'll send you last years video to go here" in the Figma): **not built yet**, waiting for the video file.
