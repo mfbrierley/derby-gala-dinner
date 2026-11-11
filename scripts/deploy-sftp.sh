@@ -28,14 +28,16 @@
 #      them. Checked over a read-only connection first. No other client's folder has one, so even
 #      a wrong path stops here.
 #   4. The build looks complete (every page, enough files in _astro), so a broken build can't
-#      clear out the site's own images.
+#      clear out the site's own images; and the enquiry forms are ready to send (their endpoint
+#      and its settings are there, and the spam check has its real key).
 #
 # What it then changes, and only inside the checked folder:
 # - _astro/: new files are added (every file there is named after its contents, so a file that's
 #   already on the server is identical and skipped); afterwards files the new pages no longer use
 #   are removed. This is the only place anything is ever deleted.
-# - The pages, .htaccess, robots.txt, favicon: always uploaded in full over the old copies. Nothing
-#   else in the folder is deleted (old files, other folders such as new-private/ are left alone).
+# - The pages, .htaccess, robots.txt, favicon and api/ (the enquiry form endpoint and its
+#   settings): always uploaded in full over the old copies. Nothing else in the folder is deleted
+#   (old files, other folders such as new-private/ are left alone).
 # Order: new _astro files first, then the pages that use them, then the clean-up, so a visitor
 # never gets a page whose files aren't there yet.
 
@@ -86,6 +88,14 @@ for page in index.html 404.html .htaccess book-a-table/index.html event-details/
   your-hosts/index.html gallery/index.html privacy-policy/index.html; do
   [ -f "dist/$page" ] || refuse "dist/ is missing ${page}: the build looks incomplete."
 done
+# The enquiry forms: the endpoint, its settings (keys; written after the build, never committed)
+# and the real spam-check key. Without any of these the forms would look fine but couldn't send.
+[ -f dist/api/enquiry.php ] || refuse "dist/ is missing api/enquiry.php: the build looks incomplete."
+[ -f dist/api/config.php ] ||
+  refuse "dist/api/config.php is missing, so the enquiry forms couldn't send. Run scripts/write-form-config.mjs after the build (the workflows do; see README > Enquiry forms)."
+if grep -q 'data-turnstile-sitekey="1x00000000000000000000AA"' dist/index.html; then
+  refuse "this build uses Cloudflare's test key for the forms' spam check, which only works on your own machine. Build with PUBLIC_TURNSTILE_SITEKEY set (on GitHub: the TURNSTILE_SITEKEY variable; see README > Enquiry forms)."
+fi
 ASSET_COUNT=$(find dist/_astro/ -type f | wc -l)
 [ "$ASSET_COUNT" -ge 100 ] || refuse "dist/_astro has only ${ASSET_COUNT} files: the build looks incomplete."
 if [ -n "$(find dist/ -name '.dgd-deploy-*' -print -quit)" ]; then

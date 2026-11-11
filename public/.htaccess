@@ -10,6 +10,11 @@ DirectoryIndex index.html
   Require all denied
 </FilesMatch>
 
+# The enquiry forms' settings (the keys for sending email, written at deploy time): never served.
+<Files "config.php">
+  Require all denied
+</Files>
+
 # The home page background video.
 AddType video/mp4 .mp4
 

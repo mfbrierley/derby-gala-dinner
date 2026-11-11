@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { WEB3FORMS_ACCESS_KEY, WEB3FORMS_ENDPOINT, HCAPTCHA_SITEKEY } from '../config';
+import { ENQUIRY_ENDPOINT, TURNSTILE_SITEKEY } from '../config';
 import tableEvening from '../assets/images/table-evening.jpg';
 import tableVip from '../assets/images/table-vip.jpg';
 import sponsorHeadline from '../assets/images/sponsor-headline.jpg';
@@ -21,14 +21,15 @@ interface Props {
 
 const { variant } = Astro.props;
 const id = `${variant}-modal`;
+const endpoint = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${ENQUIRY_ENDPOINT}`;
 
 // Booking and sponsorship copy supplied by Matt. The contact form copy is adapted from the Figma.
+// (The email subject lines are set where the email is sent: public/api/enquiry.php.)
 const copy = {
   booking: {
     eyebrow: '',
     title: 'Reserve a table.',
     intro: ['Please complete the form below to reserve your table. A member of our team will contact you within 24hrs to confirm.'],
-    subject: 'Derby Gala Dinner: table reservation',
   },
   sponsorship: {
     eyebrow: '',
@@ -37,20 +38,19 @@ const copy = {
       'Thank you for your interest in sponsoring the 2027 edition of the Derby Gala Dinner, it’s thanks to our sponsors that the event is able to make such an impact.',
       'Please complete the form below and one of the sponsorship team will reach out to you to discuss available options.',
     ],
-    subject: 'Derby Gala Dinner: sponsorship enquiry',
   },
   contact: {
     eyebrow: 'Enquiry Form',
     title: 'get in touch. get involved.',
     intro: ['Please complete the form below and a member of our team will contact you within 24hrs.'],
-    subject: 'Derby Gala Dinner: general enquiry',
   },
 }[variant];
 
 /**
  * Picture buttons for the table type (pick one) and sponsorship type (pick any), from the form
  * mockups in the "dgd - matt" Figma. `value` is what's emailed and what the opening button
- * pre-selects (data-open-booking / data-open-sponsorship). `position` is the photo crop from the Figma.
+ * pre-selects (data-open-booking / data-open-sponsorship); the same values are listed in
+ * public/api/enquiry.php, which refuses any other. `position` is the photo crop from the Figma.
  */
 type Pick = { value: string; label: string; image: ImageMetadata; position?: string; wide?: boolean; price?: string };
 
@@ -79,10 +79,9 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
       <h2 class:list={['display display--md modal__title', { 'modal__title--first': !copy.eyebrow }]} id={`${id}-title`}>{copy.title}</h2>
       {copy.intro.map((text) => <p class="modal__intro">{text}</p>)}
 
-      <form class="enquiry" action={WEB3FORMS_ENDPOINT} method="POST" novalidate data-hcaptcha-sitekey={HCAPTCHA_SITEKEY} data-subject-base={copy.subject}>
-        <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
-        <input type="hidden" name="subject" value={copy.subject} data-subject />
-        <input type="hidden" name="from_name" value="Derby Gala Dinner website" />
+      <!-- Field names here must match the FORMS list in public/api/enquiry.php, which sends the email. -->
+      <form class="enquiry" action={endpoint} method="POST" novalidate data-turnstile-sitekey={TURNSTILE_SITEKEY}>
+        <input type="hidden" name="form" value={variant} />
         <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true" style="display: none" />
 
         {
@@ -100,16 +99,16 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
               </div>
               <div class="enquiry__row enquiry__row--2">
                 <label class="field">
-                  <input name="Company Name" type="text" placeholder=" " autocomplete="organization" />
+                  <input name="company" type="text" placeholder=" " autocomplete="organization" />
                   <span class="field__label">Your Company name</span>
                 </label>
                 <label class="field">
-                  <input name="Contact Number" type="tel" placeholder=" " autocomplete="tel" />
+                  <input name="phone" type="tel" placeholder=" " autocomplete="tel" />
                   <span class="field__label">Your contact number</span>
                 </label>
               </div>
               <label class="field">
-                <input name="Company Address" type="text" placeholder=" " autocomplete="street-address" />
+                <input name="address" type="text" placeholder=" " autocomplete="street-address" />
                 <span class="field__label">Company Address</span>
               </label>
               <fieldset class="picks picks--tables" data-required-group data-required-message="Please choose a table type.">
@@ -118,7 +117,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
                   {
                     tableTypes.map((t) => (
                       <label class="pick">
-                        <input type="radio" name="Table type" value={t.value} />
+                        <input type="radio" name="table_type" value={t.value} />
                         <Image
                           src={t.image}
                           alt=""
@@ -161,11 +160,11 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
               </div>
               <div class="enquiry__row enquiry__row--2">
                 <label class="field">
-                  <input name="Phone" type="tel" placeholder=" " autocomplete="tel" />
+                  <input name="phone" type="tel" placeholder=" " autocomplete="tel" />
                   <span class="field__label">Your phone number</span>
                 </label>
                 <label class="field">
-                  <input name="Company Name" type="text" placeholder=" " autocomplete="organization" />
+                  <input name="company" type="text" placeholder=" " autocomplete="organization" />
                   <span class="field__label">Your Company name</span>
                 </label>
               </div>
@@ -200,17 +199,17 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
             <>
               <div class="enquiry__row enquiry__row--3">
                 <label class="field field--select">
-                  <select name="Title" autocomplete="honorific-prefix" aria-label="Title">
+                  <select name="title" autocomplete="honorific-prefix" aria-label="Title">
                     <option value="" selected>Title</option>
                     {titles.map((t) => <option value={t}>{t}</option>)}
                   </select>
                 </label>
                 <label class="field">
-                  <input name="First Name" type="text" placeholder=" " autocomplete="given-name" required />
+                  <input name="first_name" type="text" placeholder=" " autocomplete="given-name" required />
                   <span class="field__label">First Name</span>
                 </label>
                 <label class="field">
-                  <input name="Surname" type="text" placeholder=" " autocomplete="family-name" required />
+                  <input name="surname" type="text" placeholder=" " autocomplete="family-name" required />
                   <span class="field__label">Surname</span>
                 </label>
               </div>
@@ -220,16 +219,16 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
                   <span class="field__label">Email Address</span>
                 </label>
                 <label class="field">
-                  <input name="Contact Number" type="tel" placeholder=" " autocomplete="tel" required />
+                  <input name="phone" type="tel" placeholder=" " autocomplete="tel" required />
                   <span class="field__label">Contact Number</span>
                 </label>
               </div>
               <label class="field">
-                <input name="Company Name" type="text" placeholder=" " autocomplete="organization" />
+                <input name="company" type="text" placeholder=" " autocomplete="organization" />
                 <span class="field__label">Company Name</span>
               </label>
               <label class="field field--textarea">
-                <textarea name="Message" rows="3" placeholder=" "></textarea>
+                <textarea name="message" rows="3" placeholder=" "></textarea>
                 <span class="field__label">Message</span>
               </label>
             </>
@@ -279,8 +278,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     overflow-y: auto;
     /*
      * Opened with show(), not showModal() (see openModal), so it covers the page itself: fixed,
-     * full screen, with the darkened, blurred page showing through as the backdrop. hCaptcha's
-     * puzzle (z-index 2000000000) still opens above it.
+     * full screen, with the darkened, blurred page showing through as the backdrop.
      */
     position: fixed;
     inset: 0;
@@ -813,48 +811,51 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 </style>
 
 <script>
-  import { WEB3FORMS_ENDPOINT } from '../config';
-
-  type Hcaptcha = {
+  // Cloudflare Turnstile: the spam check. It is drawn inside the form and adds a hidden field
+  // (cf-turnstile-response) holding a one-use token, which public/api/enquiry.php checks.
+  type Turnstile = {
     render: (el: HTMLElement, opts: Record<string, unknown>) => string;
-    getResponse: (id: string) => string;
+    getResponse: (id: string) => string | undefined;
     reset: (id: string) => void;
   };
 
   declare global {
     interface Window {
-      hcaptcha?: Hcaptcha;
-      __dgdHcaptchaReady?: () => void;
+      turnstile?: Turnstile;
+      __dgdTurnstileReady?: () => void;
     }
   }
 
-  let hcaptchaPromise: Promise<void> | null = null;
+  let turnstilePromise: Promise<void> | null = null;
 
-  const loadHcaptcha = () => {
-    if (window.hcaptcha) return Promise.resolve();
-    hcaptchaPromise ??= new Promise<void>((resolve, reject) => {
-      window.__dgdHcaptchaReady = () => resolve();
+  const loadTurnstile = () => {
+    if (window.turnstile) return Promise.resolve();
+    turnstilePromise ??= new Promise<void>((resolve, reject) => {
+      window.__dgdTurnstileReady = () => resolve();
       const script = document.createElement('script');
-      script.src = 'https://js.hcaptcha.com/1/api.js?render=explicit&onload=__dgdHcaptchaReady&recaptchacompat=off';
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__dgdTurnstileReady';
       script.async = true;
-      script.onerror = () => reject(new Error('hCaptcha failed to load'));
+      script.onerror = () => {
+        turnstilePromise = null; // so opening a form again retries
+        reject(new Error('Turnstile failed to load'));
+      };
       document.head.appendChild(script);
     });
-    return hcaptchaPromise;
+    return turnstilePromise;
   };
 
   const renderCaptcha = async (form: HTMLFormElement) => {
     const slot = form.querySelector<HTMLElement>('[data-captcha]');
     if (!slot || slot.dataset.widgetId) return;
     try {
-      await loadHcaptcha();
-      if (!window.hcaptcha || slot.dataset.widgetId) return;
-      slot.dataset.widgetId = window.hcaptcha.render(slot, {
-        sitekey: form.dataset.hcaptchaSitekey,
+      await loadTurnstile();
+      if (!window.turnstile || slot.dataset.widgetId) return;
+      slot.dataset.widgetId = window.turnstile.render(slot, {
+        sitekey: form.dataset.turnstileSitekey,
         theme: 'dark',
       });
     } catch {
-      // If hCaptcha is blocked, the form still submits; Web3Forms' own spam filter still applies.
+      // Blocked or offline: submitting explains that the security check couldn't load.
     }
   };
 
@@ -862,13 +863,12 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 
   /*
    * The pop-ups open with show(), not showModal(). showModal() puts a pop-up in the browser's top
-   * layer, above everything else on the page, including hCaptcha's puzzle, which hCaptcha always
-   * adds to the page itself: the puzzle would open hidden behind the form and ticking the box
-   * would seem to do nothing. Instead the pop-up covers the page (see .modal), and the rest of the
-   * page is made inert (not clickable, focusable or read out) while it's open, as showModal()
-   * would. hCaptcha's own elements are left alone so its puzzle stays usable.
+   * layer, above everything else on the page, including anything a spam check adds to the page
+   * itself, which would then open hidden behind the form. Instead the pop-up covers the page (see
+   * .modal), and the rest of the page is made inert (not clickable, focusable or read out) while
+   * it's open, as showModal() would. A spam check's own elements are left alone so they stay usable.
    */
-  const isCaptcha = (el: Element) => !!el.querySelector('iframe[src*="hcaptcha.com"]');
+  const isCaptcha = (el: Element) => !!el.querySelector('iframe[src*="challenges.cloudflare.com"]');
   let inerted: HTMLElement[] = [];
   const setPageInert = (dialog: HTMLElement, on: boolean) => {
     if (!on) {
@@ -976,7 +976,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 
     // Pre-select from the button that opened the form.
     if (preset.table !== undefined) {
-      form.querySelectorAll<HTMLInputElement>('input[name="Table type"]').forEach((radio) => {
+      form.querySelectorAll<HTMLInputElement>('input[name="table_type"]').forEach((radio) => {
         radio.checked = radio.value === preset.table;
       });
     }
@@ -1024,7 +1024,7 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     const form = dialog.querySelector('form');
     if (!form) return;
 
-    // Re-fit when the content changes height (hCaptcha box appearing, error messages, thank-you view).
+    // Re-fit when the content changes height (spam check appearing, error messages, thank-you view).
     dialog.querySelectorAll('[data-view]').forEach((view) => fitObserver.observe(view));
 
     dialog.addEventListener('close', () => {
@@ -1074,19 +1074,20 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 
       const slot = form.querySelector<HTMLElement>('[data-captcha]');
       const widgetId = slot?.dataset.widgetId;
-      if (window.hcaptcha && widgetId && !window.hcaptcha.getResponse(widgetId)) {
-        showError(form, 'Please complete the captcha check.');
+      if (!window.turnstile || !widgetId) {
+        void renderCaptcha(form); // try again, in case it was only slow
+        showError(form, "The security check couldn't load. Please check your connection, switch off any content blocker for this site, and try again.");
+        return;
+      }
+      if (!window.turnstile.getResponse(widgetId)) {
+        showError(form, 'Please wait for the security check above to finish, then submit again.');
         return;
       }
 
-      // What gets emailed: the ticked sponsorship types go in one field, and the subject line says
-      // which table or sponsorship types were chosen.
+      // The ticked sponsorship types are sent as one field ("Headline, Supporting").
       const data = new FormData(form);
       const types = data.getAll('sponsorship_type').map(String);
-      data.delete('sponsorship_type');
-      if (types.length) data.append('Sponsorship type', types.join(', '));
-      const detail = types.length ? types.join(', ') : String(data.get('Table type') ?? '');
-      data.set('subject', `${form.dataset.subjectBase}${detail ? ` (${detail})` : ''}`);
+      if (types.length) data.set('sponsorship_type', types.join(', '));
 
       const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
       const submitLabel = submit?.textContent ?? 'Submit';
@@ -1096,13 +1097,23 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
       }
 
       try {
-        const response = await fetch(WEB3FORMS_ENDPOINT, {
+        const response = await fetch(form.action, {
           method: 'POST',
           headers: { Accept: 'application/json' },
           body: data,
         });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
+        const result: { success?: boolean; code?: string; message?: string; fields?: string[] } = await response.json().catch(() => ({}));
+        if (!response.ok || !result.success) {
+          // Problems the visitor can fix come back with a message to show; anything else is logged.
+          if (result.code === 'invalid' || result.code === 'captcha' || result.code === 'limit') {
+            (result.fields ?? []).forEach((name) =>
+              form.querySelectorAll(`[name="${name}"]`).forEach((field) => field.setAttribute('aria-invalid', 'true')),
+            );
+            showError(form, result.message ?? "Sorry, your enquiry couldn't be sent. Please try again in a moment.");
+            return;
+          }
+          throw new Error(result.message || `HTTP ${response.status}`);
+        }
 
         form.reset();
         showView(dialog, 'thanks');
@@ -1115,7 +1126,8 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
           submit.disabled = false;
           submit.textContent = submitLabel;
         }
-        if (window.hcaptcha && widgetId) window.hcaptcha.reset(widgetId);
+        // A token only works once, so get a fresh one whether or not the enquiry went through.
+        window.turnstile?.reset(widgetId);
       }
     });
   });

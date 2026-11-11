@@ -4,7 +4,7 @@ import PageHeader from '../components/PageHeader.astro';
 
 // DRAFT for the organiser to review. Items in [square brackets] need filling in
 // (also listed in PLACEHOLDERS.md). This is not legal advice.
-const updated = '10 November 2026';
+const updated = '11 November 2026';
 ---
 
 <Base title="Privacy policy" description="How Derby Gala Dinner collects and uses your personal information.">
@@ -59,10 +59,13 @@ const updated = '10 November 2026';
       <h2 class="label gold">Who we share it with</h2>
       <p>We use a small number of service providers to run the website:</p>
       <ul>
-        <li><strong>Web3Forms</strong> delivers form submissions to our email inbox.</li>
         <li>
-          <strong>hCaptcha</strong> (Intuition Machines, Inc.) checks that form submissions come from a person and not a spam
-          bot. It processes information such as your IP address and device details to do this.
+          <strong>Resend</strong> delivers form submissions to our email inbox. The Resend account is managed by Zap Digital,
+          who built and maintain this website for us.
+        </li>
+        <li>
+          <strong>Cloudflare Turnstile</strong> (Cloudflare, Inc.) checks that form submissions come from a person and not a
+          spam bot. It processes information such as your IP address and browser details to do this.
         </li>
         <li><strong>Adobe Fonts</strong> provides the fonts used on the website.</li>
         <li><strong>IONOS</strong> hosts the website.</li>
@@ -95,8 +98,12 @@ const updated = '10 November 2026';
         This website does not set any cookies of its own, and we do not use analytics or advertising cookies.
       </p>
       <p>
-        The one exception is <strong>hCaptcha</strong>. When you open an enquiry form, hCaptcha loads to protect the form from
-        spam. It may set cookies that are needed for this security check.
+        When you open an enquiry form, <strong>Cloudflare Turnstile</strong> loads to protect the form from spam. It may store
+        information in your browser that is needed for this security check.
+      </p>
+      <p>
+        To stop the forms being misused, the website also keeps a scrambled record of how many enquiries have come from each
+        visitor. It cannot be read back as an IP address and is cleared within a day.
       </p>
       <p>
         The "View on maps" link on the event details page opens Google Maps in a new tab. Google's own

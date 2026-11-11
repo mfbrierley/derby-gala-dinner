@@ -3,14 +3,15 @@ export const SITE_NAME = 'Derby Gala Dinner';
 // Adobe Fonts web project (owned by Will). Families: arteria-std-compress, larken, sofia-pro.
 export const TYPEKIT_CSS = 'https://use.typekit.net/hfo7qtb.css';
 
-// Web3Forms: submissions are emailed to the address the access key was created with.
-// The key is designed to be public (it is sent from the browser on every submission).
-export const WEB3FORMS_ACCESS_KEY = '4debf50a-75f3-4356-afa9-5ed1256354c2';
-export const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+// The enquiry forms post to the site's own endpoint (public/api/enquiry.php), which emails them
+// through Resend. Path is relative to the site's base (/ live, /new-private/ test).
+export const ENQUIRY_ENDPOINT = 'api/enquiry.php';
 
-// Shared hCaptcha site key that Web3Forms provides for free plans.
-// hCaptcha must also be switched on for the form in the Web3Forms dashboard.
-export const HCAPTCHA_SITEKEY = '50b2fe65-b00b-4b9e-ad62-3ba471098be2';
+// Cloudflare Turnstile (the spam check on the forms). The site key is the public half of the
+// pair; the deploy workflows pass it in from the GitHub variable TURNSTILE_SITEKEY. Without it
+// (npm run dev, a build on your own machine) Cloudflare's test key is used, which always passes.
+export const TURNSTILE_TEST_SITEKEY = '1x00000000000000000000AA';
+export const TURNSTILE_SITEKEY: string = import.meta.env.PUBLIC_TURNSTILE_SITEKEY || TURNSTILE_TEST_SITEKEY;
 
 export const BTG_URL = 'https://www.wearebridgethegap.com/';
 
