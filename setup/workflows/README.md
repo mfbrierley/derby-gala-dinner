@@ -6,16 +6,10 @@ Resend and Turnstile keys) are written into the build before it's uploaded. See 
 in the main README.
 
 Claude can't change files in `.github/workflows/` (GitHub doesn't allow it from this kind of
-session), so they need moving by a person. On your own machine, in the project folder, on the
-branch that has this folder (`claude/practical-ptolemy-h113zm`), so the new forms can be tried on
-the test copy before anything is merged:
+session), so they need moving by a person. On your own machine, in the project folder:
 
 ```bash
-git fetch origin
-```
-
-```bash
-git checkout claude/practical-ptolemy-h113zm
+git checkout main
 ```
 
 ```bash
