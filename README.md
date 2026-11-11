@@ -150,11 +150,26 @@ file lists everything it checks.
 | `RESEND_API_KEY` | GitHub secret | Resend API key (sending access only) |
 | `TURNSTILE_SECRET_KEY` | GitHub secret | Cloudflare Turnstile secret key |
 | `TURNSTILE_SITEKEY` | GitHub variable | Cloudflare Turnstile site key (the public half of the pair) |
-| `ENQUIRY_TO` | GitHub variable | Where enquiries are delivered. Several addresses: separate with commas |
+| `ENQUIRY_TO` | GitHub variable | Where enquiries are delivered (see below) |
 | `from` | `enquiry.config.json` | The sender. Must be on the domain verified in Resend |
 
 Secrets and variables are both under the repository's **Settings** > **Secrets and variables** >
 **Actions** (two tabs). To change who receives enquiries, edit `ENQUIRY_TO` and run the deploy again.
+
+`ENQUIRY_TO` is either one inbox for every form (several addresses: separate with commas):
+
+```
+someone@example.com
+```
+
+or an inbox per form, as `form: address` pairs separated by semicolons. The forms are `booking`,
+`sponsorship` and `contact`; `default` covers any not named:
+
+```
+booking: tables@example.com; default: hello@example.com
+```
+
+The deploy stops with a message if an address is mistyped or a form has no inbox.
 
 After each build the deploy workflows run `scripts/write-form-config.mjs`, which writes the keys
 into `dist/api/config.php` beside the endpoint. That file is never in the repository, and

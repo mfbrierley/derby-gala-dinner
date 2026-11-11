@@ -11,7 +11,8 @@
  *   6. sends one email through Resend, with Reply-To set to the enquirer, so replying to the
  *      email writes back to them.
  *
- * The recipient is fixed in the settings: nothing a visitor sends can change who gets the email.
+ * The recipients are fixed in the settings: nothing a visitor sends can change who gets the email.
+ * Each form can go to its own inbox (see ENQUIRY_TO in scripts/write-form-config.mjs).
  *
  * Settings live in config.php next to this file. It holds the Resend and Turnstile keys, so it is
  * NOT in the repository: the deploy writes it from the GitHub secrets (scripts/write-form-config.mjs).
@@ -255,6 +256,17 @@ if (!isset(FORMS[$formName])) {
 }
 $form = FORMS[$formName];
 
+// Who gets this form: one list for every form, or a list per form (with an optional 'default').
+$recipients = $config['to'];
+if (is_array($recipients)) {
+    $recipients = $recipients[$formName] ?? ($recipients['default'] ?? '');
+}
+$to = array_values(array_filter(array_map('trim', explode(',', (string) $recipients)), 'strlen'));
+if (!$to) {
+    error_log('enquiry.php: no recipient is set for the "' . $formName . '" form');
+    respond(503, ['success' => false, 'code' => 'not_configured', 'message' => GENERIC_ERROR]);
+}
+
 $values = [];
 $problems = [];
 foreach ($form['fields'] as $key => $spec) {
@@ -354,8 +366,6 @@ $html = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-
     . '<p style="font-size:17px;margin:0 0 12px"><strong>' . htmlspecialchars($intro, ENT_QUOTES, 'UTF-8') . '</strong></p>'
     . '<table cellpadding="0" cellspacing="0" style="border-collapse:collapse">' . $rows . '</table>'
     . '<p style="margin:16px 0 0;color:#666">' . htmlspecialchars($footer, ENT_QUOTES, 'UTF-8') . '</p></div>';
-
-$to = is_array($config['to']) ? $config['to'] : array_values(array_filter(array_map('trim', explode(',', (string) $config['to'])), 'strlen'));
 
 $sent = http_post(
     $config['resend_url'] ?? 'https://api.resend.com/emails',
