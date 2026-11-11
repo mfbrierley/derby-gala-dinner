@@ -128,7 +128,7 @@ SFTP apps hide files starting with a dot (in Finder, Cmd + Shift + . shows them)
 | `public/api/enquiry.php` | Receives the enquiry forms and emails them through Resend (see Enquiry forms) |
 | `enquiry.config.json` | The address the enquiry emails are sent from |
 | `public/` | Copied as-is: `.htaccess`, `favicon.svg`, `robots.txt` |
-| `src/assets/gallery/` | Photos for the 2026 Gallery page (filename order; see the README there) |
+| `src/assets/gallery/` | All the 2026 photos. The Gallery page shows the ones listed in `src/pages/gallery.astro` (see the README there) |
 | `PLACEHOLDERS.md` | Placeholder copy, unapproved copy and open questions |
 
 ## Fonts

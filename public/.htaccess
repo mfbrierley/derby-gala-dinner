@@ -15,7 +15,7 @@ DirectoryIndex index.html
   Require all denied
 </Files>
 
-# The home page background video.
+# Videos (the home page background and the gallery film).
 AddType video/mp4 .mp4
 
 # Custom 404 page (written by Astro as /404.html).

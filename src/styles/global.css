@@ -14,7 +14,7 @@
  */
 
 :root {
-  --gold: #c5a75f;
+  --gold: #ba9863;
   --gold-light: #e7d7b2;
   --black: #080808;
   --ink: #010100;
@@ -322,6 +322,7 @@ textarea {
 
 .sponsor-rule--gold {
   --rule-color: var(--gold);
+  color: var(--gold);
 }
 
 .sponsor-rule--white {
@@ -380,7 +381,7 @@ textarea {
 }
 
 .btn--gold:hover {
-  background: #d4b977;
+  background: #c9aa7b;
 }
 
 .btn--cream {

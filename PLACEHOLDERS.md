@@ -50,10 +50,13 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] The Distractions: the photo is the transparent cut-out from Matt, so it now has the stripes behind it like the other two. Most of the stripes sit behind the two performers; they show between and above them. The small part of the jacket that runs off the left of the picture fades out.
 
 ### 2026 gallery
-- [x] The real 2026 photos are in: 516 photos (shrunk to 2400px wide by Matt before adding), each shown once.
-- [ ] Order: filename order. The photos have no "date taken" information, so they can't be sorted by time; the `AVI…` camera's photos come first, then the `_DSC…` camera's.
-- [ ] The page is long with 516 photos (about 170 rows on a laptop). Photos load as you scroll. A "Show more" button could shorten it.
-- [ ] Photo descriptions are generic ("Derby Gala Dinner 2026, photo 5 of 516"). Fine for a gallery, but they could be more specific.
+- [x] The gallery is cut down to 9 photos, in the order of the "dgd - matt" Figma (Matt): `AVI00204`, `_DSC9770`, `AVI00381`, `AVI00309`, `_DSC9934`, `AVI00543`, `AVI00502`, `_DSC9952`, `AVI00208`. `AVI00502` fills the slot the Figma leaves empty (first in the third row). On phones the photos are two to a row, so the ninth sits on its own in the last row.
+- [ ] `_DSC9952` (the guest with the microphone) is mirrored left to right, as it is in the Figma.
+- [x] All 516 photos are still in `src/assets/gallery/`, so a photo can be swapped without finding the originals again; only the ones listed in `src/pages/gallery.astro` are uploaded to the website. Each photo now has its own description for screen readers.
+- [x] **Film above the photos** ("I'll send you last years video to go here" in the Figma): `BRIDGE_THE_GAP_V3.mp4` from Matt (3 minutes 30, 1080p). It is hosted on the site itself, on IONOS, with no YouTube or other outside player (Matt). Compressed from 417 MB to 65 MB, the same size and frame rate, sound kept; nothing is downloaded until play is pressed. The file is `src/assets/video/gallery-2026.mp4`.
+- [ ] The still image shown before play is a frame from the film, 1 minute 48 seconds in (the room and stage from the back). Not chosen by Matt; any frame or photo can be used instead (`src/assets/images/gallery-2026-poster.jpg`).
+- [ ] The player is the site's own (`src/components/VideoPlayer.astro`), not in the Figma: a gold play button over the still image, then a control bar with play / pause, time, a gold progress line, sound on / off and full screen. The bar fades away while the film plays. It is 16:9 and as wide as the photo grid (the Figma's box is a wider, shallower shape), and never taller than the screen. On iPhones, full screen uses Apple's own player, the only kind they allow.
+- [ ] **The film has speech throughout but no subtitles**, so deaf and hard-of-hearing visitors, and anyone watching with the sound off, miss what's said. Subtitles can be added to the player from a subtitle file (.vtt or .srt).
 - [x] Gallery page: the Bridge The Gap spotlight and the gold "See how…" photo strip have been removed (Matt). The page now goes straight from the photo grid to the footer.
 
 ### Sponsors (hero and footer, from the "dgd - matt" Figma)
@@ -64,6 +67,7 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] Book a table: a gold-bordered "Considering sponsorship? All sponsor packages include a table for 10 guests." box sits between the intro and the Evening Table, from Matt's mockup. Not in the mockup: the whole box is a link down to the Sponsors section of the same page.
 - [x] Book a table: a "Donate a seat" section sits between the VIP Table and the Sponsors section, from Matt's mockup. Its "Book a table" button opens the table booking form with no table chosen.
 - [ ] The booking form has no "donate a seat or table" option, so someone donating has to say so in their message. Worth adding?
+- [x] The gold is `#BA9863` everywhere (Matt): one value, `--gold` in `src/styles/global.css`, plus the gold line and gold table icon. The "Headline sponsor" label in the hero and footer is gold, like its lines; "Supporting sponsors" stays white. The gold bars in the background images and hero video are photographs and keep their own colour.
 - [ ] The hero shows the headline sponsor and, under it, the supporting sponsors without Volt7 (so Enigma Seven for now), because "A Volt7 production" is the next line down, as in the Figma. The footer shows both rows in full.
 - [ ] **More supporting sponsors are coming.** The Figma leaves a gap under them for now; the build closes it (the space under the logos matches the space at the top of the footer). Add each new sponsor to `SUPPORTING_SPONSORS` in `src/data/sponsors.ts` and the rows in the hero and the footer grow. The hero fills the screen with one supporting sponsor; with several more it will get taller than the screen on small laptops and phones, so its spacing will want another look then.
 
@@ -119,8 +123,8 @@ the Figma, and open questions. Update it as items are resolved.
 
 Automated checks (axe-core, Lighthouse) pass apart from these, which all come from the design:
 
-- [ ] **Gold on white headings** ("IT'S TIME TO MAKE A DIFFERENCE.", "BRIDGE THE GAP"): contrast 2.3:1. The guideline for large text is 3:1. A slightly deeper gold for headings on white (around `#9A7B33`) would pass.
-- [ ] **White nav text on the gold header band** (inner pages): contrast 2.3:1. The guideline for small text is 4.5:1. Black nav text on the gold band would pass easily.
+- [ ] **Gold on white headings** ("IT'S TIME TO MAKE A DIFFERENCE.", "BRIDGE THE GAP"): contrast 2.7:1. The guideline for large text is 3:1. A slightly deeper gold for headings on white (around `#9A7B33`) would pass.
+- [ ] **White nav text on the gold header band** (inner pages): contrast 2.7:1. The guideline for small text is 4.5:1. Black nav text on the gold band would pass easily.
 - [ ] **Desktop footer links** are stacked 16px apart. The guideline asks for 24px tap targets. More line spacing would fix it. (The phone footer already passes.)
 
 ## Assets to request
