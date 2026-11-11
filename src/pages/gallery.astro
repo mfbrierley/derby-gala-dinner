@@ -5,6 +5,8 @@ import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 import VideoPlayer from '../components/VideoPlayer.astro';
 import chevron from '../assets/svg/icon-chevron.svg?url';
+import film from '../assets/video/gallery-2026.mp4?url';
+import filmStill from '../assets/images/gallery-2026-poster.jpg';
 
 import roomSetUp from '../assets/gallery/AVI00204.jpg';
 import selfie from '../assets/gallery/_DSC9770.jpg';
@@ -33,18 +35,9 @@ const list: { src: ImageMetadata; alt: string; flip?: boolean }[] = [
   { src: pouring, alt: 'Sparkling wine being poured into rows of glasses' },
 ];
 
-/*
- * The 2026 film, above the photos. It appears once these two files are in the project:
- *   src/assets/video/gallery-2026.mp4          the film (H.264 picture, AAC sound)
- *   src/assets/images/gallery-2026-poster.jpg  the still shown before play is pressed
- */
-const film = Object.values(
-  import.meta.glob<string>('../assets/video/gallery-2026.mp4', { eager: true, query: '?url', import: 'default' }),
-)[0];
-const filmStill = Object.values(
-  import.meta.glob<{ default: ImageMetadata }>('../assets/images/gallery-2026-poster.{jpg,jpeg,png}', { eager: true }),
-)[0]?.default;
-const filmPoster = filmStill && (await getImage({ src: filmStill, width: 1920, format: 'webp', quality: 80 }));
+// The 2026 film, above the photos: hosted on the site itself and played in the site's own player.
+// The still is a frame from the film (1 minute 48 seconds in), shown until play is pressed.
+const filmPoster = await getImage({ src: filmStill, width: 1920, format: 'webp', quality: 80 });
 
 // Full-size versions for the viewer (srcset so phones don't download the largest file).
 const photos = await Promise.all(
@@ -69,14 +62,10 @@ const photos = await Promise.all(
 >
   <PageHeader title="2026 Gallery" />
 
-  <section class:list={['gallery', 'bg-bars', film && 'gallery--film']} aria-label="Film and photos from 2026">
-    {
-      film && (
-        <div class="gallery__film">
-          <VideoPlayer src={film} poster={filmPoster?.src} title="Derby Gala Dinner 2026 highlights" />
-        </div>
-      )
-    }
+  <section class="gallery bg-bars" aria-label="Film and photos from 2026">
+    <div class="gallery__film">
+      <VideoPlayer src={film} poster={filmPoster.src} title="Derby Gala Dinner 2026 film" />
+    </div>
 
     <ul class="gallery__grid">
       {
@@ -118,14 +107,10 @@ const photos = await Promise.all(
 
 <style>
   .gallery {
-    padding: calc(106 * var(--u)) 0 calc(88 * var(--u));
+    padding: calc(129 * var(--u)) 0 calc(88 * var(--u));
   }
 
   /* The film: the same width as the photo grid, with the Figma's spacing above and below it. */
-  .gallery--film {
-    padding-top: calc(129 * var(--u));
-  }
-
   .gallery__film {
     margin-bottom: calc(87 * var(--u));
     padding: 0 calc(114 * var(--u) + var(--edge)) 0 calc(113 * var(--u) + var(--edge));
@@ -291,10 +276,6 @@ const photos = await Promise.all(
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       padding: 0 var(--gutter);
-    }
-
-    .gallery--film {
-      padding-top: 32px;
     }
 
     .gallery__film {
