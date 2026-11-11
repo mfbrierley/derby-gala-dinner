@@ -135,6 +135,6 @@ Automated checks (axe-core, Lighthouse) pass apart from these, which all come fr
 
 ## Setup to-dos
 
-- [ ] Send a test enquiry from each form on the test copy (`/new-private/`) to confirm they arrive and that replying goes to the enquirer. The forms can't send from the Vercel previews (no PHP there).
+- [ ] Send a test enquiry from each form on the live site to confirm they arrive and that replying goes to the enquirer. The forms can't send from the Vercel previews or `npm run dev` (no PHP there); README > Enquiry forms has a way to try them on your own machine.
 - [ ] Once the new forms are live: delete the old Web3Forms access key.
 - [ ] Adobe Fonts (Will's web project `hfo7qtb`): optionally set font-display to `swap`. No italics are used so far, so they could be removed from the project.

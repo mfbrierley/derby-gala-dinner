@@ -2,7 +2,7 @@
 /**
  * Writes dist/api/config.php: the settings the enquiry form endpoint (public/api/enquiry.php)
  * needs to send email. It holds secret keys, so it is never in the repository; the deploy
- * workflows run this after the build, with the values from GitHub:
+ * workflow runs this after the build, with the values from GitHub:
  *
  *   RESEND_API_KEY        secret    Resend API key (starts re_)
  *   TURNSTILE_SECRET_KEY  secret    Cloudflare Turnstile secret key

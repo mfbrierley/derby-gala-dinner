@@ -1,53 +1,45 @@
 #!/usr/bin/env bash
 #
 # Upload the built site (dist/) to the IONOS web space over SFTP, sending only what changed.
-# Used by the GitHub Actions workflows in .github/workflows/; can also be run by hand:
+# Used by the GitHub Actions workflow in .github/workflows/deploy-live.yml; can also be run by hand:
 #
-#   IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD=... scripts/deploy-sftp.sh /new-private
+#   IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD=... scripts/deploy-sftp.sh
 #
 # THE WEB SPACE IS SHARED WITH OTHER CLIENTS' SITES (one folder each at the top level). This script
-# must never write to, or delete from, anything outside the Derby Gala Dinner folders.
+# must never write to, or delete from, anything outside the Derby Gala Dinner folder.
 #
 # The login it's given must be the restricted SFTP account IONOS limits to the derbygaladinner
-# folder: that account sees the folder as "/" (live site) with the test copy in "/new-private".
-# The server itself stops that account reaching anything else. On top of that, all checked before
-# anything is written:
+# folder: that account sees the folder as "/". The server itself stops that account reaching
+# anything else. On top of that, all checked before anything is written:
 #
-#   0. The login's top folder ("/") must hold the .dgd-deploy-live permission file, i.e. it really
-#      is the Derby Gala Dinner folder. A login that sees the whole web space (all clients' folders
-#      at its top) has no such file there, so it's refused, for live and test deploys alike.
-#   1. Fixed folders. The only folders this script will ever upload to are listed below
-#      (LIVE_DIR, TEST_DIR). They're written into this file, not taken from settings, so no
-#      workflow variable or secret can point it anywhere else. Anything else is refused before
-#      connecting.
-#   2. The build must match the folder. A test build (npm run build:test: noindex, links under
-#      /new-private/) can only go to TEST_DIR, a live build (npm run build) only to LIVE_DIR.
-#   3. A permission file placed by hand. The target folder must already contain an empty file
-#      named .dgd-deploy-live (live folder) or .dgd-deploy-test (test folder), and not the other
-#      one. They're created once, by a person, in Cyberduck; this script never creates or uploads
-#      them. Checked over a read-only connection first. No other client's folder has one, so even
-#      a wrong path stops here.
+#   1. One fixed folder. The only folder this script will ever upload to is the login's top folder
+#      ("/"). It's written into this file, not taken from settings or from the command line, so no
+#      workflow variable or secret can point it anywhere else (any other folder is refused).
+#   2. A permission file placed by hand. That folder must already contain an empty file named
+#      .dgd-deploy-live, i.e. it really is the Derby Gala Dinner folder. It's created once, by a
+#      person, in Cyberduck; this script never creates or uploads it. Checked over a read-only
+#      connection first. A login that sees the whole web space (all clients' folders at its top)
+#      has no such file there, and no other client's folder has one, so both are refused.
+#   3. The build is the live one: built for the domain root and not marked "noindex" (as the
+#      Vercel previews are).
 #   4. The build looks complete (every page, enough files in _astro), so a broken build can't
 #      clear out the site's own images; and the enquiry forms are ready to send (their endpoint
 #      and its settings are there, and the spam check has its real key).
 #
-# What it then changes, and only inside the checked folder:
+# What it then changes, and only inside that folder:
 # - _astro/: new files are added (every file there is named after its contents, so a file that's
 #   already on the server is identical and skipped); afterwards files the new pages no longer use
 #   are removed. This is the only place anything is ever deleted.
 # - The pages, .htaccess, robots.txt, favicon and api/ (the enquiry form endpoint and its
-#   settings): always uploaded in full over the old copies. Nothing else in the folder is deleted
-#   (old files, other folders such as new-private/ are left alone).
+#   settings): always uploaded in full over the old copies. Nothing else in the folder is deleted.
 # Order: new _astro files first, then the pages that use them, then the clean-up, so a visitor
 # never gets a page whose files aren't there yet.
 
 set -euo pipefail
 
-# ---- 1. Fixed folders (the only places this script will ever write) ----------------------------
-LIVE_DIR="/"
-TEST_DIR="/new-private"
-LIVE_MARKER=".dgd-deploy-live"
-TEST_MARKER=".dgd-deploy-test"
+# ---- 1. The fixed folder (the only place this script will ever write) --------------------------
+SITE_DIR="/"
+MARKER=".dgd-deploy-live"
 
 refuse() {
   echo "REFUSED: $*" >&2
@@ -55,33 +47,21 @@ refuse() {
   exit 1
 }
 
-[ $# -eq 1 ] || refuse "usage: scripts/deploy-sftp.sh ${TEST_DIR}   (or ${LIVE_DIR} for the live site)"
-REMOTE_DIR="$1"
+# No folder is needed. "/" (what the workflow passes) is accepted; anything else is refused.
+[ $# -eq 0 ] || { [ $# -eq 1 ] && [ "$1" = "$SITE_DIR" ]; } ||
+  refuse "this script only ever uploads to the live site's folder (${SITE_DIR}), not '$*'. Run it as scripts/deploy-sftp.sh"
 : "${IONOS_SFTP_HOST:?IONOS_SFTP_HOST is not set}"
 : "${IONOS_SFTP_USER:?IONOS_SFTP_USER is not set}"
 : "${IONOS_SFTP_PASSWORD:?IONOS_SFTP_PASSWORD is not set}"
 PORT="${IONOS_SFTP_PORT:-22}"
 
-# Exact matches only (a trailing slash on the test folder is fine).
-case "$REMOTE_DIR" in
-  "$LIVE_DIR") SITE_DIR="$LIVE_DIR" ;;
-  "$TEST_DIR" | "$TEST_DIR/") SITE_DIR="$TEST_DIR" ;;
-  *) refuse "'${REMOTE_DIR}' isn't one of the two folders this script may write to: ${LIVE_DIR} (live) or ${TEST_DIR} (test), as seen by the restricted Derby Gala Dinner login." ;;
-esac
-
-# ---- 2. The build must match the folder -------------------------------------------------------
-[ -f dist/index.html ] && [ -d dist/_astro ] ||
-  refuse "dist/ isn't built: run npm run build (live) or npm run build:test (test copy) first."
-if grep -q 'name="robots" content="noindex' dist/index.html && grep -q 'href="/new-private/' dist/index.html; then
-  BUILD="test"
-elif ! grep -q 'name="robots" content="noindex' dist/index.html && ! grep -q 'new-private' dist/index.html; then
-  BUILD="live"
-else
-  refuse "can't tell whether dist/ is a live or a test build (it has some signs of each). Rebuild."
+# ---- 3. The build is the live one --------------------------------------------------------------
+[ -f dist/index.html ] && [ -d dist/_astro ] || refuse "dist/ isn't built: run npm run build first."
+if grep -q 'name="robots" content="noindex' dist/index.html; then
+  refuse "dist/ is a build that's hidden from search engines (noindex), not the live build. Run npm run build."
 fi
-if [ "$BUILD" = "live" ]; then WANT_DIR="$LIVE_DIR"; else WANT_DIR="$TEST_DIR"; fi
-[ "$SITE_DIR" = "$WANT_DIR" ] ||
-  refuse "dist/ is a ${BUILD} build, which only goes to ${WANT_DIR}, not ${SITE_DIR}."
+grep -q '="/_astro/' dist/index.html ||
+  refuse "dist/ wasn't built for the domain root (its file paths don't start /_astro/). Run npm run build."
 
 # ---- 4. The build looks complete --------------------------------------------------------------
 for page in index.html 404.html .htaccess book-a-table/index.html event-details/index.html \
@@ -92,7 +72,7 @@ done
 # and the real spam-check key. Without any of these the forms would look fine but couldn't send.
 [ -f dist/api/enquiry.php ] || refuse "dist/ is missing api/enquiry.php: the build looks incomplete."
 [ -f dist/api/config.php ] ||
-  refuse "dist/api/config.php is missing, so the enquiry forms couldn't send. Run scripts/write-form-config.mjs after the build (the workflows do; see README > Enquiry forms)."
+  refuse "dist/api/config.php is missing, so the enquiry forms couldn't send. Run scripts/write-form-config.mjs after the build (the workflow does; see README > Enquiry forms)."
 if grep -q 'data-turnstile-sitekey="1x00000000000000000000AA"' dist/index.html; then
   refuse "this build uses Cloudflare's test key for the forms' spam check, which only works on your own machine. Build with PUBLIC_TURNSTILE_SITEKEY set (on GitHub: the TURNSTILE_SITEKEY variable; see README > Enquiry forms)."
 fi
@@ -110,8 +90,8 @@ set net:reconnect-interval-base 5
 set net:timeout 60
 set sftp:auto-confirm yes"
 
-# ---- 0 + 3. Permission files, checked over a read-only connection -----------------------------
-# Lists the login's top folder and the target folder (names only), changing nothing.
+# ---- 2. The permission file, checked over a read-only connection ------------------------------
+# Lists the login's top folder (names only), changing nothing.
 read_listing() {
   lftp <<EOF 2>&1
 ${LFTP_SETTINGS}
@@ -123,30 +103,14 @@ EOF
 }
 has() { printf '%s\n' "$1" | grep -qxF -- "$2"; }
 
-echo "Checking the login's top folder on ${IONOS_SFTP_HOST} (read-only) for ${LIVE_MARKER}"
-if ! ROOT_LISTING=$(read_listing "$LIVE_DIR"); then
-  echo "$ROOT_LISTING" >&2
+echo "Checking the login's top folder on ${IONOS_SFTP_HOST} (read-only) for ${MARKER}"
+if ! LISTING=$(read_listing "$SITE_DIR"); then
+  echo "$LISTING" >&2
   refuse "couldn't read the login's top folder (wrong login or password?)."
 fi
-has "$ROOT_LISTING" "$LIVE_MARKER" ||
-  refuse "the login's top folder has no ${LIVE_MARKER} file, so it isn't the Derby Gala Dinner folder. GitHub must use the SFTP account IONOS restricts to the derbygaladinner folder, and that folder needs the empty ${LIVE_MARKER} file (see README > Deploying)."
-if has "$ROOT_LISTING" "$TEST_MARKER"; then
-  refuse "the login's top folder has both ${LIVE_MARKER} and ${TEST_MARKER}; it can only be the live folder."
-fi
-
-if [ "$BUILD" = "test" ]; then
-  echo "Checking ${TEST_DIR} (read-only) for ${TEST_MARKER}"
-  if ! TEST_LISTING=$(read_listing "$TEST_DIR"); then
-    echo "$TEST_LISTING" >&2
-    refuse "couldn't read ${TEST_DIR} (does the folder exist?)."
-  fi
-  has "$TEST_LISTING" "$TEST_MARKER" ||
-    refuse "${TEST_DIR} has no ${TEST_MARKER} file, so it isn't marked as the test folder. Create that empty file there by hand (see README > Deploying) if this really is the right folder."
-  if has "$TEST_LISTING" "$LIVE_MARKER"; then
-    refuse "${TEST_DIR} has both ${TEST_MARKER} and ${LIVE_MARKER}; it can only be the test folder."
-  fi
-fi
-echo "OK: this is the Derby Gala Dinner login and ${SITE_DIR} is marked as the ${BUILD} folder. Uploading the ${BUILD} build."
+has "$LISTING" "$MARKER" ||
+  refuse "the login's top folder has no ${MARKER} file, so it isn't the Derby Gala Dinner folder. GitHub must use the SFTP account IONOS restricts to the derbygaladinner folder, and that folder needs the empty ${MARKER} file (see README > Deploying)."
+echo "OK: this is the Derby Gala Dinner login and its folder is marked as the live site. Uploading."
 
 ASSETS_DIR="${SITE_DIR%/}/_astro"
 

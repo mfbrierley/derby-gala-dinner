@@ -18,21 +18,18 @@ npm run preview   # serves dist/ locally to check the build
 
 ## Deploying to IONOS
 
-Deploys run through GitHub Actions (`.github/workflows/`):
+There is one deploy, and you start it by hand: GitHub > **Actions** > **Deploy live site** >
+**Run workflow** (on `main`). Nothing is uploaded when you merge or push; check changes on your
+own machine first (`npm run dev`), or on the Vercel preview.
 
-| What | When | Goes to |
-|---|---|---|
-| **Deploy test copy** | Every push to `main` (or run it by hand) | The `new-private` folder inside `derbygaladinner` - derbygaladinner.co.uk/new-private/, hidden from search engines |
-| **Deploy live site** | When you run it: GitHub > **Actions** > **Deploy live site** > **Run workflow** | The `derbygaladinner` folder - derbygaladinner.co.uk |
-
-Each run builds the site and uploads it with `scripts/deploy-sftp.sh`: new photos, scripts and
-styles first, then the pages, then it removes `_astro` files the new pages no longer use. A run
-takes a couple of minutes; you can watch it, and see any errors, on the Actions tab.
+The run builds the site and uploads it to derbygaladinner.co.uk with `scripts/deploy-sftp.sh`: new
+photos, video, scripts and styles first, then the pages, then it removes `_astro` files the new
+pages no longer use. A run takes a couple of minutes (longer when a new video goes up); you can
+watch it, and see any errors, on the Actions tab.
 
 GitHub logs in with an SFTP account that IONOS restricts to the `derbygaladinner` folder. That
-account sees the folder as `/`, so to the deploy the live site is `/` and the test copy is
-`/new-private`. (Your own Cyberduck login sees the whole web space, where the same folders are
-`/derbygaladinner` and `/derbygaladinner/new-private`.)
+account sees the folder as `/`. (Your own Cyberduck login sees the whole web space, where the same
+folder is `/derbygaladinner`.)
 
 ### Other clients' sites share this web space
 
@@ -41,26 +38,21 @@ deploy is built so it can't touch them:
 
 1. **Restricted SFTP login (IONOS).** The server itself stops GitHub's account reaching anything
    outside `derbygaladinner`, whatever the code does.
-2. **The login is checked.** Before anything else the script checks, read-only, that the login's
-   top folder holds the `.dgd-deploy-live` permission file, i.e. it really is the
+2. **One fixed folder.** The script only ever writes to `/`, as the restricted login sees it. That
+   is written into the script, not taken from settings or the command line.
+3. **A permission file placed by hand.** Before anything else the script checks, read-only, that
+   the login's top folder holds an empty file called `.dgd-deploy-live`, i.e. it really is the
    `derbygaladinner` folder. A login that sees the whole web space (like your own) has no such
-   file at its top, so every deploy with it is refused.
-3. **Two fixed folders.** The script only ever writes to `/` (live) or `/new-private` (test), as
-   the restricted login sees them. They're written into the script, not taken from settings;
-   anything else is refused before connecting.
-4. **The build must match the folder.** A test build only goes to the test folder, a live build
-   only to the live folder.
-5. **Permission files placed by hand.** The target folder must contain an empty file called
-   `.dgd-deploy-live` (live folder) or `.dgd-deploy-test` (test folder), and not the other one.
-   The deploy never creates them; they're blocked from the web by `.htaccess`.
-6. **Build checks.** A broken or incomplete build is refused, so it can't clear out the site's
+   file at its top, so a deploy with it is refused. The deploy never creates the file; it's
+   blocked from the web by `.htaccess`.
+4. **Build checks.** Only the live build is accepted (not one marked `noindex`, as the Vercel
+   previews are), and a broken or incomplete build is refused, so it can't clear out the site's
    images.
 
-Inside the target folder it only ever deletes from `_astro`; everything else (the old site's
-leftovers, `new-private` inside the live folder) is left alone. This was tested against a copy of
-the web space with 15 client folders laid out like this one, with both a restricted and a
-whole-web-space login, in 37 right and wrong scenarios: nothing outside the target folder changed
-in any of them.
+Inside the folder it only ever deletes from `_astro`; everything else there is left alone. This was
+tested against a local copy of a shared web space (three client folders; the restricted login, a
+login that sees the whole web space, and another client's login) in 13 wrong scenarios and the
+real one: nothing outside the `derbygaladinner` folder changed in any of them.
 
 ### One-time setup
 
@@ -78,32 +70,19 @@ create a new account, and set its **Directory** to the `derbygaladinner` folder.
 
 Secrets are encrypted: nobody can read them back, including in the workflow logs.
 
-**3. No folder variables.** The workflows default to `/new-private` (test) and `/` (live). If
-`IONOS_TEST_DIR` or `IONOS_LIVE_DIR` exist on the **Variables** tab, delete them (or set them to
-exactly those values).
+**3. The permission file.** In Cyberduck (View > Show Hidden Files), File > New File: an empty
+file called `.dgd-deploy-live` in the `derbygaladinner` folder. Without it every deploy is refused.
 
-**4. The permission files.** In Cyberduck (View > Show Hidden Files), File > New File: an empty
-file called `.dgd-deploy-live` in the `derbygaladinner` folder, and one called `.dgd-deploy-test`
-in `derbygaladinner/new-private`. Without them every deploy is refused.
-
-### The two builds
-
-| Command | For | Notes |
-|---|---|---|
-| `npm run build:test` | `/new-private/` | Every link and image path starts `/new-private/`; pages say `noindex` |
-| `npm run build` | `/` (the root) | The live site |
-
-The build has to match the folder: a root build uploaded into `/new-private/` shows no images.
-To use a different test folder, change `BASE_PATH=/new-private` in `package.json` and `TEST_DIR`
-in `scripts/deploy-sftp.sh`.
+If `IONOS_TEST_DIR` or `IONOS_LIVE_DIR` exist on the **Variables** tab, delete them: the test one
+is no longer used, and the live one must be exactly `/` or the deploy is refused.
 
 ### Uploading by hand (if ever needed)
 
-The same upload script can run on a Mac (`brew install lftp` first), after the matching build,
-with the restricted account's login:
+The same upload script can run on a Mac (`brew install lftp` first), after `npm run build` and
+`scripts/write-form-config.mjs` (see Enquiry forms), with the restricted account's login:
 
 ```bash
-IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD='...' scripts/deploy-sftp.sh /new-private
+IONOS_SFTP_HOST=... IONOS_SFTP_USER=... IONOS_SFTP_PASSWORD='...' scripts/deploy-sftp.sh
 ```
 
 Or with an SFTP app: upload the contents of `dist/` except `_astro`, overwriting; then the
@@ -171,7 +150,7 @@ booking: tables@example.com; default: hello@example.com
 
 The deploy stops with a message if an address is mistyped or a form has no inbox.
 
-After each build the deploy workflows run `scripts/write-form-config.mjs`, which writes the keys
+After the build the deploy workflow runs `scripts/write-form-config.mjs`, which writes the keys
 into `dist/api/config.php` beside the endpoint. That file is never in the repository, and
 `.htaccess` stops it being served. The upload is refused if it's missing, or if the build used
 Cloudflare's test key.
