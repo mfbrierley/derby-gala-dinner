@@ -1,0 +1,561 @@
+---
+/**
+ * The site's own video player: a still image with a gold play button, then the film with a
+ * control bar in the site's colours (play / pause, time, a gold progress line, sound, full screen).
+ * Nothing from the video is downloaded until play is pressed.
+ *
+ * Keys, while the player has focus: Space or K play / pause, Left / Right back / forward 5 seconds,
+ * M sound on / off, F full screen.
+ */
+interface Props {
+  /** The video file (an .mp4 the browser can play: H.264 picture, AAC sound). */
+  src: string;
+  /** The still image shown before play is pressed. */
+  poster?: string;
+  /** What the video is, for screen readers, e.g. "Derby Gala Dinner 2026 highlights". */
+  title: string;
+  /** Shape of the picture, width / height. */
+  aspect?: string;
+}
+const { src, poster, title, aspect = '16 / 9' } = Astro.props;
+---
+
+<div class="player" data-player data-state="idle" style={`--aspect: ${aspect}`}>
+  <video class="player__video" playsinline preload="none" poster={poster} aria-label={title} data-player-video>
+    <source src={src} type="video/mp4" />
+  </video>
+
+  <button type="button" class="player__start" data-player-start aria-label={`Play video: ${title}`}>
+    <span class="player__start-disc" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M7 3.5v17l14-8.5z" fill="currentColor"></path></svg>
+    </span>
+  </button>
+
+  <span class="player__spinner" aria-hidden="true"></span>
+  <p class="player__error" role="alert" data-player-error hidden>Sorry, the video couldn’t be played. Please try again in a moment.</p>
+
+  <div class="player__bar" data-player-bar>
+    <button type="button" class="player__btn" data-player-toggle aria-label="Play">
+      <svg class="player__icon player__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5v17l14-8.5z" fill="currentColor"></path></svg>
+      <svg class="player__icon player__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"></path></svg>
+    </button>
+
+    <span class="player__time" data-player-current>0:00</span>
+    <input class="player__seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Position in the video" data-player-seek />
+    <span class="player__time" data-player-duration>0:00</span>
+
+    <button type="button" class="player__btn" data-player-mute aria-label="Turn sound off">
+      <svg class="player__icon player__icon--sound" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 9v6h4l5 4.5v-15L7 9z" fill="currentColor"></path>
+        <path d="M15.5 8.5a5 5 0 0 1 0 7M18 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+      </svg>
+      <svg class="player__icon player__icon--muted" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 9v6h4l5 4.5v-15L7 9z" fill="currentColor"></path>
+        <path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+      </svg>
+    </button>
+
+    <button type="button" class="player__btn" data-player-fullscreen aria-label="Full screen">
+      <svg class="player__icon player__icon--expand" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9.5V4h5.5M14.5 4H20v5.5M20 14.5V20h-5.5M9.5 20H4v-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <svg class="player__icon player__icon--shrink" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9.5 4v5.5H4M20 9.5h-5.5V4M14.5 20v-5.5H20M4 14.5h5.5V20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  /* As wide as the space it's given, but never taller than the screen. */
+  .player {
+    position: relative;
+    width: min(100%, calc((100vh - 48px) * (var(--aspect))));
+    aspect-ratio: var(--aspect);
+    margin: 0 auto;
+    background: #000;
+    overflow: hidden;
+    color: var(--white);
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .player:fullscreen {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .player__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+  /* Before play (and once it has finished) the still image fills the frame, like the photos below. */
+  .player[data-state='idle'] .player__video {
+    object-fit: cover;
+  }
+
+  /* ---------- The gold play button over the still image ---------- */
+
+  .player__start {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.35));
+    cursor: pointer;
+  }
+
+  .player__start-disc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max(64px, calc(128 * var(--u)));
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--black);
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .player__start-disc svg {
+    width: 38%;
+    height: 38%;
+    margin-left: 6%; /* a triangle looks off-centre unless it's nudged right */
+  }
+
+  .player__start:hover .player__start-disc {
+    background: #c9aa7b;
+    transform: scale(1.06);
+  }
+
+  .player__start:focus-visible {
+    outline-offset: -6px;
+  }
+
+  .player:not([data-state='idle'], [data-state='ended']) .player__start {
+    display: none;
+  }
+
+  /* ---------- Control bar ---------- */
+
+  .player__bar {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 48px 20px 14px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+    transition: opacity 0.25s ease;
+  }
+
+  .player[data-state='idle'] .player__bar,
+  .player[data-state='ended'] .player__bar {
+    display: none;
+  }
+
+  /* While it plays, the bar (and the pointer) fade away after a few seconds without movement. */
+  .player[data-hide-bar] .player__bar {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .player[data-hide-bar] .player__video {
+    cursor: none;
+  }
+
+  .player__btn {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--white);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .player__btn:hover {
+    color: var(--gold);
+  }
+
+  .player__btn:focus-visible {
+    outline-offset: 0;
+  }
+
+  .player__icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .player__icon--pause,
+  .player__icon--muted,
+  .player__icon--shrink,
+  .player[data-state='playing'] .player__icon--play,
+  .player[data-muted] .player__icon--sound,
+  .player[data-fullscreen] .player__icon--expand {
+    display: none;
+  }
+
+  .player[data-state='playing'] .player__icon--pause,
+  .player[data-muted] .player__icon--muted,
+  .player[data-fullscreen] .player__icon--shrink {
+    display: block;
+  }
+
+  .player__time {
+    flex: none;
+    min-width: 2.6em;
+    font-size: 14px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+
+  /*
+   * The progress line: gold up to where the film has reached, a paler stretch for what has
+   * downloaded, and a gold dot to drag.
+   */
+  .player__seek {
+    --played: 0%;
+    --loaded: 0%;
+    flex: 1;
+    min-width: 0;
+    height: 24px;
+    margin: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .player__seek::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(
+      to right,
+      var(--gold) var(--played),
+      rgba(255, 255, 255, 0.55) var(--played),
+      rgba(255, 255, 255, 0.55) var(--loaded),
+      rgba(255, 255, 255, 0.25) var(--loaded)
+    );
+  }
+
+  .player__seek::-moz-range-track {
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(
+      to right,
+      var(--gold) var(--played),
+      rgba(255, 255, 255, 0.55) var(--played),
+      rgba(255, 255, 255, 0.55) var(--loaded),
+      rgba(255, 255, 255, 0.25) var(--loaded)
+    );
+  }
+
+  .player__seek::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    margin-top: -5px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--gold);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .player__seek::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  .player__seek:focus-visible {
+    outline-offset: 2px;
+  }
+
+  /* ---------- Loading ring and error message ---------- */
+
+  .player__spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: none;
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+    border: 4px solid rgba(255, 255, 255, 0.25);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: player-spin 0.9s linear infinite;
+  }
+
+  .player[data-loading] .player__spinner {
+    display: block;
+  }
+
+  @keyframes player-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .player__error {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.8);
+    font-size: var(--text-body);
+    text-align: center;
+    pointer-events: none; /* a click goes through to the picture or play button, which tries again */
+  }
+
+  .player__error[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 899px) {
+    .player__bar {
+      gap: 6px;
+      padding: 32px 8px 6px;
+    }
+
+    .player__time {
+      font-size: 13px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .player__start-disc,
+    .player__bar {
+      transition: none;
+    }
+
+    .player__start:hover .player__start-disc {
+      transform: none;
+    }
+
+    .player__spinner {
+      animation-duration: 2.5s;
+    }
+  }
+</style>
+
+<script>
+  type FullscreenElement = HTMLElement & { webkitRequestFullscreen?: () => void };
+  type FullscreenDocument = Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => void };
+  type FullscreenVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+
+  const clock = (seconds: number) => {
+    const s = Math.max(0, Math.floor(seconds || 0));
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  };
+
+  document.querySelectorAll<FullscreenElement>('[data-player]').forEach((player) => {
+    const video = player.querySelector<FullscreenVideo>('[data-player-video]')!;
+    const start = player.querySelector<HTMLButtonElement>('[data-player-start]')!;
+    const toggle = player.querySelector<HTMLButtonElement>('[data-player-toggle]')!;
+    const mute = player.querySelector<HTMLButtonElement>('[data-player-mute]')!;
+    const full = player.querySelector<HTMLButtonElement>('[data-player-fullscreen]')!;
+    const seek = player.querySelector<HTMLInputElement>('[data-player-seek]')!;
+    const current = player.querySelector<HTMLElement>('[data-player-current]')!;
+    const duration = player.querySelector<HTMLElement>('[data-player-duration]')!;
+    const error = player.querySelector<HTMLElement>('[data-player-error]')!;
+    const doc = document as FullscreenDocument;
+    const SEEK_MAX = Number(seek.max);
+
+    let dragging = false;
+    let hideTimer = 0;
+
+    const setState = (state: 'idle' | 'playing' | 'paused' | 'ended') => {
+      player.dataset.state = state;
+      toggle.setAttribute('aria-label', state === 'playing' ? 'Pause' : 'Play');
+    };
+
+    // The control bar: always there while paused; while playing it goes after 3 seconds' stillness.
+    const showBar = () => {
+      delete player.dataset.hideBar;
+      window.clearTimeout(hideTimer);
+      if (player.dataset.state === 'playing') {
+        hideTimer = window.setTimeout(() => {
+          if (!dragging && !player.querySelector('[data-player-bar] :focus-visible')) player.dataset.hideBar = '';
+        }, 3000);
+      }
+    };
+
+    const play = () => {
+      error.hidden = true;
+      if (video.readyState < 3) player.dataset.loading = ''; // the ring, until there's enough to play
+      video.play().catch(() => {}); // e.g. the file can't be reached: the 'error' event shows the message
+    };
+    const togglePlay = () => (video.paused || video.ended ? play() : video.pause());
+
+    const paint = () => {
+      const total = video.duration || 0;
+      const at = dragging ? (Number(seek.value) / SEEK_MAX) * total : video.currentTime;
+      if (!dragging) seek.value = String(total ? Math.round((at / total) * SEEK_MAX) : 0);
+      seek.style.setProperty('--played', `${total ? (at / total) * 100 : 0}%`);
+      seek.setAttribute('aria-valuetext', `${clock(at)} of ${clock(total)}`);
+      current.textContent = clock(at);
+      duration.textContent = clock(total);
+    };
+
+    const paintLoaded = () => {
+      const total = video.duration || 0;
+      let end = 0;
+      for (let i = 0; i < video.buffered.length; i++) {
+        if (video.buffered.start(i) <= video.currentTime + 0.5) end = Math.max(end, video.buffered.end(i));
+      }
+      seek.style.setProperty('--loaded', `${total ? (end / total) * 100 : 0}%`);
+    };
+
+    const jump = (seconds: number) => {
+      if (!video.duration) return;
+      video.currentTime = Math.min(video.duration, Math.max(0, video.currentTime + seconds));
+      paint();
+      showBar();
+    };
+
+    const toggleMute = () => {
+      video.muted = !video.muted;
+    };
+
+    const isFullscreen = () => (doc.fullscreenElement ?? doc.webkitFullscreenElement) === player;
+    const toggleFullscreen = () => {
+      if (isFullscreen()) (doc.exitFullscreen ?? doc.webkitExitFullscreen)?.call(doc);
+      else if (player.requestFullscreen) player.requestFullscreen().catch(() => {});
+      else if (player.webkitRequestFullscreen) player.webkitRequestFullscreen();
+      else video.webkitEnterFullscreen?.(); // iPhone: only the video itself can go full screen
+    };
+    if (!player.requestFullscreen && !player.webkitRequestFullscreen && !video.webkitEnterFullscreen) full.hidden = true;
+
+    start.addEventListener('click', () => {
+      if (video.ended) video.currentTime = 0;
+      setState('paused'); // brings in the control bar, so the keyboard has somewhere to be
+      toggle.focus({ preventScroll: true });
+      play();
+    });
+    toggle.addEventListener('click', togglePlay);
+    mute.addEventListener('click', toggleMute);
+    full.addEventListener('click', toggleFullscreen);
+
+    // Click or tap on the picture: play / pause. A tap while the bar is hidden only brings it back.
+    video.addEventListener('click', () => {
+      const hidden = 'hideBar' in player.dataset;
+      showBar();
+      if (!player.contains(document.activeElement)) toggle.focus({ preventScroll: true }); // so the keys work
+      if (hidden && window.matchMedia('(hover: none)').matches) return;
+      togglePlay();
+    });
+    video.addEventListener('dblclick', toggleFullscreen);
+
+    player.addEventListener('pointermove', showBar);
+    player.addEventListener('focusin', showBar);
+    player.addEventListener('pointerleave', () => {
+      if (player.dataset.state === 'playing' && !dragging) player.dataset.hideBar = '';
+    });
+
+    seek.addEventListener('pointerdown', () => (dragging = true));
+    seek.addEventListener('input', () => {
+      dragging = true;
+      paint();
+    });
+    const drop = () => {
+      if (!dragging) return;
+      if (video.duration) video.currentTime = (Number(seek.value) / SEEK_MAX) * video.duration;
+      dragging = false;
+      showBar();
+    };
+    seek.addEventListener('change', drop);
+    seek.addEventListener('pointerup', drop);
+
+    player.addEventListener('keydown', (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const target = event.target as HTMLElement;
+      const key = event.key.toLowerCase();
+      const onButton = target.tagName === 'BUTTON';
+      const onSeek = target === seek;
+      if (player.dataset.state === 'idle') return; // only the play button is there, and it works as any button
+      if ((key === ' ' && !onButton) || key === 'k') togglePlay();
+      else if (key === 'arrowleft' && !onSeek) jump(-5);
+      else if (key === 'arrowright' && !onSeek) jump(5);
+      else if (key === 'm') toggleMute();
+      else if (key === 'f') toggleFullscreen();
+      else return;
+      event.preventDefault();
+      showBar();
+    });
+
+    video.addEventListener('play', () => {
+      setState('playing');
+      showBar();
+    });
+    video.addEventListener('pause', () => {
+      if (video.ended) return;
+      setState('paused');
+      showBar();
+    });
+    video.addEventListener('ended', () => {
+      setState('ended');
+      showBar();
+      if (player.contains(document.activeElement)) start.focus({ preventScroll: true });
+    });
+    video.addEventListener('timeupdate', paint);
+    video.addEventListener('durationchange', paint);
+    video.addEventListener('seeked', paint);
+    video.addEventListener('progress', paintLoaded);
+    video.addEventListener('timeupdate', paintLoaded);
+
+    video.addEventListener('waiting', () => (player.dataset.loading = ''));
+    ['playing', 'canplay', 'pause', 'ended', 'error'].forEach((name) =>
+      video.addEventListener(name, () => delete player.dataset.loading),
+    );
+
+    video.addEventListener('volumechange', () => {
+      if (video.muted) player.dataset.muted = '';
+      else delete player.dataset.muted;
+      mute.setAttribute('aria-label', video.muted ? 'Turn sound on' : 'Turn sound off');
+    });
+
+    const failed = () => {
+      delete player.dataset.loading;
+      error.hidden = false;
+      if (player.dataset.state !== 'idle') setState('paused');
+    };
+    video.addEventListener('error', failed);
+    video.querySelector('source')?.addEventListener('error', failed);
+
+    const fullscreenChanged = () => {
+      if (isFullscreen()) player.dataset.fullscreen = '';
+      else delete player.dataset.fullscreen;
+      full.setAttribute('aria-label', isFullscreen() ? 'Leave full screen' : 'Full screen');
+    };
+    document.addEventListener('fullscreenchange', fullscreenChanged);
+    document.addEventListener('webkitfullscreenchange', fullscreenChanged);
+  });
+</script>
