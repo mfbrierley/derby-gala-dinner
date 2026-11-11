@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "build:test": "BASE_PATH=/new-private NOINDEX=1 astro build",
     "preview": "astro preview"
   },
   "dependencies": {

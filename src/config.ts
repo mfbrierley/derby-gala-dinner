@@ -4,11 +4,11 @@ export const SITE_NAME = 'Derby Gala Dinner';
 export const TYPEKIT_CSS = 'https://use.typekit.net/hfo7qtb.css';
 
 // The enquiry forms post to the site's own endpoint (public/api/enquiry.php), which emails them
-// through Resend. Path is relative to the site's base (/ live, /new-private/ test).
+// through Resend. Path is relative to the site's root.
 export const ENQUIRY_ENDPOINT = 'api/enquiry.php';
 
 // Cloudflare Turnstile (the spam check on the forms). The site key is the public half of the
-// pair; the deploy workflows pass it in from the GitHub variable TURNSTILE_SITEKEY. Without it
+// pair; the deploy workflow passes it in from the GitHub variable TURNSTILE_SITEKEY. Without it
 // (npm run dev, a build on your own machine) Cloudflare's test key is used, which always passes.
 export const TURNSTILE_TEST_SITEKEY = '1x00000000000000000000AA';
 export const TURNSTILE_SITEKEY: string = import.meta.env.PUBLIC_TURNSTILE_SITEKEY || TURNSTILE_TEST_SITEKEY;
