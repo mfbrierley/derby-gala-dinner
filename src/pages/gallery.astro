@@ -5,23 +5,40 @@ import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 import chevron from '../assets/svg/icon-chevron.svg?url';
 
+import roomSetUp from '../assets/gallery/AVI00204.jpg';
+import selfie from '../assets/gallery/_DSC9770.jpg';
+import easels from '../assets/gallery/AVI00381.jpg';
+import cardTrick from '../assets/gallery/AVI00309.jpg';
+import goldCard from '../assets/gallery/_DSC9934.jpg';
+import pinkCarpet from '../assets/gallery/AVI00543.jpg';
+import microphone from '../assets/gallery/_DSC9952.jpg';
+import pouring from '../assets/gallery/AVI00208.jpg';
+
 /**
- * Every image in src/assets/gallery/ appears here once, in filename order (see the README there).
+ * The photos on the page, in the order of the "dgd - matt" Figma (left to right, top to bottom).
+ * They come from src/assets/gallery/, which holds all the 2026 photos; to add or swap one, import
+ * it above and add it to this list. `flip: true` mirrors a photo left to right, as the Figma does.
  */
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/gallery/*.{jpg,jpeg,png,webp}', { eager: true });
-const list = Object.keys(files)
-  .sort()
-  .map((path) => files[path].default);
-const total = list.length;
+const list: { src: ImageMetadata; alt: string; flip?: boolean }[] = [
+  { src: roomSetUp, alt: 'The room at Vaillant Live laid out for the gala dinner, round tables in front of the stage' },
+  { src: selfie, alt: 'Three guests taking a selfie' },
+  { src: easels, alt: 'Two guests laughing beside a row of easels' },
+  { src: cardTrick, alt: 'A magician showing a card trick to two guests' },
+  { src: goldCard, alt: 'A guest in a red dress holding up a gold card' },
+  { src: pinkCarpet, alt: 'Guests on the pink carpet, lined with artwork on easels' },
+  { src: microphone, alt: 'A guest speaking into a microphone', flip: true },
+  { src: pouring, alt: 'Sparkling wine being poured into rows of glasses' },
+];
 
 // Full-size versions for the viewer (srcset so phones don't download the largest file).
 const photos = await Promise.all(
-  list.map(async (src, i) => {
+  list.map(async ({ src, alt, flip }) => {
     // 970px is the same file as the grid's largest size, so it isn't made twice.
     const large = await getImage({ src, widths: [970, 1600, 2400], format: 'webp' });
     return {
       src,
-      alt: `Derby Gala Dinner 2026, photo ${i + 1} of ${total}`,
+      alt,
+      flip,
       largeSrc: large.src,
       largeSrcset: large.srcSet.attribute,
     };
@@ -43,11 +60,12 @@ const photos = await Promise.all(
           <li>
             <button
               type="button"
-              class="gallery__item"
+              class:list={['gallery__item', photo.flip && 'gallery__item--flip']}
               data-gallery-index={i}
+              data-flip={photo.flip ? '' : undefined}
               data-large-src={photo.largeSrc}
               data-large-srcset={photo.largeSrcset}
-              aria-label={`View ${photo.alt} full size`}
+              aria-label={`View full size: ${photo.alt}`}
             >
               <Image
                 src={photo.src}
@@ -96,6 +114,11 @@ const photos = await Promise.all(
     background: #111;
     overflow: hidden;
     cursor: zoom-in;
+  }
+
+  /* Mirrored left to right (the hover zoom on the photo inside still works as normal). */
+  .gallery__item--flip {
+    transform: scaleX(-1);
   }
 
   .gallery__item :global(img) {
@@ -161,6 +184,10 @@ const photos = await Promise.all(
     max-height: calc(100vh - 120px);
     object-fit: contain;
     user-select: none;
+  }
+
+  .lightbox__img.is-flipped {
+    transform: scaleX(-1);
   }
 
   .lightbox__count {
@@ -316,6 +343,7 @@ const photos = await Promise.all(
       const item = items[index];
       const thumb = item.querySelector('img');
       img.alt = thumb?.alt ?? '';
+      img.classList.toggle('is-flipped', item.dataset.flip !== undefined);
       count.textContent = `${index + 1} / ${n}`;
 
       const pending = preload(index, 'high');

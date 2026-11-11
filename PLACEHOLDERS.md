@@ -50,10 +50,10 @@ the Figma, and open questions. Update it as items are resolved.
 - [x] The Distractions: the photo is the transparent cut-out from Matt, so it now has the stripes behind it like the other two. Most of the stripes sit behind the two performers; they show between and above them. The small part of the jacket that runs off the left of the picture fades out.
 
 ### 2026 gallery
-- [x] The real 2026 photos are in: 516 photos (shrunk to 2400px wide by Matt before adding), each shown once.
-- [ ] Order: filename order. The photos have no "date taken" information, so they can't be sorted by time; the `AVI…` camera's photos come first, then the `_DSC…` camera's.
-- [ ] The page is long with 516 photos (about 170 rows on a laptop). Photos load as you scroll. A "Show more" button could shorten it.
-- [ ] Photo descriptions are generic ("Derby Gala Dinner 2026, photo 5 of 516"). Fine for a gallery, but they could be more specific.
+- [ ] The gallery is cut down to the photos in the "dgd - matt" Figma, in the Figma's order (Matt). **The Figma has 8 photos, not 9:** the first slot of the third row is empty. The page shows the 8 (`AVI00204`, `_DSC9770`, `AVI00381`, `AVI00309`, `_DSC9934`, `AVI00543`, `_DSC9952`, `AVI00208`), so the last row has two photos and a space on the right until the ninth is chosen. On phones it's four rows of two.
+- [ ] `_DSC9952` (the guest with the microphone) is mirrored left to right, as it is in the Figma.
+- [x] All 516 photos are still in `src/assets/gallery/`, so a photo can be swapped without finding the originals again; only the ones listed in `src/pages/gallery.astro` are uploaded to the website. Each photo now has its own description for screen readers.
+- [ ] **Video above the photos** ("I'll send you last years video to go here" in the Figma): **not built yet**, waiting for the video file.
 - [x] Gallery page: the Bridge The Gap spotlight and the gold "See how…" photo strip have been removed (Matt). The page now goes straight from the photo grid to the footer.
 
 ### Sponsors (hero and footer, from the "dgd - matt" Figma)
