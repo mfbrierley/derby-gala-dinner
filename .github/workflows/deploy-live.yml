@@ -1,7 +1,7 @@
 # Live site: run by hand from the Actions tab (Deploy live site > Run workflow). Builds the site for
 # derbygaladinner.co.uk (the web space root) and uploads what changed. Only runs from main.
 # Needs the repository secrets IONOS_SFTP_HOST, IONOS_SFTP_USER and IONOS_SFTP_PASSWORD
-# (see "Deploying" in README.md).
+# (see "Deploying" in README.md), and the enquiry form keys (see "Enquiry forms" in README.md).
 
 name: Deploy live site
 
@@ -53,7 +53,18 @@ jobs:
           restore-keys: astro-${{ runner.os }}-
 
       - name: Build the live site
+        env:
+          # The public half of the forms' spam-check key pair (Cloudflare Turnstile).
+          PUBLIC_TURNSTILE_SITEKEY: ${{ vars.TURNSTILE_SITEKEY }}
         run: npm run build
+
+      # The keys the enquiry forms need to send email, written into the build (never committed).
+      - name: Write the enquiry form settings
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+          ENQUIRY_TO: ${{ vars.ENQUIRY_TO }}
+        run: node scripts/write-form-config.mjs
 
       - name: Install the upload tool (lftp)
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp

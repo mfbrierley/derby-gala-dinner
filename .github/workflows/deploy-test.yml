@@ -1,7 +1,7 @@
 # Test copy: every push to main builds the site for /new-private/ (hidden from search engines)
 # and uploads what changed to the IONOS web space. Can also be run by hand from the Actions tab.
 # Needs the repository secrets IONOS_SFTP_HOST, IONOS_SFTP_USER and IONOS_SFTP_PASSWORD
-# (see "Deploying" in README.md). Until they're added, runs finish with a warning and upload nothing.
+# (see "Deploying" in README.md), and the enquiry form keys (see "Enquiry forms" in README.md). Until they're added, runs finish with a warning and upload nothing.
 
 name: Deploy test copy (/new-private/)
 
@@ -63,7 +63,19 @@ jobs:
 
       - name: Build the test copy
         if: steps.check.outputs.ready == 'true'
+        env:
+          # The public half of the forms' spam-check key pair (Cloudflare Turnstile).
+          PUBLIC_TURNSTILE_SITEKEY: ${{ vars.TURNSTILE_SITEKEY }}
         run: npm run build:test
+
+      # The keys the enquiry forms need to send email, written into the build (never committed).
+      - name: Write the enquiry form settings
+        if: steps.check.outputs.ready == 'true'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+          ENQUIRY_TO: ${{ vars.ENQUIRY_TO }}
+        run: node scripts/write-form-config.mjs
 
       - name: Install the upload tool (lftp)
         if: steps.check.outputs.ready == 'true'
