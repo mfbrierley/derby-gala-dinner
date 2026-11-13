@@ -140,34 +140,6 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
         <span class="sponsor-note__text">All sponsor packages include a table for 10 guests.</span>
       </a>
 
-      <!-- Evening Table -->
-      <article class="package-card package-card--evening" id="evening-table">
-        <div class="package-card__media">
-          <Image
-            src={tableEvening}
-            alt="Guests seated around their table at the 2026 gala dinner"
-            widths={[600, 900, 1300, 1814]}
-            sizes="(max-width: 899px) 100vw, 53vw"
-            loading="lazy"
-          />
-        </div>
-        <div class="package-card__body">
-          <h3 class="display display--lg">EVENING TABLE</h3>
-          <div class="package-card__text">
-            <p>What’s included?</p>
-            <ul class="bullets bullets--bold">
-              <li>Welcome drink</li>
-              <li>10 person table</li>
-              <li>Place gift for all guests</li>
-              <li>Premium 3 course meal</li>
-              <li>Evening entertainment</li>
-            </ul>
-            <p class="package-card__price">£2,500 + VAT</p>
-          </div>
-        </div>
-        <a class="btn btn--white package-card__btn" href="#evening-table" data-open-booking="Evening Table">Book a table</a>
-      </article>
-
       <!-- VIP Table -->
       <article class="package-card package-card--vip" id="vip-table">
         <div class="package-card__media">
@@ -195,6 +167,34 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
           </div>
         </div>
         <a class="btn btn--gold package-card__btn" href="#vip-table" data-open-booking="VIP Table">Book a table</a>
+      </article>
+
+      <!-- Evening Table -->
+      <article class="package-card package-card--evening" id="evening-table">
+        <div class="package-card__media">
+          <Image
+            src={tableEvening}
+            alt="Guests seated around their table at the 2026 gala dinner"
+            widths={[600, 900, 1300, 1814]}
+            sizes="(max-width: 899px) 100vw, 53vw"
+            loading="lazy"
+          />
+        </div>
+        <div class="package-card__body">
+          <h3 class="display display--lg">EVENING TABLE</h3>
+          <div class="package-card__text">
+            <p>What’s included?</p>
+            <ul class="bullets bullets--bold">
+              <li>Welcome drink</li>
+              <li>10 person table</li>
+              <li>Place gift for all guests</li>
+              <li>Premium 3 course meal</li>
+              <li>Evening entertainment</li>
+            </ul>
+            <p class="package-card__price">£2,500 + VAT</p>
+          </div>
+        </div>
+        <a class="btn btn--white package-card__btn" href="#evening-table" data-open-booking="Evening Table">Book a table</a>
       </article>
 
       <!-- Donate a seat -->
@@ -396,8 +396,12 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
     isolation: isolate;
   }
 
-  .package-card--vip {
+  /* The second card sits a little closer to the first. */
+  .package-card + .package-card {
     margin-top: calc(54 * var(--u));
+  }
+
+  .package-card--vip {
     border-color: var(--gold);
   }
 
@@ -640,7 +644,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
       background: #000;
     }
 
-    .package-card--vip {
+    .package-card + .package-card {
       margin-top: 32px;
     }
 
