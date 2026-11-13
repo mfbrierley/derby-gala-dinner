@@ -199,9 +199,9 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
 
       <!-- Donate a seat -->
       <div class="donate" id="donate-a-seat">
-        <h2 class="display display--lg gold donate__title"><span>Donate a seat</span></h2>
-        <p class="donate__text">Would you like to donate a table or seat? Please enquire</p>
-        <a class="btn btn--gold donate__btn" href="#donate-a-seat" data-open-booking="">Donate now</a>
+        <h2 class="display display--lg donate__title"><span>Donate a place - seat or table</span></h2>
+        <p class="donate__text">Would you like to donate a seat or table? Please enquire</p>
+        <a class="btn btn--gold donate__btn" href="#donate-a-seat" data-open-donation>Donate now</a>
       </div>
 
       <!-- Sponsorship -->
@@ -331,7 +331,7 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
     margin-top: calc(108 * var(--u));
   }
 
-  /* ---------- Donate a seat: heading between two fine gold lines, a line of text, a button ---------- */
+  /* ---------- Donate a place: heading between two fine gold lines, a line of text, a button ---------- */
 
   .donate {
     display: flex;
@@ -618,9 +618,15 @@ const cropStyle = (c: { w: number; h: number; l: number; t: number }) =>
       margin-top: 56px;
     }
 
+    /* Sized to the screen so the heading stays on one line, with short gold lines either side. */
     .donate__title {
-      gap: 14px;
-      font-size: calc(48px * var(--type-scale));
+      gap: 10px;
+      font-size: calc(min(48px, 8.4vw) * var(--type-scale));
+    }
+
+    .donate__title::before,
+    .donate__title::after {
+      min-width: 12px;
     }
 
     .donate__text {
