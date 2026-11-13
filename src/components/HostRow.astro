@@ -39,11 +39,12 @@ interface Props {
   edgeFade?: [number, number];
   /**
    * `summary` (home page): text centred against the photo.
-   * `detail` (Your hosts page): text starts `textOffset` px below the top of the photo, sits
-   * closer to it, and the bio (slot) follows underneath.
+   * `detail` (Your hosts page): the photo starts `mediaOffset` px below the top of the text, so
+   * the label sits just above it and the photo lines up with the name; the bio (slot) follows
+   * underneath.
    */
   variant?: 'summary' | 'detail';
-  textOffset?: number;
+  mediaOffset?: number;
   /** Heading level for the name: 3 on the home page (under a section h2), 2 on Your hosts. */
   headingLevel?: 2 | 3;
 }
@@ -62,7 +63,7 @@ const {
   objectPosition = 'center',
   edgeFade,
   variant = 'summary',
-  textOffset = 47,
+  mediaOffset = 64,
   headingLevel = 3,
 } = Astro.props;
 
@@ -101,7 +102,7 @@ if (edgeFade) {
 }
 ---
 
-<div class:list={['host', `host--${variant}`]} style={`--text-offset: ${textOffset}`}>
+<div class:list={['host', `host--${variant}`]} style={`--media-offset: ${mediaOffset}`}>
   <div class="host__media" style={mediaStyle}>
     {
       backdrop && (
@@ -158,8 +159,12 @@ if (edgeFade) {
     align-items: start;
   }
 
+  .host--detail .host__media {
+    margin-top: calc(var(--media-offset) * var(--u));
+  }
+
   .host--detail .host__text {
-    padding-top: calc(var(--text-offset) * var(--u));
+    padding-top: 0;
   }
 
   .host__bio {
@@ -278,8 +283,8 @@ if (edgeFade) {
       margin-top: 4px;
     }
 
-    .host--detail .host__text {
-      padding-top: 0;
+    .host--detail .host__media {
+      margin-top: 0;
     }
 
     .host__bio {

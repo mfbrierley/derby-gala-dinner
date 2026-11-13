@@ -27,7 +27,6 @@ import distractions from '../assets/images/host-distractions.png';
       <HostRow
         variant="detail"
         headingLevel={2}
-        textOffset={47}
         label="Hosted by"
         name="BAASIT SIDDIQUI"
         subtitle="TV personality and passionate educator"
@@ -54,7 +53,6 @@ import distractions from '../assets/images/host-distractions.png';
       <HostRow
         variant="detail"
         headingLevel={2}
-        textOffset={47}
         label="Special Guest"
         name="Sir Bradley Wiggins"
         subtitle="Olympic gold medallist and first British Tour de France winner"
@@ -82,7 +80,6 @@ import distractions from '../assets/images/host-distractions.png';
       <HostRow
         variant="detail"
         headingLevel={2}
-        textOffset={48}
         label="Live music from"
         name="The Distractions"
         subtitle="Gala house band for the night"
@@ -124,19 +121,12 @@ import distractions from '../assets/images/host-distractions.png';
     color: var(--gold);
   }
 
+  /* An even, generous gap between rows so each host reads as its own block. */
   .hosts-page__rows {
     display: grid;
+    row-gap: calc(180 * var(--u));
     margin-top: calc(167 * var(--u));
     padding: 0 calc(125 * var(--u) + var(--edge)) 0 calc(153 * var(--u) + var(--edge));
-  }
-
-  /* The Figma spaces the rows unevenly: the guest photo sits just under the host's bio, the band further down. */
-  .hosts-page__rows > :global(:nth-child(2)) {
-    margin-top: calc(15 * var(--u));
-  }
-
-  .hosts-page__rows > :global(:nth-child(3)) {
-    margin-top: calc(110 * var(--u));
   }
 
   @media (max-width: 899px) {
@@ -149,13 +139,9 @@ import distractions from '../assets/images/host-distractions.png';
     }
 
     .hosts-page__rows {
-      row-gap: 64px;
+      row-gap: 80px;
       margin-top: 48px;
       padding: 0 var(--gutter);
-    }
-
-    .hosts-page__rows > :global(:nth-child(n)) {
-      margin-top: 0;
     }
   }
 </style>
