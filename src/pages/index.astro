@@ -175,21 +175,6 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
     <div class="tables container">
       <h2 class="label">Book a table</h2>
       <div class="tables__grid">
-        <article class="table-card table-card--evening">
-          <Image
-            class="table-card__img"
-            src={tableEvening}
-            alt="Guests seated around their table at the 2026 gala dinner"
-            widths={[480, 720, 1000, 1328]}
-            sizes="(max-width: 899px) 90vw, 39vw"
-            loading="lazy"
-          />
-          <div class="table-card__body">
-            <h3 class="display display--lg">EVENING TABLE</h3>
-            <p class="table-card__desc">A 10 person table including place gift for all guests.</p>
-            <a class="btn btn--white table-card__btn" href={href('/book-a-table/#evening-table')}>Find out more</a>
-          </div>
-        </article>
         <article class="table-card table-card--vip">
           <Image
             class="table-card__img"
@@ -203,6 +188,21 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
             <h3 class="display display--lg">VIP TABLE</h3>
             <p class="table-card__desc table-card__desc--wide">A 10 person table, situated in a premium location with extras.</p>
             <a class="btn btn--gold table-card__btn" href={href('/book-a-table/#vip-table')}>Find out more</a>
+          </div>
+        </article>
+        <article class="table-card table-card--evening">
+          <Image
+            class="table-card__img"
+            src={tableEvening}
+            alt="Guests seated around their table at the 2026 gala dinner"
+            widths={[480, 720, 1000, 1328]}
+            sizes="(max-width: 899px) 90vw, 39vw"
+            loading="lazy"
+          />
+          <div class="table-card__body">
+            <h3 class="display display--lg">EVENING TABLE</h3>
+            <p class="table-card__desc">A 10 person table including place gift for all guests.</p>
+            <a class="btn btn--white table-card__btn" href={href('/book-a-table/#evening-table')}>Find out more</a>
           </div>
         </article>
       </div>
