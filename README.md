@@ -118,7 +118,7 @@ Adobe serves them; they can't be self-hosted. The site keeps working only while 
 
 ## Enquiry forms
 
-All three pop-ups (Reserve a table, Sponsorship enquiry and the general contact form) post to the
+All four pop-ups (Reserve a table, Sponsorship enquiry, Donate a place and the general contact form) post to the
 site's own endpoint, `public/api/enquiry.php`, a single PHP file that runs on the IONOS web space.
 It checks the submission, then sends one email through [Resend](https://resend.com) with Reply-To
 set to the enquirer, so replying to the email writes back to them. The comment at the top of the
@@ -142,7 +142,7 @@ someone@example.com
 ```
 
 or an inbox per form, as `form: address` pairs separated by semicolons. The forms are `booking`,
-`sponsorship` and `contact`; `default` covers any not named:
+`sponsorship`, `donation` and `contact`; `default` covers any not named:
 
 ```
 booking: tables@example.com; default: hello@example.com
@@ -179,6 +179,8 @@ Buttons open the pop-ups with data attributes:
 <a href="/book-a-table/" data-open-booking="VIP Table">Book a table</a>
 <!-- Sponsorship enquiry, with one or more types ticked (comma-separated) -->
 <a href="/book-a-table/#sponsorship" data-open-sponsorship="Headline">Secure your sponsorship now</a>
+<!-- Donate a place (seat or table) -->
+<a href="#donate-a-seat" data-open-donation>Donate now</a>
 <!-- General enquiries -->
 <a href="#contact" data-open-contact>CONTACT</a>
 ```

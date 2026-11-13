@@ -11,7 +11,7 @@
  *                                     someone@example.com
  *                                   or an inbox per form, as "form: address" pairs separated by
  *                                   semicolons. Form names are the ones in public/api/enquiry.php
- *                                   (booking, sponsorship, contact); "default" covers the rest:
+ *                                   (booking, sponsorship, donation, contact); "default" covers the rest:
  *                                     booking: tables@example.com; default: hello@example.com
  *
  * The sender ("from") is in enquiry.config.json. It must be on the domain verified in Resend.

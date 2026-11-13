@@ -15,8 +15,9 @@ interface Props {
    * `booking`: Reserve a table (opened by the Book a table buttons, data-open-booking).
    * `sponsorship`: Sponsorship enquiry (opened by Secure your sponsorship now, data-open-sponsorship).
    * `contact`: general enquiries (opened by CONTACT, data-open-contact).
+   * `donation`: Donate a place, a seat or a table (opened by Donate now, data-open-donation).
    */
-  variant: 'booking' | 'sponsorship' | 'contact';
+  variant: 'booking' | 'sponsorship' | 'contact' | 'donation';
 }
 
 const { variant } = Astro.props;
@@ -44,6 +45,13 @@ const copy = {
     title: 'get in touch. get involved.',
     intro: ['Please complete the form below and a member of our team will contact you within 24hrs.'],
   },
+  donation: {
+    eyebrow: '',
+    title: 'Donate a place - seat or table',
+    intro: [
+      'Donate a place for the Gala Dinner to ensure a worthy person can enjoy the evening and make a difference by raising money for Bridge The Gap.',
+    ],
+  },
 }[variant];
 
 /**
@@ -52,7 +60,7 @@ const copy = {
  * pre-selects (data-open-booking / data-open-sponsorship); the same values are listed in
  * public/api/enquiry.php, which refuses any other. `position` is the photo crop from the Figma.
  */
-type Pick = { value: string; label: string; image: ImageMetadata; position?: string; wide?: boolean; price?: string };
+type Pick = { value: string; label: string; image?: ImageMetadata; position?: string; wide?: boolean; price?: string };
 
 // `price` is shown under the name; keep it the same as on the Book a table page.
 const tableTypes: Pick[] = [
@@ -66,6 +74,11 @@ const sponsorshipTypes: Pick[] = [
   { value: 'VIP lounge', label: 'VIP lounge sponsor', image: sponsorLounge, position: '74% 56%' },
   // Not in the form mockup, but on the Book a table page and in Matt's list of options.
   { value: 'Other', label: 'Other sponsorship', image: sponsorOther, wide: true },
+];
+// Donation choices have no photo: a gold-outlined tile that fills gold when chosen (form mockup).
+const donationTypes: Pick[] = [
+  { value: 'Seat', label: 'Donate a seat', price: '£250 + VAT per seat' },
+  { value: 'Table', label: 'Donate a table', price: '£2,500 + VAT' },
 ];
 const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
 ---
@@ -190,6 +203,58 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
                   }
                 </div>
               </fieldset>
+            </>
+          )
+        }
+
+        {
+          variant === 'donation' && (
+            <>
+              <div class="enquiry__row enquiry__row--2">
+                <label class="field">
+                  <input name="name" type="text" placeholder=" " autocomplete="name" required />
+                  <span class="field__label">Your Name</span>
+                </label>
+                <label class="field">
+                  <input name="email" type="email" placeholder=" " autocomplete="email" required />
+                  <span class="field__label">Your email</span>
+                </label>
+              </div>
+              <div class="enquiry__row enquiry__row--2">
+                <label class="field">
+                  <input name="company" type="text" placeholder=" " autocomplete="organization" />
+                  <span class="field__label">Your Company name</span>
+                </label>
+                <label class="field">
+                  <input name="phone" type="tel" placeholder=" " autocomplete="tel" />
+                  <span class="field__label">Your contact number</span>
+                </label>
+              </div>
+              <label class="field">
+                <input name="address" type="text" placeholder=" " autocomplete="street-address" />
+                <span class="field__label">Company Address</span>
+              </label>
+              <fieldset class="picks picks--donation" data-required-group data-required-message="Please choose to donate a seat or a table.">
+                <legend class="sr-only">Donate a seat or a table</legend>
+                <div class="picks__grid">
+                  {
+                    donationTypes.map((t) => (
+                      <label class="pick">
+                        <input type="radio" name="donation_type" value={t.value} />
+                        <span class="pick__label display">
+                          {t.label}
+                          {t.price && <span class="pick__price">{t.price}</span>}
+                        </span>
+                      </label>
+                    ))
+                  }
+                </div>
+              </fieldset>
+              <p class="enquiry__terms">
+                Thank you for your interest in donating a seat or table. All donations are managed via an invoice system with full payment required to secure a donation, a donation is only confirmed upon successful receipt of payment.
+                <br />
+                By clicking submit you confirm your agreement to these terms.
+              </p>
             </>
           )
         }
@@ -713,6 +778,46 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     color: #ff8a80;
   }
 
+  /* Donation tiles: no photo. Black with a gold outline; chosen, they fill gold with black text. */
+  .picks--donation .pick {
+    --pick-line: var(--gold);
+    height: max(90px, calc(164 * var(--u)));
+    border-radius: var(--radius);
+    background: #000;
+    transition: background-color 0.2s ease;
+  }
+
+  .picks--donation .pick::before {
+    content: none;
+  }
+
+  .picks--donation .pick::after {
+    border-radius: inherit;
+  }
+
+  .picks--donation .pick__label {
+    bottom: calc(28 * var(--u));
+    left: calc(22 * var(--u));
+    font-size: calc(max(26px, calc(67 * var(--u))) * var(--type-scale));
+  }
+
+  .picks--donation .pick:hover {
+    background: #161208;
+  }
+
+  .picks--donation .pick:has(input:checked) {
+    background: var(--gold);
+  }
+
+  .picks--donation .pick:has(input:checked) .pick__label,
+  .picks--donation .pick:has(input:checked) .pick__price {
+    color: var(--black);
+  }
+
+  .picks--donation[aria-invalid='true'] .pick {
+    --pick-line: #ff8a80;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .pick:hover :global(img) {
       transform: none;
@@ -806,6 +911,15 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     .pick__price {
       margin-top: 4px;
       font-size: 14px;
+    }
+
+    .picks--donation .pick {
+      height: 96px;
+    }
+
+    .picks--donation .pick__label {
+      left: 12px;
+      bottom: 12px;
     }
   }
 </style>
@@ -1017,6 +1131,12 @@ const titles = ['Mr', 'Mrs', 'Ms', 'Miss', 'Mx', 'Dr'];
     if (target.closest('[data-open-contact]')) {
       event.preventDefault();
       openModal('contact-modal');
+      return;
+    }
+
+    if (target.closest('[data-open-donation]')) {
+      event.preventDefault();
+      openModal('donation-modal');
     }
   });
 

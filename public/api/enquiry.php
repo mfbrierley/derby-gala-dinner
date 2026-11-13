@@ -61,6 +61,19 @@ const FORMS = [
             'sponsorship_type' => ['Sponsorship type', true, 'choices', ['Headline', 'Supporting', 'Welcome drinks', 'VIP lounge', 'Other']],
         ],
     ],
+    'donation' => [
+        'subject' => 'Derby Gala Dinner: donation enquiry',
+        'heading' => 'New donation enquiry',
+        'detail' => 'donation_type',
+        'fields' => [
+            'name' => ['Name', true, 'text'],
+            'email' => ['Email', true, 'email'],
+            'company' => ['Company name', false, 'text'],
+            'phone' => ['Contact number', false, 'tel'],
+            'address' => ['Company address', false, 'text'],
+            'donation_type' => ['Donating a', true, 'choice', ['Seat', 'Table']],
+        ],
+    ],
     'contact' => [
         'subject' => 'Derby Gala Dinner: general enquiry',
         'heading' => 'New general enquiry',
