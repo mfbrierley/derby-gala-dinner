@@ -47,6 +47,10 @@ interface Props {
   mediaOffset?: number;
   /** Heading level for the name: 3 on the home page (under a section h2), 2 on Your hosts. */
   headingLevel?: 2 | 3;
+  /** Anchor id for the row, so other pages can link to this host's bio. */
+  id?: string;
+  /** Where the "Find out more" button under the subtitle goes (home page). No button if unset. */
+  moreHref?: string;
 }
 
 const {
@@ -65,6 +69,8 @@ const {
   variant = 'summary',
   mediaOffset = 64,
   headingLevel = 3,
+  id,
+  moreHref,
 } = Astro.props;
 
 const Heading = headingLevel === 2 ? ("h2" as const) : ("h3" as const);
@@ -102,7 +108,7 @@ if (edgeFade) {
 }
 ---
 
-<div class:list={['host', `host--${variant}`]} style={`--media-offset: ${mediaOffset}`}>
+<div id={id} class:list={['host', `host--${variant}`]} style={`--media-offset: ${mediaOffset}`}>
   <div class="host__media" style={mediaStyle}>
     {
       backdrop && (
@@ -132,6 +138,13 @@ if (edgeFade) {
     <p class="host__label">{label}</p>
     <Heading class="display display--xl host__name">{name}</Heading>
     <p class="host__subtitle">{subtitle}</p>
+    {
+      moreHref && (
+        <a class="btn btn--gold host__more" href={moreHref} aria-label={`Find out more about ${name}`}>
+          Find out more
+        </a>
+      )
+    }
     {
       hasBio && (
         <div class="host__bio">
@@ -256,6 +269,15 @@ if (edgeFade) {
     margin-top: calc(-6 * var(--u));
   }
 
+  .host__more {
+    margin-top: calc(32 * var(--u));
+  }
+
+  /* Leave a little room above a host's row when a link scrolls straight to it. */
+  .host[id] {
+    scroll-margin-top: 40px;
+  }
+
   @media (max-width: 899px) {
     .host {
       grid-template-columns: 1fr;
@@ -281,6 +303,10 @@ if (edgeFade) {
 
     .host__subtitle {
       margin-top: 4px;
+    }
+
+    .host__more {
+      margin-top: 20px;
     }
 
     .host--detail .host__media {
