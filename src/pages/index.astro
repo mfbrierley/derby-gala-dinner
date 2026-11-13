@@ -68,7 +68,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       <h1 class="display display--xl hero__title">TABLES NOW AVAILABLE.</h1>
       <p class="hero__venue">Vaillant Live Derby</p>
       <div class="hero__actions">
-        <a class="btn btn--gold" href={href('/book-a-table/')} data-open-booking="">Book a table</a>
+        <a class="btn btn--gold" href={href('/book-a-table/')}>Book a table</a>
         <a class="btn btn--cream" href={href('/book-a-table/#sponsorship')}>Sponsor the event</a>
       </div>
 
@@ -130,6 +130,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       <HostRow
         label="Hosted by"
         name="BAASIT SIDDIQUI"
+        moreHref={href('/your-hosts/#baasit-siddiqui')}
         subtitle="TV personality and passionate educator"
         image={baasit}
         alt="Baasit Siddiqui"
@@ -140,6 +141,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       <HostRow
         label="Special Guest"
         name="Sir Bradley Wiggins"
+        moreHref={href('/your-hosts/#bradley-wiggins')}
         subtitle="Olympic gold medallist and first British Tour de France winner"
         image={wiggins}
         alt="Sir Bradley Wiggins"
@@ -150,6 +152,7 @@ const heroPoster = await getImage({ src: heroPosterSrc, width: 1920, format: 'we
       <HostRow
         label="Live music from"
         name="The Distractions"
+        moreHref={href('/your-hosts/#the-distractions')}
         subtitle="Gala house band for the night"
         image={distractions}
         alt="The Distractions performing on stage"

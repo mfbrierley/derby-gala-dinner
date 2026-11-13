@@ -39,13 +39,18 @@ interface Props {
   edgeFade?: [number, number];
   /**
    * `summary` (home page): text centred against the photo.
-   * `detail` (Your hosts page): text starts `textOffset` px below the top of the photo, sits
-   * closer to it, and the bio (slot) follows underneath.
+   * `detail` (Your hosts page): the photo starts `mediaOffset` px below the top of the text, so
+   * the label sits just above it and the photo lines up with the name; the bio (slot) follows
+   * underneath.
    */
   variant?: 'summary' | 'detail';
-  textOffset?: number;
+  mediaOffset?: number;
   /** Heading level for the name: 3 on the home page (under a section h2), 2 on Your hosts. */
   headingLevel?: 2 | 3;
+  /** Anchor id for the row, so other pages can link to this host's bio. */
+  id?: string;
+  /** Where the "Find out more" button under the subtitle goes (home page). No button if unset. */
+  moreHref?: string;
 }
 
 const {
@@ -62,8 +67,10 @@ const {
   objectPosition = 'center',
   edgeFade,
   variant = 'summary',
-  textOffset = 47,
+  mediaOffset = 64,
   headingLevel = 3,
+  id,
+  moreHref,
 } = Astro.props;
 
 const Heading = headingLevel === 2 ? ("h2" as const) : ("h3" as const);
@@ -101,7 +108,7 @@ if (edgeFade) {
 }
 ---
 
-<div class:list={['host', `host--${variant}`]} style={`--text-offset: ${textOffset}`}>
+<div id={id} class:list={['host', `host--${variant}`]} style={`--media-offset: ${mediaOffset}`}>
   <div class="host__media" style={mediaStyle}>
     {
       backdrop && (
@@ -132,6 +139,13 @@ if (edgeFade) {
     <Heading class="display display--xl host__name">{name}</Heading>
     <p class="host__subtitle">{subtitle}</p>
     {
+      moreHref && (
+        <a class="btn btn--gold host__more" href={moreHref} aria-label={`Find out more about ${name}`}>
+          Find out more
+        </a>
+      )
+    }
+    {
       hasBio && (
         <div class="host__bio">
           <slot />
@@ -158,8 +172,12 @@ if (edgeFade) {
     align-items: start;
   }
 
+  .host--detail .host__media {
+    margin-top: calc(var(--media-offset) * var(--u) + 8px);
+  }
+
   .host--detail .host__text {
-    padding-top: calc(var(--text-offset) * var(--u));
+    padding-top: 0;
   }
 
   .host__bio {
@@ -243,12 +261,21 @@ if (edgeFade) {
   }
 
   .host__name {
-    margin-top: calc(5 * var(--u));
+    margin-top: calc(5 * var(--u) + 8px);
     color: var(--white);
   }
 
   .host__subtitle {
     margin-top: calc(-6 * var(--u));
+  }
+
+  .host__more {
+    margin-top: calc(32 * var(--u));
+  }
+
+  /* Leave a little room above a host's row when a link scrolls straight to it. */
+  .host[id] {
+    scroll-margin-top: 40px;
   }
 
   @media (max-width: 899px) {
@@ -270,7 +297,7 @@ if (edgeFade) {
     }
 
     .host__name {
-      margin-top: 4px;
+      margin-top: 12px;
       font-size: calc(64px * var(--type-scale));
     }
 
@@ -278,8 +305,12 @@ if (edgeFade) {
       margin-top: 4px;
     }
 
-    .host--detail .host__text {
-      padding-top: 0;
+    .host__more {
+      margin-top: 20px;
+    }
+
+    .host--detail .host__media {
+      margin-top: 0;
     }
 
     .host__bio {

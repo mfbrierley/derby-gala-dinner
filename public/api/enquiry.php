@@ -46,7 +46,7 @@ const FORMS = [
             'company' => ['Company name', false, 'text'],
             'phone' => ['Contact number', false, 'tel'],
             'address' => ['Company address', false, 'text'],
-            'table_type' => ['Table type', true, 'choice', ['Evening Table', 'VIP Table']],
+            'table_type' => ['Table type', true, 'choice', ['VIP Table', 'Evening Table']],
         ],
     ],
     'sponsorship' => [
